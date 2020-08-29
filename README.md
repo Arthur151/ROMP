@@ -3,15 +3,15 @@
 The method achieves ECCV 2020 3DPW Challenge Runner Up. Please refer to [arxiv paper](https://arxiv.org/abs/2008.12272) for the details!
 
 <p float="center">
-  <img src="assets:demo/animation/c1_results_compressed.gif" width="32%" />
-  <img src="assets:demo/animation/c5_results_compressed.gif" width="32%" />
-  <img src="assets:demo/animation/c0_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c1_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c5_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c0_results_compressed.gif" width="32%" />
 </p>
 
 <p float="center">
-  <img src="assets:demo/animation/c4_results_compressed.gif" width="32%" />
-  <img src="assets:demo/animation/c2_results_compressed.gif" width="32%" />
-  <img src="assets:demo/animation/c3_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c4_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c2_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c3_results_compressed.gif" width="32%" />
 </p>
 
 ## Installation
@@ -46,9 +46,9 @@ sh scripts/setup.sh
 Please refer to the [bug.md](src/bugs.md) for unpleasant bugs. Feel free to submit the issues for related bugs.
 
 <p float="center">
-  <img src="assets:demo/images_results/images-3dpw_sit_on_street.jpg" width="32%" />
-  <img src="assets:demo/images_results/images-Cristiano_Ronaldo.jpg" width="32%" />
-  <img src="assets:demo/images_results/images-person_overlap.jpg" width="32%" />
+  <img src="../assets/demo/images_results/images-3dpw_sit_on_street.jpg" width="32%" />
+  <img src="../assets/demo/images_results/images-Cristiano_Ronaldo.jpg" width="32%" />
+  <img src="../assets/demo/images_results/images-person_overlap.jpg" width="32%" />
 </p>
 
 ### Demo

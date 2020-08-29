@@ -17,7 +17,19 @@ The method achieves ECCV 2020 3DPW Challenge Runner Up. Please refer to [arxiv p
 ## Installation
 
 #### Download models
-Please download the CenterHMR data from [Google drive](https://drive.google.com/file/d/1vAiuallhHEV3WVq36u0gy7uzbG38d5sU/view?usp=sharing) or [Baidu Drive](https://pan.baidu.com/s/13XTwBy31zhLZLerI3V-rQA) with password ```6hye```. 
+
+###### Option 1:
+
+Directly download the full-packed released package [CenterHMR.zip](https://github.com/Arthur151/CenterHMR/releases/download/v0.0/CenterHMR.zip) from github, latest version v0.0.
+
+###### Option 2:
+
+Clone the repo:
+```bash
+git clone https://github.com/Arthur151/CenterHMR --depth 1
+```
+
+Then download the CenterHMR data from [Google drive](https://drive.google.com/file/d/1vAiuallhHEV3WVq36u0gy7uzbG38d5sU/view?usp=sharing) or [Baidu Drive](https://pan.baidu.com/s/13XTwBy31zhLZLerI3V-rQA) with password ```6hye```. 
 
 Unzip the downloaded CenterHMR_data.zip under the root CenterHMR/. The layout would be
 ```bash
@@ -31,11 +43,6 @@ CenterHMR
 #### Set up environments
 
 Please intall the Pytorch 1.6 from [the official webset](https://pytorch.org/). We have tested the code on Ubuntu and Centos using Pytorch 1.6 only. 
-
-Clone the repo:
-```bash
-git clone https://github.com/Arthur151/CenterHMR --depth 1
-```
 
 Install packages:
 ```bash

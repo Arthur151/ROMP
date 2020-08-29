@@ -1,0 +1,38 @@
+License
+
+Software Copyright License for non-commercial scientific research purposes
+Please read carefully the following terms and conditions and any accompanying documentation before you download and/or use the CenterHMR model, data and software, (the "Model & Software"), including software, model, and animations. By downloading and/or using the Model & Software (including downloading, cloning, installing, and any other use of this github repository), you acknowledge that you have read these terms and conditions, understand them, and agree to be bound by them. If you do not agree with these terms and conditions, you must not download and/or use the Model & Software. Any infringement of the terms of this agreement will automatically terminate your rights under this License
+
+License Grant
+Licensor grants you (Licensee) personally a single-user, non-exclusive, non-transferable, free of charge right:
+
+To install the Model & Software on computers owned, leased or otherwise controlled by you and/or your organization;
+To use the Model & Software for the sole purpose of performing non-commercial scientific research, non-commercial education, or non-commercial artistic projects;
+Any other use, in particular any use for commercial purposes, is prohibited. This includes, without limitation, incorporation in a commercial product, use in a commercial service, or production of other artifacts for commercial purposes. The Model & Software may not be reproduced, modified and/or made available in any form to any third party without prior permission.
+
+The Model & Software may not be used for pornographic purposes or to generate pornographic material whether commercial or not. This license also prohibits the use of the Model & Software to train methods/algorithms/neural networks/etc. for commercial use of any kind. By downloading the Model & Software, you agree not to reverse engineer it.
+
+No Distribution
+The Model & Software and the license herein granted shall not be copied, shared, distributed, re-sold, offered for re-sale, transferred or sub-licensed in whole or in part except that you may make one copy for archive purposes only.
+
+Disclaimer of Representations and Warranties
+You expressly acknowledge and agree that the Model & Software results from basic research, is provided “AS IS”, may contain errors, and that any use of the Model & Software is at your sole risk. LICENSOR MAKES NO REPRESENTATIONS OR WARRANTIES OF ANY KIND CONCERNING THE MODEL & SOFTWARE, NEITHER EXPRESS NOR IMPLIED, AND THE ABSENCE OF ANY LEGAL OR ACTUAL DEFECTS, WHETHER DISCOVERABLE OR NOT. Specifically, and not to limit the foregoing, licensor makes no representations or warranties (i) regarding the merchantability or fitness for a particular purpose of the Model & Software, (ii) that the use of the Model & Software will not infringe any patents, copyrights or other intellectual property rights of a third party, and (iii) that the use of the Model & Software will not cause any damage of any kind to you or a third party.
+
+No Maintenance Services
+You understand and agree that Licensor is under no obligation to provide either maintenance services, update services, notices of latent defects, or corrections of defects with regard to the Model & Software. Licensor nevertheless reserves the right to update, modify, or discontinue the Model & Software at any time.
+
+Defects of the Model & Software must be notified in writing to the Licensor with a comprehensible description of the error symptoms. The notification of the defect should enable the reproduction of the error. The Licensee is encouraged to communicate any use, results, modification or publication.
+
+Publications using the Model & Software
+You acknowledge that the Model & Software is a valuable scientific resource and agree to appropriately reference the following paper in any publication making use of the Model & Software.
+
+Citation:
+@inproceedings{CenterHMR,
+  title = {CenterHMR: a Bottom-up Single-shot Method for Multi-person 3D Mesh Recovery from a Single Image},
+  author = {Yu, Sun and Qian, Bao and Wu, Liu and Yili, Fu and Tao, Mei},
+  booktitle = {arxiv:2008.12272},
+  year = {2020}
+}
+Commercial licensing opportunities
+For commercial uses of the Software, please send email to yusun@stu.hit.edu.cn
+

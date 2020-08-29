@@ -1,0 +1,13 @@
+opencv-python
+opencv-contrib-python
+prettytable
+tqdm
+yacs
+torchfile
+plyfile
+munkres
+chumpy
+trimesh
+pyrender
+shyaml
+numpy-quaternion

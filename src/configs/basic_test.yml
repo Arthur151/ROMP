@@ -1,0 +1,21 @@
+
+ARGS:
+ tab: 'test'
+ GPUS: 0 
+ multi_person: True
+ kernel_sizes: [5]
+ use_coordmaps: True
+ fine_tune: True
+ eval: False
+
+ baseline: 'hrnetv5'
+ input_size: 512
+ centermap_size: 64
+ model_precision: 'fp32'
+ val_batch_size: 2
+ nw: 4
+ gmodel_path: '../trained_models/pw3d_81.8_58.6.pkl'
+
+ # default: run on demo/images save at demo/images_results
+ # for video /path/to/project/CenterHMR/demo/videos/Messi_1
+ demo_image_folder: None

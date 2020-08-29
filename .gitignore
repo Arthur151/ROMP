@@ -3,6 +3,7 @@ demo/animation
 demo/images_results
 trained_models
 models/smplx
+models/smpl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

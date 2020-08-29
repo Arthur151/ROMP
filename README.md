@@ -34,7 +34,7 @@ Please intall the Pytorch 1.6 from [the official webset](https://pytorch.org/). 
 
 Clone the repo:
 ```bash
-git clone https://github.com/Arthur151/CenterHMR
+git clone https://github.com/Arthur151/CenterHMR --depth 1
 ```
 
 Install packages:

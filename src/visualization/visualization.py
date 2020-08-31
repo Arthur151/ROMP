@@ -92,7 +92,7 @@ class Visualizer(object):
             centermaps_list = []
             centermaps = torch.nn.functional.interpolate(centermaps[vids_org],size=(img_size,img_size),mode='bilinear')
             for idx,centermap in enumerate(centermaps):
-                img_bk = cv2.resize(images[idx].copy(),(img_size,img_size))
+                img_bk = cv2.resize(images[idx].copy(),(img_size,img_size))[:,:,::-1]
                 centermaps_list.append(make_heatmaps(img_bk, centermap))
 
         out_list = []

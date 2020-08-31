@@ -6,8 +6,8 @@ class Demo(Base):
         super(Demo, self).__init__()
         self.set_up_smplx()
         self._build_model()
-        self.save_mesh = False
-        self.save_centermap = False
+        self.save_mesh = args.save_mesh
+        self.save_centermap = args.save_centermap
         self.demo_dir = os.path.join(config.project_dir, 'demo')
         print('Initialization finished!')
 

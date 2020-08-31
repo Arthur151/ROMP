@@ -74,6 +74,8 @@ You can also run the code on random internet images via putting the images under
 
 Or please refer to [config_guide.md](src/config_guide.md) for detail configurations.
 
+Please refer to [config_guide.md](src/config_guide.md) for saving the estimated mesh/Center maps.
+
 
 ## TODO LIST
 

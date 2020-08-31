@@ -22,7 +22,6 @@ sys.path.append(os.path.abspath(__file__).replace('visualization/renderer.py',''
 import config
 import constants
 from config import args
-import smplx
 from utils import JointMapper,smpl_to_openpose
 
 colors = {

@@ -14,6 +14,14 @@ demo_image_folder: /path/to/project/CenterHMR/demo/videos/Messi_1
 ```
 Results would be saved at /path/to/project/CenterHMR/demo/videos/Messi_1_results.
 
+###### save_mesh: 
+
+if save the mesh results, please set it to True. The obj files will be saved to demo_image_folder+\_results.
+
+###### save_centermap: 
+
+if save the estimated Center maps, please set it to True. The visualized images will be save to demo_image_folder+\_results.
+
 ###### val_batch_size: batch size 
 
 ###### nw: the number of dataloader workers. 

@@ -1,5 +1,4 @@
 
-import smplx
 import numpy as np
 
 import torch
@@ -159,7 +158,10 @@ def main():
                       gender='neutral',
                       **args)
 
-  male_model = smplx.create(**model_params)
+  import sys,os
+  sys.path.append(os.path.abspath(__file__).replace('models/jointmapper.py',''))
+  import models.smpl as smpl_mdoel
+  male_model = smpl_model.create(**model_params)
 
 
 if __name__ == '__main__':

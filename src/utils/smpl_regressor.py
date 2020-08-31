@@ -1,11 +1,11 @@
 import sys,os
-#sys.path.append(os.path.abspath(__file__).replace('utils/image_base.py',''))
+sys.path.append(os.path.abspath(__file__).replace('utils/smpl_regressor.py',''))
 import torch
 import torch.nn as nn
 import config
 import numpy as np 
-from smplx import SMPL
-from .jointmapper import JointMapper,smpl_to_openpose
+from models.smpl import SMPL
+from utils.jointmapper import JointMapper,smpl_to_openpose
 
 class SMPLR(nn.Module):
     def __init__(self,joint_format='coco25'):

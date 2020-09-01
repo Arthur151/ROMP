@@ -8,13 +8,15 @@ import math
 import trimesh
 import pickle
 import platform
+'''
 if 'Ubuntu' in platform.version():
     print('In Ubuntu, using osmesa mode for rendering')
     os.environ['PYOPENGL_PLATFORM'] = 'osmesa'
 else:
     print('In other system, using egl mode for rendering')
     os.environ['PYOPENGL_PLATFORM'] = 'egl'
-
+'''
+os.environ['PYOPENGL_PLATFORM'] = 'egl'
 import numpy as np
 import pyrender
 from pyrender.constants import RenderFlags

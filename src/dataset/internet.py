@@ -6,7 +6,6 @@ import cv2
 import torch
 import shutil
 import time
-import smplx
 import copy
 from PIL import Image
 sys.path.append(os.path.abspath(__file__).replace('dataset/internet.py',''))

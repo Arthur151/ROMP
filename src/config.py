@@ -7,7 +7,7 @@ import yaml
 
 code_dir = os.path.abspath(__file__).replace('config.py','')
 project_dir = os.path.abspath(__file__).replace('/src/config.py','')
-root_dir = os.path.abspath(__file__).replace('/CenterHMR/src/config.py','')
+root_dir = project_dir.replace(project_dir.split('/')[-1],'')
 model_dir = os.path.join(project_dir,'models')
 trained_model_dir = os.path.join(project_dir,'trained_models')
 

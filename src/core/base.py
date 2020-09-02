@@ -50,7 +50,7 @@ class Base(object):
         cam_dim = 3
         joint_mapper = JointMapper(smpl_to_openpose(model_type=self.model_type, use_hands=True, use_face=True, use_foot=True, \
                      use_face_contour=False, openpose_format='coco25'))
-        self.smplx = smpl_mdoel.create(args.smpl_model_path, batch_size=self.batch_size,model_type=self.model_type, gender='neutral', use_face_contour=False, ext='npz', joint_mapper=joint_mapper,flat_hand_mean=True, use_pca=False).cuda()
+        self.smplx = smpl_model.create(args.smpl_model_path, batch_size=self.batch_size,model_type=self.model_type, gender='neutral', use_face_contour=False, ext='npz', joint_mapper=joint_mapper,flat_hand_mean=True, use_pca=False).cuda()
         self.part_name = ['cam', 'global_orient', 'body_pose', 'betas']
         self.part_idx = [cam_dim, rot_dim,  21*rot_dim,       10]
         

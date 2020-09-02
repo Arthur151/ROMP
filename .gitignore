@@ -1,6 +1,7 @@
 demo/videos
 demo/animation
 demo/images_results
+demo/000003*
 trained_models
 models/smplx
 models/smpl

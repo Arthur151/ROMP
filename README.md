@@ -42,7 +42,7 @@ CenterHMR
 
 #### Set up environments
 
-Please intall the Pytorch 1.6 from [the official webset](https://pytorch.org/). We have tested the code on Ubuntu and Centos using Pytorch 1.6 only. 
+Please intall the Pytorch 1.6 from [the official website](https://pytorch.org/). We have tested the code on Ubuntu and Centos using Pytorch 1.6 only. 
 
 Install packages:
 ```bash

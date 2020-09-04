@@ -15,11 +15,12 @@ The method achieves ECCV 2020 3DPW Challenge Runner Up. Please refer to [arxiv p
   <img src="../assets/demo/animation/c3_results_compressed.gif" width="32%" />
 </p>
 
-## Update
-2020/9/7: Google Colab demo. Predicted results would be saved to a npy file per imag, please refer to [config_guide.md](src/config_guide.md) for details.
+### Update
+**2020/9/4:** Google Colab demo. Predicted results would be saved to a npy file per imag, please refer to [config_guide.md](src/config_guide.md) for details.
 
-#### Try on Google Colab
-Before installation, you can take a few minutes to try the prepared [![Google Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg#scrollTo=s8gFtokdcEQo) a try. It allows you to run the project in the cloud, free of charge. 
+### Try on Google Colab
+Before installation, you can take a few minutes to try the prepared [Google Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg#scrollTo=s8gFtokdcEQo) a try.  
+It allows you to run the project in the cloud, free of charge. 
 
 ## Installation
 

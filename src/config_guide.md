@@ -22,6 +22,27 @@ if save the mesh results, please set it to True. The obj files will be saved to 
 
 if save the estimated Center maps, please set it to True. The visualized images will be save to demo_image_folder+\_results.
 
+###### save_dict_results: 
+
+if save the estimated parameters, please set it to True. They will be save to demo_image_folder+\.npz.
+```bash
+## load the results
+np.load('/path/to/*.npz',allow_pickle=True)['results'][()]
+## for example:
+np.load('~/CenterHMR/demo/images_results/person_overlap.npz',allow_pickle=True)['results'][()]
+```
+
+The predicted results of each image are saved in the following format:
+```bash
+image_name
+ - cam (3,) # 3 parameters of weak-perspective camera, (scale, tranlation_x, tranlation_y)
+ - pose (72,) # 72 SMPL pose parameters.
+ - betas (10,) # 10 SMPL shape parameters.
+ - j3d_smpl24 (24, 3) # 3D pose results in SMPL format
+ - j3d_op25 (25, 3) # 3D pose results in Openpose format
+ - verts (6890, 3) # 3D coordinates of 3D human mesh.
+```
+
 ###### val_batch_size: batch size 
 
 ###### nw: the number of dataloader workers. 

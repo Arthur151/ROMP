@@ -1,4 +1,5 @@
 # CenterHMR: a bottom-up single-shot method for multi-person 3D mesh recovery from a single image
+[![Google Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg#scrollTo=s8gFtokdcEQo)
 
 The method achieves ECCV 2020 3DPW Challenge Runner Up. Please refer to [arxiv paper](https://arxiv.org/abs/2008.12272) for the details!
 
@@ -13,6 +14,12 @@ The method achieves ECCV 2020 3DPW Challenge Runner Up. Please refer to [arxiv p
   <img src="../assets/demo/animation/c2_results_compressed.gif" width="32%" />
   <img src="../assets/demo/animation/c3_results_compressed.gif" width="32%" />
 </p>
+
+## Update
+2020/9/7: Google Colab demo. Predicted results would be saved to a npy file per imag, please refer to [config_guide.md](src/config_guide.md) for details.
+
+#### Try on Google Colab
+Before installation, you can take a few minutes to try the prepared [![Google Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg#scrollTo=s8gFtokdcEQo) a try. It allows you to run the project in the cloud, free of charge. 
 
 ## Installation
 
@@ -29,9 +36,15 @@ Clone the repo:
 git clone https://github.com/Arthur151/CenterHMR --depth 1
 ```
 
-Then download the CenterHMR data from [Google drive](https://drive.google.com/file/d/1vAiuallhHEV3WVq36u0gy7uzbG38d5sU/view?usp=sharing) or [Baidu Drive](https://pan.baidu.com/s/13XTwBy31zhLZLerI3V-rQA) with password ```6hye```. 
+Then download the CenterHMR data from [Github release](https://github.com/Arthur151/CenterHMR/releases/download/v0.0/CenterHMR_data.zip), [Google drive](https://drive.google.com/file/d/1vAiuallhHEV3WVq36u0gy7uzbG38d5sU/view?usp=sharing) or [Baidu Drive](https://pan.baidu.com/s/13XTwBy31zhLZLerI3V-rQA) with password ```6hye```. 
 
-Unzip the downloaded CenterHMR_data.zip under the root CenterHMR/. The layout would be
+Unzip the downloaded CenterHMR_data.zip under the root CenterHMR/. 
+```bash
+cd CenterHMR/
+unzip CenterHMR_data.zip
+```
+
+The layout would be
 ```bash
 CenterHMR
   - demo
@@ -42,7 +55,7 @@ CenterHMR
 
 #### Set up environments
 
-Please intall the Pytorch 1.6 from [the official webset](https://pytorch.org/). We have tested the code on Ubuntu and Centos using Pytorch 1.6 only. 
+Please intall the Pytorch 1.6 from [the official website](https://pytorch.org/). We have tested the code on Ubuntu and Centos using Pytorch 1.6 only. 
 
 Install packages:
 ```bash
@@ -66,6 +79,8 @@ To do this you just need to run
 ```bash
 cd CenterHMR/src
 sh run.sh
+# if there are any bugs about shell script, please consider run the following command instead:
+CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/basic_test.yml
 ```
 Results will be saved in CenterHMR/demo/images_results.
 
@@ -74,7 +89,7 @@ You can also run the code on random internet images via putting the images under
 
 Or please refer to [config_guide.md](src/config_guide.md) for detail configurations.
 
-Please refer to [config_guide.md](src/config_guide.md) for saving the estimated mesh/Center maps.
+Please refer to [config_guide.md](src/config_guide.md) for **saving the estimated mesh/Center maps/parameters dict**.
 
 
 ## TODO LIST

@@ -10,4 +10,5 @@ chumpy
 trimesh
 pyrender
 shyaml
+PyYAML>=5.1.2
 numpy-quaternion

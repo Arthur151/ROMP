@@ -53,3 +53,24 @@ If you installed Pytorch 1.6 or upper verion, then you can use the automatic mix
 ```bash
 model_precision: fp16
 ```
+#### Webcam setting 
+
+The webcam configure file is CenterHMR/src/configs/basic_webcam.yml
+
+###### webcam: whether run using webcam video
+
+###### cam_id: web camera id, default 0. 
+
+###### webcam_mesh_color: mesh color, default ghostwhite.
+
+Currently, we have LightCyan, ghostwhite, Azure, Cornislk, Honeydew, LavenderBlush. Feel free to paint the estimated mesh results in your favorite color.
+
+If your favorite color is not included, please add it to the mesh_color_dict (src/constants.py) and set the webcam_mesh_color.
+
+###### run_on_remote_server: whether run webcam (captured locally) demo on remote server 
+
+###### server_ip: IP address of remote server.
+
+###### server_port: Port of remote server, default 10086.
+
+Please change to the other port if 10086 has been used.

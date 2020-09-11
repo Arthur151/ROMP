@@ -12,3 +12,7 @@ pyrender
 shyaml
 PyYAML>=5.1.2
 numpy-quaternion
+open3d
+pygame
+keyboard
+transforms3d

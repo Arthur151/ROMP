@@ -1,7 +1,11 @@
-# CenterHMR: a bottom-up single-shot method for multi-person 3D mesh recovery from a single image
+# CenterHMR: a bottom-up single-shot method for real-time multi-person 3D mesh recovery from a single image
 [![Google Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg#scrollTo=s8gFtokdcEQo)
 
 The method achieves ECCV 2020 3DPW Challenge Runner Up. Please refer to [arxiv paper](https://arxiv.org/abs/2008.12272) for the details!
+
+### Update
+**2020/9/11: Real-time webcam demo using local/remote server.** Please refer to [config_guide.md](src/config_guide.md) for details.
+**2020/9/4:** Google Colab demo. Predicted results would be saved to a npy file per imag, please refer to [config_guide.md](src/config_guide.md) for details.
 
 <p float="center">
   <img src="../assets/demo/animation/c1_results_compressed.gif" width="32%" />
@@ -14,9 +18,6 @@ The method achieves ECCV 2020 3DPW Challenge Runner Up. Please refer to [arxiv p
   <img src="../assets/demo/animation/c2_results_compressed.gif" width="32%" />
   <img src="../assets/demo/animation/c3_results_compressed.gif" width="32%" />
 </p>
-
-### Update
-**2020/9/4:** Google Colab demo. Predicted results would be saved to a npy file per imag, please refer to [config_guide.md](src/config_guide.md) for details.
 
 ### Try on Google Colab
 Before installation, you can take a few minutes to try the prepared [Google Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg#scrollTo=s8gFtokdcEQo) a try.  
@@ -85,21 +86,38 @@ CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/basic_t
 ```
 Results will be saved in CenterHMR/demo/images_results.
 
-#### Internet images
+#### Internet images/videos
+
 You can also run the code on random internet images via putting the images under CenterHMR/demo/images before running sh run.sh.
 
 Or please refer to [config_guide.md](src/config_guide.md) for detail configurations.
 
 Please refer to [config_guide.md](src/config_guide.md) for **saving the estimated mesh/Center maps/parameters dict**.
 
+#### Webcam
+
+We also provide the webcam demo code, which can run at real-time on a 1070Ti GPU / remote server.  
+Currently, limited by the visualization pipeline, the code only support the single-person mesh recovery.
+
+To do this you just need to run
+```bash
+cd CenterHMR/src
+CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/basic_webcam.yml
+# or please set the TEST_MODE=0 WEBCAM_MODE=1 in run.sh, then run
+sh run.sh
+```
+Press Up/Down to end the demo. Pelease refer to [config_guide.md](src/config_guide.md) for setting mesh color or camera id.
+
+If you wish to run webcam demo using remote server, pelease refer to [config_guide.md](src/config_guide.md).
 
 ## TODO LIST
 
 The code will be gradually open sourced according to:
 - [ ] the schedule
-  - [x] demo code for internet images or videos
-  - [ ] evaluation code for re-implementation the results on 3DPW Challenge (really close)
-  - [ ] runtime optimization
+  - [x] demo code for internet images / videos / webcam
+  - [x] runtime optimization
+  - [ ] benchmark evaluation
+  - [ ] training
 
 ## Citation
 Please considering citing 
@@ -119,7 +137,8 @@ We thank [Peng Cheng](https://github.com/CPFLAME) for his constructive comments 
 
 Here are some great resources we benefit:
 
-- SMPL models and layer is from [SMPL-X model](https://github.com/vchoutas/smplx).
+- SMPL models and layer is borrowed from MPII [SMPL-X model](https://github.com/vchoutas/smplx).
+- Webcam pipeline is borrowed from [minimal-hand](https://github.com/CalciferZh/minimal-hand).
 - Some functions are borrowed from [HMR-pytorch](https://github.com/MandyMo/pytorch_HMR).
 - Some functions for data augmentation are borrowed from [SPIN](https://github.com/nkolot/SPIN).
 - Synthetic occlusion is borrowed from [synthetic-occlusion](https://github.com/isarandi/synthetic-occlusion)

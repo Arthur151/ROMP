@@ -202,3 +202,6 @@ for i in openpose25_2_smplx:
         openpose25_2_smplx_map.append(i)
     else:
         openpose25_2_smplx_map.append(0)
+
+mesh_color_dict = {'LightCyan': [225,255,255], 'ghostwhite':[248, 248, 255], \
+'Azure':[240,255,255],'Cornislk':[255,248,220],'Honeydew':[240,255,240],'LavenderBlush':[255,240,245]}

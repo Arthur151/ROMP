@@ -58,7 +58,7 @@ class Base(object):
         self.params_num = np.array(self.part_idx).sum()
         self.global_orient_nocam = torch.from_numpy(constants.global_orient_nocam).unsqueeze(0)
 
-    def _calc_smplx_params(self, param, data_3d):
+    def _calc_smplx_params(self, param):
         idx_list = [0]
         params_dict = {}
         # cam:4; poses: 87=3+63+6+6+3+3+3; expres: 10; shape: 10 = 111
@@ -95,10 +95,13 @@ class Base(object):
         params, center_maps, heatmap_AEs = model(imgs.contiguous())
         
         params, kps, data_3d, reorganize_idx = self.parse_maps(params, center_maps, heatmap_AEs, data_3d)
-        outputs = self._calc_smplx_params(params.contiguous(), data_3d)
+        if params is not None:
+            outputs = self._calc_smplx_params(params.contiguous())
+        else:
+            outputs = None
         return outputs, center_maps, kps, data_3d, reorganize_idx
 
-    def parse_maps(self,param_maps, center_maps, heatmap_AEs, data_3d):
+    def parse_maps(self,param_maps, center_maps, heatmap_AEs, data_3d=None):
         kps = heatmap_AEs
         centers_pred= []
         for batch_id in range(len(param_maps)):
@@ -111,12 +114,12 @@ class Base(object):
             else:
                 centers_pred.append([])
 
-        info_vis = ['imgpath', 'image_org', 'offsets']
-        batch_size = param_maps.shape[0]
-        matched_data = {}
-        for key in info_vis:
-            matched_data[key] = []
         params_pred, reorganize_idx = [[] for i in range(2)]
+        if data_3d is not None:
+            info_vis = ['imgpath', 'image_org', 'offsets']
+            matched_data = {}
+            for key in info_vis:
+                matched_data[key] = []
 
         # while training, use gt center to extract the parameters from the estimated map
         # while evaluation, match the estimated center with the clostest gt center for parameter sampling.
@@ -125,22 +128,27 @@ class Base(object):
             for person_id, center in enumerate(centers):
                 center_w, center_h = center.long()
                 params_pred.append(param_map[:,center_w,center_h])
-
-                for key in matched_data:
-                    data_gt = data_3d[key]
-                    if isinstance(data_gt, torch.Tensor):
-                        matched_data[key].append(data_gt[batch_id])
-                    elif isinstance(data_gt, list):
-                        matched_data[key].append(data_gt[batch_id])
                 reorganize_idx.append(batch_id)
 
-        params = torch.stack(params_pred)
-        for key in matched_data:
-            data_gt = data_3d[key]
-            if isinstance(data_gt, torch.Tensor):
-                data_3d[key] = torch.stack(matched_data[key])
-            elif isinstance(data_gt, list):
-                data_3d[key] = np.array(matched_data[key])
+                if data_3d is not None:
+                    for key in matched_data:
+                        data_gt = data_3d[key]
+                        if isinstance(data_gt, torch.Tensor):
+                            matched_data[key].append(data_gt[batch_id])
+                        elif isinstance(data_gt, list):
+                            matched_data[key].append(data_gt[batch_id])
+                
+        if len(params_pred)>0:
+            params = torch.stack(params_pred)
+        else:
+            params = None
+        if data_3d is not None:
+            for key in matched_data:
+                data_gt = data_3d[key]
+                if isinstance(data_gt, torch.Tensor):
+                    data_3d[key] = torch.stack(matched_data[key])
+                elif isinstance(data_gt, list):
+                    data_3d[key] = np.array(matched_data[key])
         
         return params, kps, data_3d, np.array(reorganize_idx)
 
@@ -182,52 +190,3 @@ class Base(object):
             print('model {} not exist!'.format(path))
         print('*'*20)
         return model
-
-
-
-class Data_prefetcher():
-    def __init__(self, loader,fetch_item='image'):
-        self.loader = iter(loader)
-        self.stream = torch.cuda.Stream()
-        self.preload(fetch_item='image')
-    def preload(self,fetch_item='image'):
-        try:
-            self.next_input = next(self.loader)
-        except StopIteration:
-            self.next_input = None
-            self.next_image = None
-            return
-        with torch.cuda.stream(self.stream):
-            self.next_image = self.next_input[fetch_item].cuda(non_blocking=True)
-    def next(self,fetch_item='image'):
-        torch.cuda.current_stream().wait_stream(self.stream)
-        input, image = self.next_input, self.next_image
-        self.preload(fetch_item='image')
-        return input, image
-
-class MultiStreamBatchSampler(Sampler):
-    """Iterate two sets of indices
-    An 'epoch' is one iteration through the primary indices.
-    During the epoch, the secondary indices are iterated through
-    as many times as needed.
-    """
-    def __init__(self, datasets_list, batch_size_list):
-        self.primary_indices = primary_indices
-        self.secondary_indices = secondary_indices
-        self.secondary_batch_size = secondary_batch_size
-        self.primary_batch_size = batch_size - secondary_batch_size
-
-        assert len(self.primary_indices) >= self.primary_batch_size > 0
-        assert len(self.secondary_indices) >= self.secondary_batch_size > 0
-
-    def __iter__(self):
-        primary_iter = iterate_once(self.primary_indices)
-        secondary_iter = iterate_eternally(self.secondary_indices)
-        return (
-            primary_batch + secondary_batch
-            for (primary_batch, secondary_batch)
-            in  zip(grouper(primary_iter, self.primary_batch_size),
-                    grouper(secondary_iter, self.secondary_batch_size)))
-
-    def __len__(self):
-        return len(self.primary_indices) // self.primary_batch_size

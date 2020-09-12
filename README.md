@@ -29,7 +29,7 @@ It allows you to run the project in the cloud, free of charge.
 
 ###### Option 1:
 
-Directly download the full-packed released package [CenterHMR.zip](https://github.com/Arthur151/CenterHMR/releases/download/v0.0/CenterHMR.zip) from github, latest version v0.0.
+Directly download the full-packed released package [CenterHMR.zip](https://github.com/Arthur151/CenterHMR/releases/download/v0.1/CenterHMR_v0.1.zip) from github, latest version v0.1.
 
 ###### Option 2:
 

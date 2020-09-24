@@ -1,6 +1,7 @@
 from base import *
 from PIL import Image
 import torchvision
+from utils.multiprocess import * #Multiprocess
 
 
 class Demo(Base):
@@ -8,11 +9,12 @@ class Demo(Base):
         super(Demo, self).__init__()
         self.set_up_smplx()
         self._build_model()
+        self.generator.eval()
         self.save_mesh = args.save_mesh
         self.save_centermap = args.save_centermap
         self.save_dict_results = args.save_dict_results
         self.demo_dir = os.path.join(config.project_dir, 'demo')
-        self.generator.eval()
+        
         print('Initialization finished!')
 
     def run(self, image_folder):
@@ -84,24 +86,39 @@ class Demo(Base):
         return outputs
 
     def webcam_run_local(self):
+        '''
+        19.6 FPS of forward prop. on 1080
+        '''
+        print('run on local')
         import keyboard
         from utils.demo_utils import OpenCVCapture, Open3d_visualizer
         capture = OpenCVCapture()
         visualizer = Open3d_visualizer()
 
+        counter = Time_counter(thresh=0.1)
+        for i in range(10):
+            self.single_image_forward(np.zeros((512,512,3)).astype(np.uint8))
         while True:
+            start_time_perframe = time.time()
             frame = capture.read()
             if frame is None:
                 continue
+            
+            counter.start()
             with torch.no_grad():
                 outputs = self.single_image_forward(frame)
+            counter.count()
+            counter.fps()
+
             if outputs is not None:
                 verts = outputs['verts'][0].cpu().numpy()
                 verts = verts * 50 + np.array([0, 0, 100])
                 break_flag = visualizer.run(verts,frame)
                 if break_flag:
                     break
+
     def webcam_run_remote(self):
+        print('run on remote')
         from utils.remote_server_utils import Server_port_receiver
         capture = Server_port_receiver()
 
@@ -118,19 +135,59 @@ class Demo(Base):
             else:
                 capture.send(['failed'])
 
+    def test_fps(self):
+        frame = cv2.imread('/home/yusun/CenterHMR/demo/images/3dpw_sit_on_street.jpg')
+        num_frame = 0
+        counter = Time_counter()
+        while True:
+            counter.start()
+            with torch.no_grad():
+                outputs = self.single_image_forward(frame)
+            counter.count()
+            counter.fps()
+
+class Time_counter():
+    def __init__(self,thresh=0.1):
+        self.thresh=thresh
+        self.runtime = 0
+        self.frame_num = 0
+
+    def start(self):
+        self.start_time = time.time()
+
+    def count(self):
+        time_cost = time.time()-self.start_time
+        if time_cost<self.thresh:
+            self.runtime+=time_cost
+            self.frame_num+=1
+        self.start()
+
+    def fps(self):
+        print('average per-frame runtime:',self.runtime/self.frame_num)
+        print('FPS: {}'.format(self.frame_num/self.runtime))
+
+    def reset(self):
+        self.runtime = 0
+        self.frame_num = 0
+
 def main():
-    demo = Demo()
-    if args.webcam:
-        if args.run_on_remote_server:
-            demo.webcam_run_remote()
-        else:
-            demo.webcam_run_local()
+    #demo.test_fps()
+    if args.multiprocess:
+        demo = Multiprocess()
+        demo.endprocess()
     else:
-        # run the code on demo images
-        demo_image_folder = args.demo_image_folder
-        if not os.path.exists(demo_image_folder):
-            demo_image_folder = os.path.join(demo.demo_dir,'images')
-        demo.run(demo_image_folder)
+        demo = Demo()
+        if args.webcam:
+            if args.run_on_remote_server:
+                demo.webcam_run_remote()
+            else:
+                demo.webcam_run_local()
+        else:
+            # run the code on demo images
+            demo_image_folder = args.demo_image_folder
+            if not os.path.exists(demo_image_folder):
+                demo_image_folder = os.path.join(demo.demo_dir,'images')
+            demo.run(demo_image_folder)
 
 
 if __name__ == '__main__':

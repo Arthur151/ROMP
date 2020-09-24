@@ -35,7 +35,6 @@ class Base(object):
         self.project_dir = config.project_dir
         self._init_params()
 
-
     def _build_model(self):
         print('start building model.')
         generator = get_pose_net(params_num = self.params_num).cuda()

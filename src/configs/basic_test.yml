@@ -23,3 +23,4 @@ ARGS:
  save_centermap: True
  save_dict_results: True
  webcam: False
+ multiprocess: False

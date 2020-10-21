@@ -75,7 +75,7 @@ Please refer to the [bug.md](src/bugs.md) for unpleasant bugs. Feel free to subm
 
 ### Demo
 
-Currently, the released code is used to re-implement demo results. Only 1-2G GPU memery is needed.
+Currently, the released code is used to re-implement demo results. Only 1-2G GPU memory is needed.
 
 To do this you just need to run
 ```bash

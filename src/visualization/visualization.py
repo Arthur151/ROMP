@@ -17,13 +17,12 @@ from .renderer import get_renderer
 
 class Visualizer(object):
     def __init__(self,model_type, resolution = (512,512,3),input_size=512,result_img_dir = None,with_renderer=False):
-        self.resolution = resolution
         self.input_size = input_size
         if with_renderer:
-            self.renderer = get_renderer(model_type=model_type,resolution=self.resolution)
+            self.renderer = get_renderer(model_type=model_type,resolution=resolution)
         self.result_img_dir = result_img_dir
         self.heatmap_kpnum = 17
-        self.vis_size = self.resolution[0]
+        self.vis_size = resolution[:2]
         self.mesh_color = (torch.Tensor([[[0.65098039, 0.74117647, 0.85882353]]])*255).long()
 
     def add_mesh_to_writer(self,writer, verts, name, model_type='smpl-x'):
@@ -45,13 +44,13 @@ class Visualizer(object):
             for idxs in reorganize_idx:
                 main_renders = renders[idxs[0]]
                 main_render_mask = main_renders[:, :, -1] > thresh
-                render_scale_map = np.zeros((self.vis_size, self.vis_size))
+                render_scale_map = np.zeros(self.vis_size)
                 render_scale_map[main_render_mask] = main_render_mask.sum()
                 for jdx in range(1,len(idxs)):
                     other_idx = idxs[jdx]
                     other_renders = renders[other_idx]
                     other_render_mask = other_renders[:, :, -1] > thresh
-                    render_scale_map_other = np.zeros((self.vis_size, self.vis_size))
+                    render_scale_map_other = np.zeros(self.vis_size)
                     render_scale_map_other[other_render_mask] = other_render_mask.sum()
                     other_render_mask = render_scale_map_other>(render_scale_map+scale_thresh)
                     render_scale_map[other_render_mask] = other_render_mask.sum()
@@ -65,6 +64,7 @@ class Visualizer(object):
             #renders[valid_mask, :-1] = images[valid_mask]
             if renders.shape[-1]==4:
                 renders = renders[:,:,:,:-1]
+            
             renders = renders * valid_mask * visible_weight + images * valid_mask * (1-visible_weight) + (1 - valid_mask) * images
         return renders.astype(np.uint8)
 
@@ -86,11 +86,14 @@ class Visualizer(object):
             assert count==len(verts_vids)
         else:
             new_idxs = None
-            vids_org, verts_vids, single_vids = [np.arange(vertices.shape[0]) for _ in range(4)]
+            vids_org, verts_vids, single_vids = [np.arange(data['image_org'].shape[0]) for _ in range(3)]
 
-        img_names = np.array(data['imgpath'])[single_vids]
         images = data['image_org'].contiguous().numpy().astype(np.uint8)[single_vids]
-
+        if images.shape[1] != self.vis_size[0]:
+            images_new = []
+            for image in images:
+                images_new.append(cv2.resize(image, tuple(self.vis_size)))
+            images = np.array(images_new)
         rendered_imgs = self.visualize_renderer(verts_camed[verts_vids], images=images, reorganize_idx=new_idxs)
         show_list = [images, rendered_imgs]
 
@@ -107,6 +110,7 @@ class Visualizer(object):
             out_list.append(result_img[:,:,::-1])
             
         if save_img:
+            img_names = np.array(data['imgpath'])[single_vids]
             if save_dir is None:
                 save_dir = self.result_img_dir
             os.makedirs(save_dir, exist_ok=True)
@@ -116,7 +120,7 @@ class Visualizer(object):
                 cv2.imwrite(name_save,result_img)
                 if centermaps is not None:
                     cv2.imwrite(name_save.replace('.jpg','_centermap.jpg'),centermaps_list[idx])
-        return np.array(out_list)/255.
+        return np.array(out_list)
 
     def draw_skeleton(self, image, pts, **kwargs):
         return draw_skeleton(image, pts, **kwargs)

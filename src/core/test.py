@@ -14,14 +14,15 @@ class Demo(Base):
         self.save_centermap = args.save_centermap
         self.save_dict_results = args.save_dict_results
         self.demo_dir = os.path.join(config.project_dir, 'demo')
+        self.vis_size = [1024,1024,3]#[1920,1080]
+        self.visualizer = Visualizer(model_type=self.model_type,resolution=self.vis_size, input_size=self.input_size,with_renderer=True)
         print('Initialization finished!')
 
     def run(self, image_folder):
         print('Processing {}'.format(image_folder))
-        vis_size = [1024,1024,3]#[1920,1080]
         test_save_dir = image_folder+'_results' if not os.path.isdir(self.output_dir) else os.path.join(self.output_dir, image_folder.split('/')[-1])
         os.makedirs(test_save_dir,exist_ok=True)
-        self.visualizer = Visualizer(model_type=self.model_type,resolution =vis_size, input_size=self.input_size, result_img_dir = test_save_dir,with_renderer=True)
+        self.visualizer.result_img_dir = test_save_dir
         counter = Time_counter(thresh=1)
         for i in range(4):
             self.single_image_forward(np.zeros((512,512,3)).astype(np.uint8))
@@ -52,8 +53,7 @@ class Demo(Base):
                 
                 if test_iter%50==0:
                     print(test_iter,'/',len(loader_val))
-                counter.start()
-                    
+                counter.start()   
 
     def reorganize_results(self, outputs, img_paths, reorganize_idx,test_save_dir):
         results = {}
@@ -94,7 +94,28 @@ class Demo(Base):
             ])
         image = torch.from_numpy(np.array(transform(image_org))).unsqueeze(0).cuda().contiguous().float()
         outputs, centermaps, heatmap_AEs, _, reorganize_idx = self.net_forward(None,self.generator,image,mode='test')
+        outputs.update({'input_image':image, 'reorganize_idx':reorganize_idx})
         return outputs
+
+    def process_video(self, video_file_path=None):
+        
+        import keyboard
+        from utils.demo_utils import OpenCVCapture, frames2video
+        capture = OpenCVCapture(video_file_path)
+        video_length = int(capture.cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        result_frames = []
+        for frame_id in range(video_length):
+            print('Processing video {}/{}'.format(frame_id, video_length))
+            frame = capture.read()
+            with torch.no_grad():
+                outputs = self.single_image_forward(frame[:,:,::-1])
+            vis_dict = {'image_org': outputs['input_image'].cpu()}
+            vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], vis_dict, reorganize_idx=outputs['reorganize_idx'])
+            result_frames.append(vis_eval_results[0])
+        video_save_name = video_file_path.replace('.mp4', '_results.mp4')
+        print('Writing results to {}'.format(video_save_name))
+        frames2video(result_frames, video_save_name, fps=30)
+            
 
     def webcam_run_local(self, video_file_path=None):
         '''
@@ -182,7 +203,7 @@ def main():
             demo.webcam_run_local()
     elif args.video_or_frame:
         print('Running on video ',args.input_video_path)
-        demo.webcam_run_local(args.input_video_path)
+        demo.process_video(args.input_video_path)
     else:
         demo_image_folder = args.demo_image_folder
         if not os.path.exists(demo_image_folder):

@@ -1,5 +1,6 @@
 import cv2
 import keyboard
+import imageio
 import numpy as np
 import open3d as o3d
 import pygame
@@ -139,3 +140,9 @@ class Open3d_visualizer(object):
                 return True
         return False
 
+def frames2video(images, video_name,fps=30):
+    writer = imageio.get_writer(video_name, format='mp4', mode='I', fps=fps)
+
+    for image in images:
+        writer.append_data(image)
+    writer.close()

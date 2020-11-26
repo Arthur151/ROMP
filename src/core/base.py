@@ -43,7 +43,6 @@ class Base(object):
         self.centermap_parser = CenterMap()
         print('finished build model.')
 
-
     def set_up_smplx(self):
         rot_dim = 6 if self.Rot_type=='6D' else 3
         cam_dim = 3
@@ -93,11 +92,12 @@ class Base(object):
             imgs = data_3d['image'].cuda()
         params, center_maps, heatmap_AEs = model(imgs.contiguous())
         
-        params, kps, data_3d, reorganize_idx = self.parse_maps(params, center_maps, heatmap_AEs, data_3d)
-        if params is not None:
+        params, kps, data_3d, reorganize_idx, success_flag = self.parse_maps(params, center_maps, heatmap_AEs, data_3d)
+        if params is not None and success_flag:
             outputs = self._calc_smplx_params(params.contiguous())
+            outputs['success_flag'] = True
         else:
-            outputs = None
+            outputs = {'success_flag':False}
         return outputs, center_maps, kps, data_3d, reorganize_idx
 
     def parse_maps(self,param_maps, center_maps, heatmap_AEs, data_3d=None):
@@ -107,7 +107,7 @@ class Base(object):
             center_ids, center_conf = self.centermap_parser.parse_centermap(center_maps[batch_id])
             if len(center_ids)>0:
                 center_whs_pred = center_ids.cpu().float()
-                center_conf = center_conf.cpu().float().numpy()
+                center_conf = center_conf.detach().cpu().float().numpy()
                 center_filtered = center_whs_pred#self.kp2d_filter(center_whs_pred[center_conf>center_thresh], kps[batch_id] )
                 centers_pred.append(center_filtered)
             else:
@@ -141,15 +141,20 @@ class Base(object):
             params = torch.stack(params_pred)
         else:
             params = None
+        
+        success_flag=True
         if data_3d is not None:
             for key in matched_data:
                 data_gt = data_3d[key]
                 if isinstance(data_gt, torch.Tensor):
+                    if len(matched_data[key])<1:
+                        success_flag=False
+                        continue
                     data_3d[key] = torch.stack(matched_data[key])
                 elif isinstance(data_gt, list):
                     data_3d[key] = np.array(matched_data[key])
         
-        return params, kps, data_3d, np.array(reorganize_idx)
+        return params, kps, data_3d, np.array(reorganize_idx), success_flag
 
     def _init_params(self):
         self.global_count = 0

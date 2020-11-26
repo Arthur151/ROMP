@@ -11,16 +11,12 @@ ARGS:
  baseline: 'hrnetv5'
  input_size: 512
  centermap_size: 64
- model_precision: 'fp16'
- val_batch_size: 2
- gmodel_path: '../trained_models/pw3d_81.8_58.6.pkl'
-
- # default: run on demo/images save at demo/images_results
- # for video /path/to/project/CenterHMR/demo/videos/Messi_1
+ model_precision: 'fp32'
+ val_batch_size: 1
+ gmodel_path: '../trained_models/CenterHMR.pkl' #'../trained_models/CenterHMR+CAR.pkl'
  demo_image_folder: None
  save_mesh: False
  save_centermap: False
- save_dict_results: False
 
  webcam: True
  cam_id: 0

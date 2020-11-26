@@ -21,10 +21,11 @@ mode_group = parser.add_argument_group(title='mode options')
 mode_group.add_argument('--multi_person',type = bool,default = True,help = 'whether to make Multi-person Recovery')
 mode_group.add_argument('--use_coordmaps',type = bool,default = True,help = 'use the coordmaps')
 mode_group.add_argument('--head_conv_block_num',type=int,default = 2,help = 'number of conv block for head')
+mode_group.add_argument('--centermap_conf_thrsh',type=float,default = 0.25,help = 'number of conv block for head')
 
 mode_group.add_argument('--kp3d_format', type=str, default='smpl24', help='the joint defination of KP 3D joints: smpl24 or coco25')
 mode_group.add_argument('--eval',type = bool,default = False,help = 'whether to evaluation')
-mode_group.add_argument('--max_person',default=16,type=int,help = 'max person number')
+mode_group.add_argument('--max_person',default=50,type=int,help = 'max person number')
 mode_group.add_argument('--BN_type', type=str, default='BN', help='BN layer type: BN, IBN')
 mode_group.add_argument('--Rot_type', type=str, default='6D', help='rotation representation type: angular, 6D')
 

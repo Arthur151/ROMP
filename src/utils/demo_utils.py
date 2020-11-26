@@ -51,13 +51,29 @@ class OneEuroFilter:
     return self.x_filter.process(x, self.compute_alpha(cutoff))
 
 class OpenCVCapture:
-    def __init__(self):
-        self.cap = cv2.VideoCapture(int(args.cam_id))
+    def __init__(self, video_file=None):
+        if video_file is None:
+            self.cap = cv2.VideoCapture(int(args.cam_id))
+        else:
+            self.cap = cv2.VideoCapture(video_file)
 
     def read(self):
         flag, frame = self.cap.read()
         if not flag:
           return None
+        return np.flip(frame, -1).copy() # BGR to RGB
+
+class Image_Reader:
+    def __init__(self, image_folder):
+        self.image_folder = image_folder
+        self.image_list = os.listdir(self.image_folder)
+        self.current_num=0
+
+    def read(self):
+        frame = cv2.imread(os.path.join(self.image_folder,self.image_list[self.current_num]))
+        self.current_num+=1
+        if self.current_num==len(self.image_list):
+            self.current_num=0
         return np.flip(frame, -1).copy() # BGR to RGB
 
 class Open3d_visualizer(object):

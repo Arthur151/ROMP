@@ -31,7 +31,7 @@ class Visualizer(object):
             colors=self.mesh_color.repeat(verts.shape[0],verts.shape[1],1), \
             faces=self.renderer.faces.cpu(),global_step=self.global_count)
 
-    def visualize_renderer(self, verts, images=None, reorganize_idx=None,model_type='smpl-x',thresh=0.2,visible_weight=0.9):
+    def visualize_renderer(self, verts, images=None, reorganize_idx=None,model_type='smpl-x',thresh=0.2,visible_weight=0.9, scale_thresh=100):
         verts = verts.detach().cpu().numpy()
         renders = []
         for vert in verts:
@@ -44,16 +44,22 @@ class Visualizer(object):
             renders_summoned = []
             for idxs in reorganize_idx:
                 main_renders = renders[idxs[0]]
+                main_render_mask = main_renders[:, :, -1] > thresh
+                render_scale_map = np.zeros((self.vis_size, self.vis_size))
+                render_scale_map[main_render_mask] = main_render_mask.sum()
                 for jdx in range(1,len(idxs)):
                     other_idx = idxs[jdx]
                     other_renders = renders[other_idx]
-                    main_render_mask = main_renders[:, :, -1] > thresh
                     other_render_mask = other_renders[:, :, -1] > thresh
-                    other_render_mask = np.logical_and(other_render_mask,~main_render_mask)
+                    render_scale_map_other = np.zeros((self.vis_size, self.vis_size))
+                    render_scale_map_other[other_render_mask] = other_render_mask.sum()
+                    other_render_mask = render_scale_map_other>(render_scale_map+scale_thresh)
+                    render_scale_map[other_render_mask] = other_render_mask.sum()
                     main_renders[other_render_mask] = other_renders[other_render_mask]
                 renders_summoned.append(main_renders)
             renders = np.array(renders_summoned)
 
+        visible_weight = 0.9
         if images is not None:
             valid_mask = (renders[:,:, :, -1] > thresh)[:,:, :,np.newaxis]
             #renders[valid_mask, :-1] = images[valid_mask]
@@ -86,7 +92,7 @@ class Visualizer(object):
         images = data['image_org'].contiguous().numpy().astype(np.uint8)[single_vids]
 
         rendered_imgs = self.visualize_renderer(verts_camed[verts_vids], images=images, reorganize_idx=new_idxs)
-        show_list = [rendered_imgs]
+        show_list = [images, rendered_imgs]
 
         if centermaps is not None:
             centermaps_list = []

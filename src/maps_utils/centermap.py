@@ -12,7 +12,7 @@ class CenterMap(object):
         self.shrink_scale = float(args.input_size//self.size)
         self.dims = 1
         self.sigma = 1
-        self.conf_thresh=0.25
+        self.conf_thresh=args.centermap_conf_thrsh
         self.gk_group, self.pool_group = self.generate_kernels(args.kernel_sizes)
         
     def generate_kernels(self, kernel_size_list):

@@ -28,7 +28,7 @@ from utils import JointMapper,smpl_to_openpose
 
 colors = {
     'pink': [.7, .7, .9],
-    'neutral': [.9, .9, .8],
+    'neutral': [.9, .9, .8], #[.7, .7, .6],#
     'capsule': [.7, .75, .5],
     'yellow': [.5, .7, .75],
 }
@@ -73,7 +73,8 @@ class Renderer:
         # set the scene
         self.scene = pyrender.Scene(bg_color=[0.0, 0.0, 0.0, 0.0], ambient_light=(0.3, 0.3, 0.3))
 
-        light = pyrender.PointLight(color=[1.0, 1.0, 1.0], intensity=1)
+        #light = pyrender.PointLight(color=[1.0, 1.0, 1.0], intensity=5)
+        light = pyrender.DirectionalLight(color=[1.0, 1.0, 1.0], intensity=2)
 
         light_pose = np.eye(4)
         light_pose[:3, 3] = [0, -1, 1]
@@ -108,7 +109,7 @@ class Renderer:
         )
 
         material = pyrender.MetallicRoughnessMaterial(
-            metallicFactor=0.0,
+            metallicFactor=0.2,
             alphaMode='OPAQUE',
             baseColorFactor=(color[0], color[1], color[2], 1.0)
         )

@@ -10,3 +10,4 @@ models/smpl
 __pycache__/
 *.py[cod]
 *.log
+*.mp4

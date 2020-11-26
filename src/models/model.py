@@ -4,14 +4,13 @@ sys.path.append(os.path.abspath(__file__).replace('model/model.py',''))
 import torch
 import torch.nn as nn
 from config import args
-from models import modelv5 as hrnet
+from models import modelv5
 
 def get_pose_net(params_num = 79):
-    model = hrnet.get_pose_net(params_num = params_num)
+    model = modelv5.get_pose_net(params_num = params_num)
     return model
 
 if __name__ == '__main__':
-    bs = 'hrnetv5'
     net = get_pose_net()
     net = nn.DataParallel(net).cuda()
     nx = torch.rand(4,512,512,3).float().cuda()

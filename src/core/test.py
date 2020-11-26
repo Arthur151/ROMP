@@ -89,7 +89,7 @@ class Demo(Base):
         resized_image_size = (float(self.input_size)/max(image_size) * np.array(image_size) // 2 * 2).astype(np.int)[::-1]
         padding = tuple((self.input_size-resized_image_size)[::-1]//2)
         transform = torchvision.transforms.Compose([
-            torchvision.transforms.Resize(resized_image_size, interpolation=3),
+            torchvision.transforms.Resize([*resized_image_size], interpolation=3),
             torchvision.transforms.Pad(padding, fill=0, padding_mode='constant'),
             ])
         image = torch.from_numpy(np.array(transform(image_org))).unsqueeze(0).cuda().contiguous().float()

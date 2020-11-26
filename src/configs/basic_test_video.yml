@@ -14,7 +14,7 @@ ARGS:
  model_precision: 'fp32'
  val_batch_size: 1
  nw: 4
- gmodel_path: '../trained_models/CenterHMR.pkl' #'../trained_models/CenterHMR+CAR.pkl'
+ gmodel_path: '../trained_models/pw3d_81.8_58.6.pkl' #'../trained_models/CenterHMR+CAR.pkl'
 
  video_or_frame: True
  input_video_path: '../demo/sample_video.mp4' # None

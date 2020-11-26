@@ -16,7 +16,7 @@ ARGS:
  model_precision: 'fp32'
  val_batch_size: 1
  nw: 4
- gmodel_path: '../trained_models/CenterHMR.pkl' #'../trained_models/CenterHMR+CAR.pkl'
+ gmodel_path: '../trained_models/pw3d_81.8_58.6.pkl' #'../trained_models/CenterHMR+CAR.pkl'
  save_visualization_on_img: True
 
  # default: run on demo/images and the results would be saved at demo/images_results

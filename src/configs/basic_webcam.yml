@@ -13,7 +13,7 @@ ARGS:
  centermap_size: 64
  model_precision: 'fp32'
  val_batch_size: 1
- gmodel_path: '../trained_models/CenterHMR.pkl' #'../trained_models/CenterHMR+CAR.pkl'
+ gmodel_path: '../trained_models/pw3d_81.8_58.6.pkl' #'../trained_models/CenterHMR+CAR.pkl'
  demo_image_folder: None
  save_mesh: False
  save_centermap: False

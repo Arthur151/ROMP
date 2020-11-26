@@ -123,8 +123,8 @@ The code will be gradually open sourced according to:
 Please considering citing 
 ```bibtex
 @inproceedings{CenterHMR,
-  title = {CenterHMR: a Bottom-up Single-shot Method for Multi-person 3D Mesh Recovery from a Single Image},
-  author = {Yu, Sun and Qian, Bao and Wu, Liu and Yili, Fu and Tao, Mei},
+  title = {CenterHMR: Multi-Person Center-based Human Mesh Recovery},
+  author = {Yu, Sun and Qian, Bao and Wu, Liu and Yili, Fu and Black, Michael J. and Tao, Mei},
   booktitle = {arxiv:2008.12272},
   month = {August},
   year = {2020}

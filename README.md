@@ -5,8 +5,8 @@ CenterHMR is a bottom-up single-shot network for real-time multi-person 3D mesh 
 It achieves ECCV 2020 3DPW Challenge Runner Up. Please refer to [arxiv paper](https://arxiv.org/abs/2008.12272) for the details!
 
 ### News
-**2020/11/26: Upload a new version that contains optimization for person-person occlusion.** Small changes for video support.
-**2020/9/11: Real-time webcam demo using local/remote server.** Please refer to [config_guide.md](src/config_guide.md) for details.
+**2020/11/26: Upload a new version that contains optimization for person-person occlusion.** Small changes for video support.  
+**2020/9/11: Real-time webcam demo using local/remote server.** Please refer to [config_guide.md](src/config_guide.md) for details.  
 **2020/9/4: Google Colab demo.** Predicted results would be saved to a npy file per imag, please refer to [config_guide.md](src/config_guide.md) for details.
 
 <p float="center">
@@ -105,7 +105,7 @@ To do this you just need to firstly change the input_video_path in src/configs/b
  video_or_frame: True
  input_video_path: '../demo/sample_video.mp4' # None
 ```
-, then run 
+then run 
 
 ```bash
 cd CenterHMR/src
@@ -137,7 +137,7 @@ To test FPS of CenterHMR on your devices, please set configs/basic_test.yml as b
  save_visualization_on_img: False
  demo_image_folder: '../demo/videos/Messi_1'
 ```
-, then run 
+then run 
 
 ```bash
 cd CenterHMR/src

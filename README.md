@@ -10,6 +10,11 @@ It achieves ECCV 2020 3DPW Challenge Runner Up. Please refer to [arxiv paper](ht
 **2020/9/4: Google Colab demo.** Predicted results would be saved to a npy file per imag, please refer to [config_guide.md](src/config_guide.md) for details.
 
 <p float="center">
+  <img src="../assets/demo/animation/live_demo_guangboticao.gif" width="50%" />
+  <img src="../assets/demo/animation/live_demo_sit.gif" width="50%" />
+</p>
+
+<p float="center">
   <img src="../assets/demo/animation/c1_results_compressed.gif" width="32%" />
   <img src="../assets/demo/animation/c5_results_compressed.gif" width="32%" />
   <img src="../assets/demo/animation/c0_results_compressed.gif" width="32%" />

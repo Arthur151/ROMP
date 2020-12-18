@@ -81,19 +81,15 @@ class Open3d_visualizer(object):
     def __init__(self):
         self.view_mat = axangle2mat([1, 0, 0], np.pi) # align different coordinate systems
         self.window_size = 1080
+        
         self.mesh_color = np.array(constants.mesh_color_dict[args.webcam_mesh_color])/255.
         smpl_param_dict = pickle.load(open(os.path.join(args.smpl_model_path,'smpl','SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')
         self.faces = smpl_param_dict['f']
-        verts_mean = smpl_param_dict['v_template']
-        self.mesh = o3d.geometry.TriangleMesh()
-        self.mesh.triangles = o3d.utility.Vector3iVector(self.faces)
-        self.mesh.vertices = o3d.utility.Vector3dVector(np.matmul(self.view_mat, verts_mean.T).T * 1000)
-        self.mesh.compute_vertex_normals()
+        self.verts_mean = smpl_param_dict['v_template']
 
         self.viewer = o3d.visualization.Visualizer()
-        self.viewer.create_window(
-          width=self.window_size+1, height=self.window_size+1,
-          window_name='CenterHMR - output')
+        self.viewer.create_window(width=self.window_size+1, height=self.window_size+1, window_name='CenterHMR - output')
+        self.mesh = self.create_single_mesh(self.verts_mean)
         self.viewer.add_geometry(self.mesh)
 
         view_control = self.viewer.get_view_control()
@@ -101,6 +97,7 @@ class Open3d_visualizer(object):
         extrinsic = cam_params.extrinsic.copy()
         extrinsic[0:3, 3] = 0
         cam_params.extrinsic = extrinsic
+
         #cam_params.intrinsic.set_intrinsics(
         #  self.window_size, self.window_size, 620.744, 621.151,
         #  self.window_size//2, self.window_size//2
@@ -111,6 +108,7 @@ class Open3d_visualizer(object):
         render_option = self.viewer.get_render_option()
         render_option.load_from_json('utils/render_option.json')
         self.viewer.update_renderer()
+
         self.mesh_smoother = OneEuroFilter(4.0, 0.0)
 
         ############ input visualization ############
@@ -118,11 +116,9 @@ class Open3d_visualizer(object):
         self.display = pygame.display.set_mode((self.window_size, self.window_size))
         pygame.display.set_caption('CenterHMR - input')
 
-    def run(self, v,frame):
-        v = self.mesh_smoother.process(v)
-        self.mesh.triangles = o3d.utility.Vector3iVector(self.faces)
-        self.mesh.vertices = o3d.utility.Vector3dVector(np.matmul(self.view_mat, v.T).T)
-        self.mesh.paint_uniform_color(self.mesh_color)
+    def run(self, verts,frame):
+        verts = self.mesh_smoother.process(verts)
+        self.mesh.vertices = o3d.utility.Vector3dVector(np.matmul(self.view_mat, verts.T).T)
         self.mesh.compute_triangle_normals()
         self.mesh.compute_vertex_normals()
         # for some version of open3d you may need `viewer.update_geometry(mesh)`
@@ -139,6 +135,47 @@ class Open3d_visualizer(object):
                 print('key pressed')
                 return True
         return False
+
+    def run_multiperson(self, verts,frame):
+        geometries = []
+        #self.reset_mesh()
+        self.viewer.destroy_window()
+        self.viewer = o3d.visualization.Visualizer()
+        self.viewer.create_window()
+        for v_id, vert in enumerate(verts):
+            #self.mesh += self.create_single_mesh(vert)
+            #geometries.append(self.create_single_mesh(vert))
+            self.viewer.add_geometry(self.create_single_mesh(vert))
+        self.viewer.poll_events()
+        self.viewer.update_renderer()
+        #o3d.visualization.draw_geometries(geometries)
+        #self.viewer.update_geometry(self.mesh)
+
+        self.display.blit(
+          pygame.surfarray.make_surface(
+            np.transpose(cv2.resize(frame, (self.window_size, self.window_size), cv2.INTER_LINEAR), (1, 0, 2))),(0, 0))
+        pygame.display.update()
+        for event in pygame.event.get():
+            if (event.type == KEYUP) or (event.type == KEYDOWN):
+                print('key pressed')
+                return True
+        return False
+
+    def create_single_mesh(self, verts):
+        mesh = o3d.geometry.TriangleMesh()
+        mesh.triangles = o3d.utility.Vector3iVector(self.faces)
+        mesh.vertices = o3d.utility.Vector3dVector(np.matmul(self.view_mat, verts.T).T)
+        mesh.paint_uniform_color(self.mesh_color)
+        mesh.compute_triangle_normals()
+        mesh.compute_vertex_normals()
+        return mesh
+
+    def reset_mesh(self):
+        self.mesh.triangles = o3d.utility.Vector3iVector(self.faces)
+        self.mesh.vertices = o3d.utility.Vector3dVector(self.verts_mean)
+        self.mesh.paint_uniform_color(self.mesh_color)
+        self.mesh.compute_vertex_normals()
+        
 
 def frames2video(images, video_name,fps=30):
     writer = imageio.get_writer(video_name, format='mp4', mode='I', fps=fps)

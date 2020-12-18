@@ -15,7 +15,8 @@ class Demo(Base):
         self.save_dict_results = args.save_dict_results
         self.demo_dir = os.path.join(config.project_dir, 'demo')
         self.vis_size = [1024,1024,3]#[1920,1080]
-        self.visualizer = Visualizer(model_type=self.model_type,resolution=self.vis_size, input_size=self.input_size,with_renderer=True)
+        if not args.webcam:
+            self.visualizer = Visualizer(model_type=self.model_type,resolution=self.vis_size, input_size=self.input_size,with_renderer=True)
         print('Initialization finished!')
 
     def run(self, image_folder):
@@ -126,6 +127,7 @@ class Demo(Base):
         from utils.demo_utils import OpenCVCapture, Open3d_visualizer, Image_Reader
         capture = OpenCVCapture(video_file_path)
         visualizer = Open3d_visualizer()
+        print('Initialization is down')
 
         # Warm-up
         for i in range(10):
@@ -144,9 +146,14 @@ class Demo(Base):
             counter.fps()
 
             if outputs is not None and outputs['success_flag']:
-                verts = outputs['verts'][0].cpu().numpy()
-                verts = verts * 50 + np.array([0, 0, 100])
-                break_flag = visualizer.run(verts,frame)
+                if args.show_single:
+                    verts = outputs['verts'].cpu().numpy()
+                    verts = verts * 50 + np.array([0, 0, 100])
+                    break_flag = visualizer.run(verts[0],frame)
+                else:
+                    verts = outputs['verts_camed'].cpu().numpy()
+                    verts = verts * 50 + np.array([0, 0, 100])
+                    break_flag = visualizer.run_multiperson(verts,frame)
                 if break_flag:
                     break
 
@@ -213,4 +220,5 @@ def main():
 
 
 if __name__ == '__main__':
+
     main()

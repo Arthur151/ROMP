@@ -17,6 +17,8 @@ ARGS:
  demo_image_folder: None
  save_mesh: False
  save_centermap: False
+ save_dict_results: False
+ show_single: True
 
  webcam: True
  cam_id: 0

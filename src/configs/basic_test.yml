@@ -1,7 +1,7 @@
 
 ARGS:
  tab: 'test'
- GPUS: 0 
+ GPUS: -1
  multi_person: True
  kernel_sizes: [5]
  use_coordmaps: True

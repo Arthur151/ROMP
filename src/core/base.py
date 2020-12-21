@@ -37,7 +37,9 @@ class Base(object):
 
     def _build_model(self):
         print('start building model.')
-        generator = get_pose_net(params_num = self.params_num).cuda()
+        generator = get_pose_net(params_num = self.params_num)
+        if '-1' not in self.gpu:
+            generator = generator.cuda()
         generator = self.load_model(self.gmodel_path,generator)
         self.generator = nn.DataParallel(generator)
         self.centermap_parser = CenterMap()
@@ -48,7 +50,10 @@ class Base(object):
         cam_dim = 3
         joint_mapper = JointMapper(smpl_to_openpose(model_type=self.model_type, use_hands=True, use_face=True, use_foot=True, \
                      use_face_contour=False, openpose_format='coco25'))
-        self.smplx = smpl_model.create(args.smpl_model_path, batch_size=self.batch_size,model_type=self.model_type, gender='neutral', use_face_contour=False, ext='npz', joint_mapper=joint_mapper,flat_hand_mean=True, use_pca=False).cuda()
+        self.smplx = smpl_model.create(args.smpl_model_path, batch_size=self.batch_size,model_type=self.model_type, gender='neutral', \
+            use_face_contour=False, ext='npz', joint_mapper=joint_mapper,flat_hand_mean=True, use_pca=False)
+        if '-1' not in self.gpu:
+            self.smplx = self.smplx.cuda()
         self.part_name = ['cam', 'global_orient', 'body_pose', 'betas']
         self.part_idx = [cam_dim, rot_dim,  21*rot_dim,       10]
         
@@ -181,7 +186,10 @@ class Base(object):
         print('*'*20)
         print('using fine_tune model: ', path)
         if os.path.exists(path):
-            pretrained_model = torch.load(path)
+            if '-1' in self.gpu:
+                pretrained_model = torch.load(path,map_location=torch.device('cpu'))
+            else:
+                pretrained_model = torch.load(path)
             current_model = model.state_dict()
             if isinstance(pretrained_model, dict):
                 if 'model_state_dict' in pretrained_model:

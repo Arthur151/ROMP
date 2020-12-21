@@ -93,7 +93,9 @@ class Demo(Base):
             torchvision.transforms.Resize([*resized_image_size], interpolation=3),
             torchvision.transforms.Pad(padding, fill=0, padding_mode='constant'),
             ])
-        image = torch.from_numpy(np.array(transform(image_org))).unsqueeze(0).cuda().contiguous().float()
+        image = torch.from_numpy(np.array(transform(image_org))).unsqueeze(0).contiguous().float()
+        if '-1' not in self.gpu:
+            image = image.cuda()
         outputs, centermaps, heatmap_AEs, _, reorganize_idx = self.net_forward(None,self.generator,image,mode='test')
         outputs.update({'input_image':image, 'reorganize_idx':reorganize_idx})
         return outputs

@@ -94,7 +94,7 @@ class Base(object):
 
     def net_forward(self, data_3d, model, imgs=None,match_to_gt=False,mode='test'):
         if imgs is None:
-            imgs = data_3d['image'].cuda()
+            imgs = data_3d['image']
         params, center_maps, heatmap_AEs = model(imgs.contiguous())
         
         params, kps, data_3d, reorganize_idx, success_flag = self.parse_maps(params, center_maps, heatmap_AEs, data_3d)

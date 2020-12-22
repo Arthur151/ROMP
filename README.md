@@ -75,9 +75,8 @@ sh scripts/setup.sh
 Please refer to the [bug.md](src/bugs.md) for unpleasant bugs. Feel free to submit the issues for related bugs.
 
 <p float="center">
-  <img src="../assets/demo/images_results/images-3dpw_sit_on_street.jpg" width="32%" />
-  <img src="../assets/demo/images_results/images-Cristiano_Ronaldo.jpg" width="32%" />
-  <img src="../assets/demo/images_results/images-Cristiano_Ronaldo2.jpg" width="32%" />
+  <img src="../assets/demo/images_results/images-3dpw_sit_on_street.jpg" width="48%" />
+  <img src="../assets/demo/images_results/images-Cristiano_Ronaldo.jpg" width="48%" />
 </p>
 
 ### Demo

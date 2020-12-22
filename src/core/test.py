@@ -15,15 +15,18 @@ class Demo(Base):
         self.save_dict_results = args.save_dict_results
         self.demo_dir = os.path.join(config.project_dir, 'demo')
         self.vis_size = [1024,1024,3]#[1920,1080]
-        if not args.webcam:
+        if not args.webcam and '-1' not in self.gpu:
             self.visualizer = Visualizer(model_type=self.model_type,resolution=self.vis_size, input_size=self.input_size,with_renderer=True)
+        else:
+            self.save_visualization_on_img = False
         print('Initialization finished!')
 
     def run(self, image_folder):
         print('Processing {}'.format(image_folder))
         test_save_dir = image_folder+'_results' if not os.path.isdir(self.output_dir) else os.path.join(self.output_dir, image_folder.split('/')[-1])
         os.makedirs(test_save_dir,exist_ok=True)
-        self.visualizer.result_img_dir = test_save_dir
+        if '-1' not in self.gpu:
+            self.visualizer.result_img_dir = test_save_dir
         counter = Time_counter(thresh=1)
         for i in range(4):
             self.single_image_forward(np.zeros((512,512,3)).astype(np.uint8))
@@ -41,8 +44,7 @@ class Demo(Base):
                     centermaps = None
                 if outputs['success_flag'] and self.save_visualization_on_img:
                     vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], data_3d_new, reorganize_idx, centermaps=centermaps,save_img=True)#
-                else:
-                    counter.fps()
+                #counter.fps()
                 if self.save_mesh:
                     vids_org = np.unique(reorganize_idx)
                     for idx, vid in enumerate(vids_org):

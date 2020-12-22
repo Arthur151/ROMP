@@ -2,6 +2,10 @@
 
 The configure file is CenterHMR/src/configs/basic_test.yml
 
+###### GPUS: GPU device number  
+To run the code on your GPUs, please set it to the GPU device number, such as `GPUS: 0` or `GPUS: 0,1,2,3`.  
+To run the code on CPU, please set it to `GPUS: -1`. Currently, in CPU mode, the code would not output the rendered image.  
+
 ###### demo_image_folder: absoluate path of the folder containing the input images
 Please change the 
 ```bash

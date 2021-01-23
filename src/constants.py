@@ -12,20 +12,43 @@ def joint_mapping(source_format, target_format):
 OpenPose_25 = {
     'Nose':0, 'Neck':1, 'R_Shoulder':2, 'R_Elbow':3, 'R_Wrist':4, 'L_Shoulder':5, 'L_Elbow':6, \
     'L_Wrist':7, 'Pelvis':8, 'R_Hip': 9, 'R_Knee':10, 'R_Ankle':11, 'L_Hip':12, 'L_Knee':13, 'L_Ankle':14, \
-    'R_Eye':15, 'L_Eye':16, 'R_Ear':17, 'L_Ear':18, 'L_Toe':19, 'L_Foot':20, 'L_Heel':21, 'R_Toe':22, 'R_Foot':23, 'R_Heel':24
+    'R_Eye':15, 'L_Eye':16, 'R_Ear':17, 'L_Ear':18, 'L_BigToe':19, 'L_SmallToe':20, 'L_Heel':21, 'R_BigToe':22, 'R_SmallToe':23, 'R_Heel':24
     }
 
 SMPL_24 = {
     'Pelvis':0, 'L_Hip':1, 'R_Hip':2, 'Spine': 3, 'L_Knee':4, 'R_Knee':5, 'Thorax': 6, 'L_Ankle':7, 'R_Ankle':8,'Thorax_up':9, \
-    'L_Foot':10, 'R_Foot':11, 'Neck': 12, 'L_Collar':13, 'R_Collar':14, 'Jaw':15, 'L_Shoulder':16, 'R_Shoulder':17,\
+    'L_SmallToe':10, 'R_SmallToe':11, 'Neck': 12, 'L_Collar':13, 'R_Collar':14, 'Jaw':15, 'L_Shoulder':16, 'R_Shoulder':17,\
     'L_Elbow':18, 'R_Elbow':19, 'L_Wrist': 20, 'R_Wrist': 21, 'L_Hand':22, 'R_Hand':23
+    }
+
+SMPL_EXTRA_30 = {
+    'Nose':24, 'R_Eye':25, 'L_Eye':26, 'R_Ear': 27, 'L_Ear':28, \
+    'L_BigToe':29, 'L_SmallToe': 30, 'L_Heel':31, 'R_BigToe':32,'R_SmallToe':33, 'R_Heel':34, \
+    'L_Hand_thumb':35, 'L_Hand_index': 36, 'L_Hand_middle':37, 'L_Hand_ring':38, 'L_Hand_pinky':39, \
+    'R_Hand_thumb':40, 'R_Hand_index':41,'R_Hand_middle':42, 'R_Hand_ring':43, 'R_Hand_pinky': 44, \
+    'R_Hip_LSP': 45, 'L_Hip_LSP':46, 'Neck_LSP':47, 'Head_top':48, 'Pelvis_MPII':49, 'Thorax_MPII':50, \
+    'Spine_H36M':51, 'Jaw_H36M':52, 'Head_H36M':53
+    }
+
+SPIN_24 = {
+    'R_Ankle':0, 'R_Knee':1, 'R_Hip_LSP':2, 'L_Hip_LSP': 3, 'L_Knee':4, 'L_Ankle':5, 'R_Wrist': 6, 'R_Elbow':7, 'R_Shoulder':8,\
+    'L_Shoulder':9, 'L_Elbow':10, 'L_Wrist':11, 'Neck_LSP': 12, 'Head_top':13, 'Pelvis_MPII':14, 'Thorax_MPII':15, 'Spine_H36M':16, 'Jaw_H36M': 17, 'Head_H36M':18,\
+    'Nose':19, 'L_Eye':20, 'R_Eye':21, 'L_Ear': 22, 'R_Ear': 23
+    }
+
+#Human3.6M
+H36M_32 = {
+    'Unkown_part':0, 'R_Hip':1, 'R_Knee':2, 'R_Ankle':3, 'R_BigToe':4, 'R_SmallToe':5, 'L_Hip':6, 'L_Knee':7, 'L_Ankle':8, 'L_BigToe':9, 'L_SmallToe':10,\
+    'Pelvis':11, 'Spine':12, 'Unkown_part2':13, 'Jaw':14, 'Head':15, 'Unkown_part3':16, 'L_Shoulder':17, 'L_Elbow':18, 'L_Wrist':19, 'Unkown_part3':20, \
+    'Unkown_part4':21, 'Unkown_part5':22, 'Unkown_part6':23, 'Neck':24, 'R_Shoulder':25, 'R_Elbow':26, 'R_Wrist':27,\
+    'Unkown_part7':28, 'Unkown_part8':29, 'Unkown_part9':30, 'Unkown_part10':31
     }
 
 # the joint defination of each datasets:
 # MuCo-3DHP
 MuCo_21 = {
     'Head_top':0, 'Thorax':1, 'R_Shoulder':2, 'R_Elbow':3, 'R_Wrist':4, 'L_Shoulder':5, 'L_Elbow':6, 'L_Wrist':7, 'R_Hip':8, 'R_Knee':9,\
-    'R_Ankle':10, 'L_Hip':11, 'L_Knee':12, 'L_Ankle':13, 'Pelvis':14, 'Spine_unkown':15, 'Head_unkown':16, 'R_Hand':17, 'L_Hand':18, 'R_Toe':19, 'L_Toe':20
+    'R_Ankle':10, 'L_Hip':11, 'L_Knee':12, 'L_Ankle':13, 'Pelvis':14, 'Spine_unkown':15, 'Head_unkown':16, 'R_Hand':17, 'L_Hand':18, 'R_BigToe':19, 'L_BigToe':20
     }
 
 # MuPoTS
@@ -65,14 +88,6 @@ MPII_16 = {
     'Neck':8, 'Head_top':9, 'R_Wrist':10, 'R_Elbow':11, 'R_Shoulder':12, 'L_Shoulder':13, 'L_Elbow':14, 'L_Wrist':15,
     }
 
-#Human3.6M
-H36M_32 = {
-    'Pelvis':0, 'R_Hip':1, 'R_Knee':2, 'R_Ankle':3, 'R_Toe':4, 'R_Foot':5, 'L_Hip':6, 'L_Knee':7, 'L_Ankle':8, 'L_Toe':9, 'L_Foot':10,\
-    'Spine_unkown_h36m1':11, 'Spine_unkown_h36m2':12, 'Neck':13, 'Head_down':14, 'Site':15, 'Unkown_part':16, 'L_Shoulder':17, 'L_Elbow':18, 'L_Wrist':19, 'Unkown_part2':20, \
-    'Unkown_part3':21, 'Unkown_part4':22, 'Unkown_part5':23, 'Unkown_part6':24, 'R_Shoulder':25, 'R_Elbow':26, 'R_Wrist':27,\
-    'Unkown_part7':28, 'Unkown_part8':29, 'Unkown_part9':30, 'Unkown_part10':31
-    }
-
 #Posetrack
 Posetrack_17 = {
     'Nose':0, 'Neck':1, 'empty':2, 'empty':3, 'empty':4, 'L_Shoulder':5, 'R_Shoulder':6, 'L_Elbow':7, 'R_Elbow':8, \
@@ -91,15 +106,15 @@ MPI_INF_28 = {
     'Spine4_unkown': 0, 'Spine3_unkown': 1, 'Spine2_unkown': 2, 'Spine1_unkown': 3, 'Pelvis': 4,\
     'Neck':5, 'Head1_unkown':6, 'Head_top':7, 'L_Collar':8, 'L_Shoulder':9, 'L_Elbow':10,\
     'L_Wrist':11, 'L_Hand':12, 'R_Collar':13, 'R_Shoulder':14, 'R_Elbow':15, 'R_Wrist':16,\
-    'R_Hand':17, 'L_Hip':18, 'L_Knee':19, 'L_Ankle':20, 'L_Foot':21, 'L_Toe':22,\
-    'R_Hip':23, 'R_Knee':24, 'R_Ankle':25, 'R_Foot':26, 'R_Toe':27
+    'R_Hand':17, 'L_Hip':18, 'L_Knee':19, 'L_Ankle':20, 'L_SmallToe':21, 'L_BigToe':22,\
+    'R_Hip':23, 'R_Knee':24, 'R_Ankle':25, 'R_SmallToe':26, 'R_BigToe':27
     }
 
 #NTU RGB+D 
 NTU_25 = {
     'Pelvis':0, 'Thorax_unkown':1, 'Neck':2, 'Head_unkown2':3, 'L_Shoulder':4, 'L_Elbow':5, 'L_Wrist':6, \
     'L_Hand':7, 'R_Shoulder':8, 'R_Elbow':9, 'R_Wrist':10, 'R_Hand':11, 'L_Hip':12, 'L_Knee':13, 'L_Ankle':14,\
-    'L_Foot_unkown':15,'R_Hip':16, 'R_Knee':17, 'R_Ankle':18, 'R_Foot_unkown':19, 'Spine_neck_unkown':20, \
+    'L_Foot_unkown':15,'R_Hip':16, 'R_Knee':17, 'R_Ankle':18, 'R_SmallToe':19, 'Spine_neck_unkown':20, \
     'L_Hand_tip':21,'L_Hand_thumb':22,'R_Hand_tip':23,'R_Hand_thumb':24\
 }
 

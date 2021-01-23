@@ -151,7 +151,7 @@ class SMPL(nn.Module):
     NUM_BETAS = 10
 
     def __init__(self, model_path, data_struct=None,
-                 create_betas=True,
+                 create_betas=True, J_reg_extra_path=None,
                  betas=None,
                  create_global_orient=True,
                  global_orient=None,
@@ -322,6 +322,13 @@ class SMPL(nn.Module):
             data_struct.J_regressor), dtype=dtype)
         self.register_buffer('J_regressor', j_regressor)
 
+        if J_reg_extra_path is not None:
+            J_regressor_extra = np.load(J_reg_extra_path)
+            J_regressor_extra = to_tensor(to_np(J_regressor_extra), dtype=dtype)
+            self.register_buffer('J_regressor_extra', j_regressor)
+        else:
+            self.register_buffer('J_regressor_extra', None)
+
         # Pose blend shape basis: 6890 x 3 x 207, reshaped to 6890*3 x 207
         num_pose_basis = data_struct.posedirs.shape[-1]
         # 207 x 20670
@@ -409,12 +416,17 @@ class SMPL(nn.Module):
         #    num_repeats = int(self.batch_size / betas.shape[0])
         #    betas = betas.expand(num_repeats, -1)
 
+        # original 24 SMPL joints
         vertices, joints = lbs(betas, full_pose, self.v_template,
                                self.shapedirs, self.posedirs,
                                self.J_regressor, self.parents,
                                self.lbs_weights, dtype=self.dtype)
 
+        # 45 joints = 24 SMPL joints + 5 face joints + 6 foot joints + 10 hands joints
         joints = self.vertex_joint_selector(vertices, joints)
+        if self.J_regressor_extra is not None:
+            # 54 joints = 45 joints + 9 extra joints from different datasets
+            joints = torch.cat([joints, vertices2joints(self.J_regressor_extra, vertices)],1)
         joints_org = joints.clone()
         # Map the joints to the current dataset
         if self.joint_mapper is not None:

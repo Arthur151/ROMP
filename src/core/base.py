@@ -50,7 +50,8 @@ class Base(object):
         cam_dim = 3
         joint_mapper = JointMapper(smpl_to_openpose(model_type=self.model_type, use_hands=True, use_face=True, use_foot=True, \
                      use_face_contour=False, openpose_format='coco25'))
-        self.smplx = smpl_model.create(args.smpl_model_path, batch_size=self.batch_size,model_type=self.model_type, gender='neutral', \
+        self.joint_mapper_SPIN24 = constants.joint_mapping({**constants.SMPL_24,**constants.SMPL_EXTRA_30}, constants.SPIN_24)
+        self.smplx = smpl_model.create(args.smpl_model_path, J_reg_extra_path=args.smpl_J_reg_extra_path, batch_size=self.batch_size,model_type=self.model_type, gender='neutral', \
             use_face_contour=False, ext='npz', joint_mapper=joint_mapper,flat_hand_mean=True, use_pca=False)
         if '-1' not in self.gpu:
             self.smplx = self.smplx.cuda()
@@ -77,7 +78,9 @@ class Base(object):
         
         output = self.smplx(**params_dict, return_verts=True, return_full_pose=True)
         vertices, full_pose = output.vertices, output.full_pose #10475
-        j3d_smpl24 = output.joints_org.clone()
+
+        j3d_smpl24 = output.joints_org[:,:24].clone()
+        j3d_spin24 = output.joints_org.clone()[:,self.joint_mapper_SPIN24]
         j3d_op25 = output.joints.clone()
         j3d_op25[:,constants.OpenPose_25['Pelvis']] = j3d_op25[:,self.lr_hip_idx_op25].mean(1)
         if self.kp3d_format=='smpl24':
@@ -89,7 +92,7 @@ class Base(object):
         pj3d = proj.batch_orth_proj(j3d_op25, params_dict['cam'], mode='2d')
         verts_camed = proj.batch_orth_proj(vertices, params_dict['cam'], mode='3d',keep_dim=True)
 
-        outputs = {'params': params_dict, 'verts': vertices, 'pj2d':pj3d[:,:,:2], 'j3d':j3d, 'j3d_smpl24':j3d_smpl24[:,:24], 'j3d_op25':j3d_op25, 'verts_camed': verts_camed, 'poses':full_pose}
+        outputs = {'params': params_dict, 'verts': vertices, 'pj2d':pj3d[:,:,:2], 'j3d':j3d, 'j3d_smpl24':j3d_smpl24, 'j3d_spin24':j3d_spin24, 'j3d_op25':j3d_op25, 'verts_camed': verts_camed, 'poses':full_pose}
         return outputs
 
     def net_forward(self, data_3d, model, imgs=None,match_to_gt=False,mode='test'):

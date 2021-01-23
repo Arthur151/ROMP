@@ -64,6 +64,7 @@ class Demo(Base):
         smpl_pose_results = torch.cat([outputs['params']['global_orient'], outputs['params']['body_pose']],1).detach().cpu().numpy().astype(np.float16)
         smpl_shape_results = outputs['params']['betas'].detach().cpu().numpy().astype(np.float16)
         kp3d_smpl24_results = outputs['j3d_smpl24'].detach().cpu().numpy().astype(np.float16)
+        kp3d_spin24_results = outputs['j3d_spin24'].detach().cpu().numpy().astype(np.float16)
         kp3d_op25_results = outputs['j3d_op25'].detach().cpu().numpy().astype(np.float16)
         verts_results = outputs['verts'].detach().cpu().numpy().astype(np.float16)
 
@@ -77,6 +78,7 @@ class Demo(Base):
                 results[img_path][subject_idx]['pose'] = smpl_pose_results[batch_idx]
                 results[img_path][subject_idx]['betas'] = smpl_shape_results[batch_idx]
                 results[img_path][subject_idx]['j3d_smpl24'] = kp3d_smpl24_results[batch_idx]
+                results[img_path][subject_idx]['j3d_spin24'] = kp3d_spin24_results[batch_idx]
                 results[img_path][subject_idx]['j3d_op25'] = kp3d_op25_results[batch_idx]
                 results[img_path][subject_idx]['verts'] = verts_results[batch_idx]
 

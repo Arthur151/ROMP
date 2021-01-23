@@ -70,6 +70,8 @@ smpl_group = parser.add_argument_group(title='SMPL options')
 #smpl info
 smpl_group.add_argument('--total-param-count',type = int,default = 85, help = 'the count of param param')
 smpl_group.add_argument('--smpl_model_path',type = str,default = model_dir,help = 'smpl model path')
+#smpl_group.add_argument('--smpl_h36m_joint_regressor',type = str,default = os.path.join(model_dir, 'smpl', 'J_regressor_h36m.npy'),help = 'smpl model path')
+smpl_group.add_argument('--smpl_J_reg_extra_path',type = str,default = os.path.join(model_dir, 'smpl', 'J_regressor_extra.npy'),help = 'smpl model path')
 
 
 args = parser.parse_args()

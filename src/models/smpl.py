@@ -325,7 +325,7 @@ class SMPL(nn.Module):
         if J_reg_extra_path is not None:
             J_regressor_extra = np.load(J_reg_extra_path)
             J_regressor_extra = to_tensor(to_np(J_regressor_extra), dtype=dtype)
-            self.register_buffer('J_regressor_extra', j_regressor)
+            self.register_buffer('J_regressor_extra', J_regressor_extra)
         else:
             self.register_buffer('J_regressor_extra', None)
 

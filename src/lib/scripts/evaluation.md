@@ -34,7 +34,7 @@ On a GTX 1070Ti GPU (Ubuntu, Pytorch 1.6.0):
 1. Set paths
 a. change the dataset_rootdir in configs/eval_3dpw_test.yml to the absolute path of 3DPW datasets.
 b. change the gmodel_path in configs/eval_3dpw_test.yml to the absolute path of model checkpoint.
-c. change the annot_dir in configs/eval_3dpw_test.yml to the absolute path of [vibe_db]() where 3dpw_test_db.pt located at.
+c. change the annot_dir in configs/eval_3dpw_test.yml to the absolute path of [vibe_db](https://drive.google.com/file/d/1_urpBQbboQnbQ1ieuoougBXBmqTrMdK5/view?usp=sharing) where 3dpw_test_db.pt located at.
 
 2. Run:
 ```bash

@@ -39,11 +39,6 @@ It allows you to run the project in the cloud, free of charge.
 
 Please refer to the [bug.md](src/bugs.md) for unpleasant bugs. Welcome to submit the issues for related bugs.
 
-<p float="center">
-  <img src="../assets/demo/images_results/images-3dpw_sit_on_street.jpg" width="48%" />
-  <img src="../assets/demo/images_results/images-Cristiano_Ronaldo.jpg" width="48%" />
-</p>
-
 ### Installation
 
 Please refer to [install.md](src/lib/scripts/install.md) for installation.
@@ -62,7 +57,7 @@ CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/single_
 Results will be saved in ROMP/demo/images_results.
 
 #### Internet images
-You can also run the code on random internet images via putting the images under ROMP/demo/images before running ```sh run.sh```.
+You can also run the code on random internet images via putting the images under ROMP/demo/images.
 
 Please refer to [config_guide.md](src/config_guide.md) for **saving the estimated mesh/Center maps/parameters dict**.
 

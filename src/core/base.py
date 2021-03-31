@@ -2,7 +2,7 @@ import sys, os, cv2
 import numpy as np
 import time, datetime
 import logging
-import copy, random, itertools
+import copy, random, itertools, pickle
 from prettytable import PrettyTable
 
 import torch

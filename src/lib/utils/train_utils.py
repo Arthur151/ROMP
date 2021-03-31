@@ -45,7 +45,7 @@ def copy_state_dict(cur_state_dict, pre_state_dict, prefix = 'module.', drop_pre
 def load_model(path, model, prefix = 'module.', drop_prefix='',optimizer=None, **kwargs):
     logging.info('using fine_tune model: {}'.format(path))
     if os.path.exists(path):
-        pretrained_model = torch.load(path)
+        pretrained_model = torch.load(path, map_location=torch.device('cpu'))
         current_model = model.state_dict()
         if isinstance(pretrained_model, dict):
             if 'model_state_dict' in pretrained_model:

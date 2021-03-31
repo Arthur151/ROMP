@@ -14,6 +14,8 @@ class Demo(Base):
             self.visualizer = Visualizer(resolution=self.vis_size, input_size=self.input_size,with_renderer=True)
         else:
             self.save_visualization_on_img = False
+        if self.save_mesh:
+            self.smpl_faces = pickle.load(open(os.path.join(args.smpl_model_path,'smpl','SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')['f']
         print('Initialization finished!')
 
     def run(self, image_folder):
@@ -23,8 +25,6 @@ class Demo(Base):
         if '-1' not in self.gpu:
             self.visualizer.result_img_dir = test_save_dir
         counter = Time_counter(thresh=1)
-        #for i in range(4):
-        #    self.single_image_forward(np.zeros((512,512,3)).astype(np.uint8))
             
         internet_loader = self._create_single_data_loader(dataset='internet',train_flag=False, image_folder=image_folder)
         counter.start()
@@ -39,7 +39,7 @@ class Demo(Base):
                 if self.save_visualization_on_img:
                     vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], outputs['meta_data'], \
                     reorganize_idx, centermaps= outputs['center_map']if self.save_centermap else None,save_img=True)#
-                #counter.fps()
+
                 if self.save_mesh:
                     vids_org = np.unique(reorganize_idx)
                     for idx, vid in enumerate(vids_org):
@@ -48,7 +48,7 @@ class Demo(Base):
                         obj_name = (test_save_dir+'/{}'.format(os.path.basename(img_path))).replace('.jpg','.obj').replace('.png','.obj')
                         for subject_idx, batch_idx in enumerate(verts_vids):
                             save_obj(outputs['verts'][batch_idx].detach().cpu().numpy().astype(np.float16), \
-                                self.visualizer.renderer.faces,obj_name.replace('.obj', '_{}.obj'.format(subject_idx)))
+                                self.smpl_faces,obj_name.replace('.obj', '_{}.obj'.format(subject_idx)))
                 
                 if test_iter%50==0:
                     print(test_iter,'/',len(internet_loader))
@@ -118,7 +118,6 @@ class Demo(Base):
         print('Writing results to {}'.format(video_save_name))
         frames2video(result_frames, video_save_name, fps=args.fps_save)
             
-
     def webcam_run_local(self, video_file_path=None):
         '''
         20.9 FPS of forward prop. on 1070Ti

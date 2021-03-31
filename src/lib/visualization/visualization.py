@@ -69,7 +69,7 @@ class Visualizer(object):
             renders = renders * valid_mask * visible_weight + images * valid_mask * (1-visible_weight) + (1 - valid_mask) * images
         return renders.astype(np.uint8)
 
-    def visulize_result_onorg(self, vertices, verts_camed, data, reorganize_idx=None, save_dir=None, save_img=False,hp_aes=None, centermaps=None,**kwargs): #pkps, kps, 
+    def visulize_result_onorg(self, vertices, verts_camed, data, reorganize_idx=None, save_img=False,hp_aes=None, centermaps=None,**kwargs): #pkps, kps, 
         img_size=1024
         if reorganize_idx is not None:
             vids_org = np.unique(reorganize_idx)
@@ -112,12 +112,10 @@ class Visualizer(object):
             
         if save_img:
             img_names = np.array(data['imgpath'])[single_vids]
-            if save_dir is None:
-                save_dir = self.result_img_dir
-            os.makedirs(save_dir, exist_ok=True)
+            os.makedirs(self.result_img_dir, exist_ok=True)
             for idx,result_img in enumerate(out_list):
                 name = img_names[idx].split('/')[-2]+'-'+img_names[idx].split('/')[-1]
-                name_save = os.path.join(save_dir,name)
+                name_save = os.path.join(self.result_img_dir,name)
                 cv2.imwrite(name_save,result_img)
                 if centermaps is not None:
                     cv2.imwrite(name_save.replace('.jpg','_centermap.jpg'),centermaps_list[idx])

@@ -1,6 +1,9 @@
 ## Configuration
 
-The configure file is CenterHMR/src/configs/basic_test.yml
+The configure files are under ROMP/src/configs.
+
+###### Switch backbone from HRNet-32 to ResNet-50:
+Set the `backbone: hrnet` to `backbone: resnet`, meanwhile change the checkout from `gmodel_path: /path/to/ROMP/trained_models/ROMP_hrnet32.pkl` to `gmodel_path: /path/to/ROMP/trained_models/ROMP_resnet50.pkl`.
 
 ###### GPUS: GPU device number  
 To run the code on your GPUs, please set it to the GPU device number, such as `GPUS: 0` or `GPUS: 0,1,2,3`.  
@@ -9,14 +12,14 @@ To run the code on CPU, please set it to `GPUS: -1`. Currently, in CPU mode, the
 ###### demo_image_folder: absoluate path of the folder containing the input images
 Please change the 
 ```bash
-demo_image_folder: None in CenterHMR/src/configs/basic_test.yml to ''demo_image_folder: absoluate path to the image folder''
+demo_image_folder: None in ROMP/src/configs/single_image.yml to ''demo_image_folder: absoluate path to the image folder''
 ```
 
 For example, to run the code on the provided video frames (contained in CenterHMR_data.zip), please change it to 
 ```bash
-demo_image_folder: /path/to/project/CenterHMR/demo/videos/Messi_1
+demo_image_folder: /path/to/project/ROMP/demo/videos/Messi_1
 ```
-Results would be saved at /path/to/project/CenterHMR/demo/videos/Messi_1_results.
+Results would be saved at /path/to/project/ROMP/demo/videos/Messi_1_results.
 
 ###### save_mesh: 
 
@@ -33,7 +36,7 @@ if save the estimated parameters, please set it to True. They will be save to de
 ## load the results
 np.load('/path/to/*.npz',allow_pickle=True)['results'][()]
 ## for example:
-np.load('~/CenterHMR/demo/images_results/person_overlap.npz',allow_pickle=True)['results'][()]
+np.load('~/ROMP/demo/images_results/3dpw_sit_on_street.npz',allow_pickle=True)['results'][()]
 ```
 
 The predicted results of each image are saved in the following format:
@@ -43,6 +46,7 @@ image_name
  - pose (72,) # 72 SMPL pose parameters.
  - betas (10,) # 10 SMPL shape parameters.
  - j3d_smpl24 (24, 3) # 3D pose results in SMPL format
+ - j3d_spin24 (24, 3) # 3D pose results in SPIN format
  - j3d_op25 (25, 3) # 3D pose results in Openpose format
  - verts (6890, 3) # 3D coordinates of 3D human mesh.
 ```
@@ -59,7 +63,7 @@ model_precision: fp16
 ```
 #### Webcam setting 
 
-The webcam configure file is CenterHMR/src/configs/basic_webcam.yml
+The webcam configure file is ROMP/src/configs/webcam.yml
 
 ###### webcam: whether run using webcam video
 

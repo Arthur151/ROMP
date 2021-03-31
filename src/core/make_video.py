@@ -5,8 +5,8 @@ import glob
 import numpy as np
 
 shape = [1024,1024]
-root_dir = '~/CenterHMR/demo/videos/'
-out_dir = '~/CenterHMR/demo/'
+root_dir = '~/ROMP/demo/videos/'
+out_dir = '~/ROMP/demo/'
 fold_name = 'Messi_1'
 def grub_imges_demo(fold_name):
     imgs_path_demo = os.path.join(root_dir,'{}_results'.format(fold_name))

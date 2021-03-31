@@ -1,22 +1,17 @@
 from base import *
-from PIL import Image
-import torchvision
-from utils.multiprocess import * #Multiprocess
-
 
 class Demo(Base):
     def __init__(self):
         super(Demo, self).__init__()
-        self.set_up_smplx()
-        self._build_model()
-        self.generator.eval()
-        self.save_mesh = args.save_mesh
-        self.save_centermap = args.save_centermap
-        self.save_dict_results = args.save_dict_results
+        self._build_model_()
+        self._prepare_modules_()
+
+    def _prepare_modules_(self):
+        self.model.eval()
         self.demo_dir = os.path.join(config.project_dir, 'demo')
         self.vis_size = [1024,1024,3]#[1920,1080]
         if not args.webcam and '-1' not in self.gpu:
-            self.visualizer = Visualizer(model_type=self.model_type,resolution=self.vis_size, input_size=self.input_size,with_renderer=True)
+            self.visualizer = Visualizer(resolution=self.vis_size, input_size=self.input_size,with_renderer=True)
         else:
             self.save_visualization_on_img = False
         print('Initialization finished!')
@@ -28,44 +23,46 @@ class Demo(Base):
         if '-1' not in self.gpu:
             self.visualizer.result_img_dir = test_save_dir
         counter = Time_counter(thresh=1)
-        for i in range(4):
-            self.single_image_forward(np.zeros((512,512,3)).astype(np.uint8))
+        #for i in range(4):
+        #    self.single_image_forward(np.zeros((512,512,3)).astype(np.uint8))
             
-        loader_val = self._create_single_data_loader(dataset='internet',train_flag=False, image_folder=image_folder)
+        internet_loader = self._create_single_data_loader(dataset='internet',train_flag=False, image_folder=image_folder)
         counter.start()
         with torch.no_grad():
-            for test_iter,data_3d in enumerate(loader_val):
-                outputs, centermaps, heatmap_AEs, data_3d_new, reorganize_idx = self.net_forward(data_3d,self.generator,mode='test')
+            for test_iter,meta_data in enumerate(internet_loader):
+                outputs = self.net_forward(meta_data, cfg=self.demo_cfg)
+                reorganize_idx = outputs['reorganize_idx'].cpu().numpy()
                 counter.count()
                 
                 if self.save_dict_results:
-                    self.reorganize_results(outputs,data_3d['imgpath'],reorganize_idx,test_save_dir)
-                if not self.save_centermap:
-                    centermaps = None
-                if outputs['success_flag'] and self.save_visualization_on_img:
-                    vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], data_3d_new, reorganize_idx, centermaps=centermaps,save_img=True)#
+                    self.reorganize_results(outputs, outputs['meta_data']['imgpath'], reorganize_idx, test_save_dir)
+                if self.save_visualization_on_img:
+                    vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], outputs['meta_data'], \
+                    reorganize_idx, centermaps= outputs['center_map']if self.save_centermap else None,save_img=True)#
                 #counter.fps()
                 if self.save_mesh:
                     vids_org = np.unique(reorganize_idx)
                     for idx, vid in enumerate(vids_org):
                         verts_vids = np.where(reorganize_idx==vid)[0]
-                        img_path = data_3d['imgpath'][verts_vids[0]]
+                        img_path = outputs['meta_data']['imgpath'][verts_vids[0]]
                         obj_name = (test_save_dir+'/{}'.format(os.path.basename(img_path))).replace('.jpg','.obj').replace('.png','.obj')
                         for subject_idx, batch_idx in enumerate(verts_vids):
-                            save_obj(outputs['verts'][batch_idx].detach().cpu().numpy().astype(np.float16), self.smplx.faces_tensor.detach().cpu().numpy(),obj_name.replace('.obj', '_{}.obj'.format(subject_idx)))
+                            save_obj(outputs['verts'][batch_idx].detach().cpu().numpy().astype(np.float16), \
+                                self.visualizer.renderer.faces,obj_name.replace('.obj', '_{}.obj'.format(subject_idx)))
                 
                 if test_iter%50==0:
-                    print(test_iter,'/',len(loader_val))
+                    print(test_iter,'/',len(internet_loader))
                 counter.start()   
 
-    def reorganize_results(self, outputs, img_paths, reorganize_idx,test_save_dir):
+    def reorganize_results(self, outputs, img_paths, reorganize_idx, test_save_dir=None):
         results = {}
         cam_results = outputs['params']['cam'].detach().cpu().numpy().astype(np.float16)
         smpl_pose_results = torch.cat([outputs['params']['global_orient'], outputs['params']['body_pose']],1).detach().cpu().numpy().astype(np.float16)
         smpl_shape_results = outputs['params']['betas'].detach().cpu().numpy().astype(np.float16)
-        kp3d_smpl24_results = outputs['j3d_smpl24'].detach().cpu().numpy().astype(np.float16)
-        kp3d_spin24_results = outputs['j3d_spin24'].detach().cpu().numpy().astype(np.float16)
-        kp3d_op25_results = outputs['j3d_op25'].detach().cpu().numpy().astype(np.float16)
+        joints_54 = outputs['j3d'].detach().cpu().numpy().astype(np.float16)
+        kp3d_smpl24_results = outputs['joints_smpl24'].detach().cpu().numpy().astype(np.float16)
+        kp3d_spin24_results = joints_54[:,constants.joint_mapping(constants.SMPL_ALL_54, constants.SPIN_24)]
+        kp3d_op25_results = joints_54[:,constants.joint_mapping(constants.SMPL_ALL_54, constants.OpenPose_25)]
         verts_results = outputs['verts'].detach().cpu().numpy().astype(np.float16)
 
         vids_org = np.unique(reorganize_idx)
@@ -82,46 +79,44 @@ class Demo(Base):
                 results[img_path][subject_idx]['j3d_op25'] = kp3d_op25_results[batch_idx]
                 results[img_path][subject_idx]['verts'] = verts_results[batch_idx]
 
-        for img_path, result_dict in results.items():
-            name = (test_save_dir+'/{}'.format(os.path.basename(img_path))).replace('.jpg','.npz').replace('.png','.npz')
-            # get the results: np.load('/path/to/person_overlap.npz',allow_pickle=True)['results'][()]
-            np.savez(name, results=result_dict)
+        if test_save_dir is not None:
+            for img_path, result_dict in results.items():
+                name = (test_save_dir+'/{}'.format(os.path.basename(img_path))).replace('.jpg','.npz').replace('.png','.npz')
+                # get the results: np.load('/path/to/person_overlap.npz',allow_pickle=True)['results'][()]
+                np.savez(name, results=result_dict)
+        return results
 
     def single_image_forward(self,image):
-        image_size = image.shape[:2][::-1]
-        image_org = Image.fromarray(image)
-        
-        resized_image_size = (float(self.input_size)/max(image_size) * np.array(image_size) // 2 * 2).astype(np.int)[::-1]
-        padding = tuple((self.input_size-resized_image_size)[::-1]//2)
-        transform = torchvision.transforms.Compose([
-            torchvision.transforms.Resize([*resized_image_size], interpolation=3),
-            torchvision.transforms.Pad(padding, fill=0, padding_mode='constant'),
-            ])
-        image = torch.from_numpy(np.array(transform(image_org))).unsqueeze(0).contiguous().float()
+        meta_data = img_preprocess(image, '0', input_size=args.input_size, single_img_input=True)
         if '-1' not in self.gpu:
-            image = image.cuda()
-        outputs, centermaps, heatmap_AEs, _, reorganize_idx = self.net_forward(None,self.generator,image,mode='test')
-        outputs.update({'input_image':image, 'reorganize_idx':reorganize_idx})
+            meta_data['image'] = meta_data['image'].cuda()
+        outputs = self.net_forward(meta_data, cfg=self.demo_cfg)
         return outputs
 
     def process_video(self, video_file_path=None):
-        
         import keyboard
         from utils.demo_utils import OpenCVCapture, frames2video
         capture = OpenCVCapture(video_file_path)
         video_length = int(capture.cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        result_frames = []
+        results, result_frames = {}, []
         for frame_id in range(video_length):
             print('Processing video {}/{}'.format(frame_id, video_length))
             frame = capture.read()
             with torch.no_grad():
-                outputs = self.single_image_forward(frame[:,:,::-1])
-            vis_dict = {'image_org': outputs['input_image'].cpu()}
-            vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], vis_dict, reorganize_idx=outputs['reorganize_idx'])
+                outputs = self.single_image_forward(frame)
+            vis_dict = {'image_org': outputs['meta_data']['image_org'].cpu()}
+            single_batch_results = self.reorganize_results(outputs,[os.path.basename(video_file_path)+'_'+str(frame_id)],outputs['reorganize_idx'].cpu().numpy())
+            results.update(single_batch_results)
+            vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], vis_dict, reorganize_idx=outputs['reorganize_idx'].cpu().numpy())
             result_frames.append(vis_eval_results[0])
+        
+        if self.save_dict_results:
+            print('Saving parameter results to {}'.format(video_file_path.replace('.mp4', '_results.npz')))
+            np.savez(video_file_path.replace('.mp4', '_results.npz'), results=results)
+
         video_save_name = video_file_path.replace('.mp4', '_results.mp4')
         print('Writing results to {}'.format(video_save_name))
-        frames2video(result_frames, video_save_name, fps=30)
+        frames2video(result_frames, video_save_name, fps=args.fps_save)
             
 
     def webcam_run_local(self, video_file_path=None):
@@ -151,7 +146,7 @@ class Demo(Base):
             counter.count()
             counter.fps()
 
-            if outputs is not None and outputs['success_flag']:
+            if outputs is not None and outputs['detection_flag']:
                 if args.show_single:
                     verts = outputs['verts'].cpu().numpy()
                     verts = verts * 50 + np.array([0, 0, 100])
@@ -207,20 +202,19 @@ class Time_counter():
 
 def main():
     demo = Demo()
-    print('Start CneterHMR')
     if args.webcam:
-        print('Running on webcam demo')
+        print('Running the code on webcam demo')
         if args.run_on_remote_server:
             demo.webcam_run_remote()
         else:
             demo.webcam_run_local()
     elif args.video_or_frame:
-        print('Running on video ',args.input_video_path)
+        print('Running the code on video ',args.input_video_path)
         demo.process_video(args.input_video_path)
     else:
         demo_image_folder = args.demo_image_folder
         if not os.path.exists(demo_image_folder):
-            print('run the code on demo images')
+            print('Running the code on the demo images')
             demo_image_folder = os.path.join(demo.demo_dir,'images')
         demo.run(demo_image_folder)
 

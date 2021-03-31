@@ -13,7 +13,7 @@ Clone the repo:
 git clone https://github.com/Arthur151/ROMP --depth 1
 ```
 
-Then download the ROMP data from [Github release](https://github.com/Arthur151/ROMP/releases/download/v1.0/ROMP_data.zip), [Google drive](https://drive.google.com/file/d/1vAiuallhHEV3WVq36u0gy7uzbG38d5sU/view?usp=sharing) or [Baidu Drive](https://pan.baidu.com/s/13XTwBy31zhLZLerI3V-rQA) with password ```6hye```. 
+Then download the ROMP data from [Github release](https://github.com/Arthur151/ROMP/releases/download/v1.0/ROMP_data.zip), [Google drive](https://drive.google.com/file/d/1EZYEeLft5C2TkugaqsTP_wIsHVlWCyO8/view?usp=sharing). 
 
 Unzip the downloaded ROMP_data.zip under the root ROMP/. 
 ```bash

@@ -17,3 +17,4 @@ pygame
 keyboard
 transforms3d
 bvhtoolbox
+smplx

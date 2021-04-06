@@ -19,8 +19,8 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 ### News
 *2021/3/30: 1.0 version.* Rebuilding the code. Release the ResNet-50 version and evaluation on 3DPW. 
 *2020/11/26: Optimization for person-person occlusion.* Small changes for video support.  
-*2020/9/11: Real-time webcam demo using local/remote server.* Please refer to [config_guide.md](src/config_guide.md) for details.  
-*2020/9/4: Google Colab demo.* Saving a npy file per imag. Please refer to [config_guide.md](src/config_guide.md) for details.
+*2020/9/11: Real-time webcam demo using local/remote server.* Please refer to [config_guide.md](docs/config_guide.md) for details.  
+*2020/9/4: Google Colab demo.* Saving a npy file per imag. Please refer to [config_guide.md](docs/config_guide.md) for details.
 
 <p float="center">
   <img src="../assets/demo/animation/live_demo_guangboticao.gif" width="48%" />
@@ -37,11 +37,11 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 Before installation, you can take a few minutes to try the prepared [Google Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg#scrollTo=s8gFtokdcEQo) a try.  
 It allows you to run the project in the cloud, free of charge. 
 
-Please refer to the [bug.md](src/bugs.md) for unpleasant bugs. Welcome to submit the issues for related bugs.
+Please refer to the [bug.md](docs/bugs.md) for unpleasant bugs. Welcome to submit the issues for related bugs.
 
 ### Installation
 
-Please refer to [install.md](src/lib/scripts/install.md) for installation.
+Please refer to [install.md](docs/install.md) for installation.
 
 ### Demo
 
@@ -59,7 +59,7 @@ Results will be saved in ROMP/demo/images_results.
 #### Internet images
 You can also run the code on random internet images via putting the images under ROMP/demo/images.
 
-Please refer to [config_guide.md](src/config_guide.md) for **saving the estimated mesh/Center maps/parameters dict**.
+Please refer to [config_guide.md](docs/config_guide.md) for **saving the estimated mesh/Center maps/parameters dict**.
 
 #### Internet videos
 
@@ -91,11 +91,11 @@ CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/webcam.
 # or try to use the model with ResNet-50 as backbone.
 CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/webcam_resnet.yml
 ```
-Press Up/Down to end the demo. Pelease refer to [config_guide.md](src/config_guide.md) for running webcam demo on remote server, setting mesh color or camera id.
+Press Up/Down to end the demo. Pelease refer to [config_guide.md](docs/config_guide.md) for running webcam demo on remote server, setting mesh color or camera id.
 
 ### Evaluation
 
-Please refer to [evaluation.md](src/lib/scripts/evaluation.md) for evaluation on benchmarks.
+Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks.
 
 ## TODO LIST
 

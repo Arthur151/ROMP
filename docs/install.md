@@ -10,14 +10,13 @@ Directly download the full-packed released package [ROMP.zip](https://github.com
 
 Clone the repo:
 ```bash
-git clone https://github.com/Arthur151/ROMP --depth 1
+git clone -b master --single-branch https://github.com/Arthur151/ROMP
 ```
 
 Then download the ROMP data from [Github release](https://github.com/Arthur151/ROMP/releases/download/v1.0/ROMP_data.zip), [Google drive](https://drive.google.com/file/d/1EZYEeLft5C2TkugaqsTP_wIsHVlWCyO8/view?usp=sharing). 
 
-Unzip the downloaded ROMP_data.zip under the root ROMP/. 
+Unzip the downloaded ROMP_data.zip under the same path of ROMP. 
 ```bash
-cd ROMP/
 unzip ROMP_data.zip
 ```
 

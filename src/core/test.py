@@ -64,6 +64,7 @@ class Demo(Base):
         kp3d_spin24_results = joints_54[:,constants.joint_mapping(constants.SMPL_ALL_54, constants.SPIN_24)]
         kp3d_op25_results = joints_54[:,constants.joint_mapping(constants.SMPL_ALL_54, constants.OpenPose_25)]
         verts_results = outputs['verts'].detach().cpu().numpy().astype(np.float16)
+        pj2d_results = outputs['pj2d'].detach().cpu().numpy().astype(np.float16)
 
         vids_org = np.unique(reorganize_idx)
         for idx, vid in enumerate(vids_org):
@@ -78,6 +79,7 @@ class Demo(Base):
                 results[img_path][subject_idx]['j3d_spin24'] = kp3d_spin24_results[batch_idx]
                 results[img_path][subject_idx]['j3d_op25'] = kp3d_op25_results[batch_idx]
                 results[img_path][subject_idx]['verts'] = verts_results[batch_idx]
+                results[img_path][subject_idx]['pj2d'] = pj2d_results[batch_idx]
 
         if test_save_dir is not None:
             for img_path, result_dict in results.items():

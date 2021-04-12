@@ -15,14 +15,13 @@ sudo ln -s /export/home/suny/anaconda3/lib/libstdc++.so.6.0.26 /usr/lib64/libstd
 The bug of pyrender is really a pain in the ass...
 ``bash
 # for centos 
-sudo yum install libXext libSM libXrender freeglut-devel
-# for ubuntu: use pyrender in OSMesa mode
-sudo apt update
-sudo apt-get install libsm6 libxrender1 libfontconfig1 freeglut3-dev
-sudo apt --fix-broken install
-sudo wget https://github.com/mmatl/travis_debs/raw/master/xenial/mesa_18.3.3-0.deb
-sudo dpkg -i ./mesa_18.3.3-0.deb || true
-sudo apt install -f
-git clone https://github.com/mmatl/pyopengl.git
-pip install ./pyopengl
-``
+sudo yum install libXext libSM libXrender freeglut-devel  
+# for ubuntu: use pyrender in OSMesa mode  
+sudo apt update  
+sudo apt-get install libsm6 libxrender1 libfontconfig1 freeglut3-dev  
+sudo apt --fix-broken install  
+sudo wget https://github.com/mmatl/travis_debs/raw/master/xenial/mesa_18.3.3-0.deb  
+sudo dpkg -i ./mesa_18.3.3-0.deb || true  
+sudo apt install -f  
+git clone https://github.com/mmatl/pyopengl.git  
+pip install ./pyopengl  

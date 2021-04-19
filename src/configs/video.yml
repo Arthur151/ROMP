@@ -12,7 +12,7 @@ ARGS:
  input_size: 512
  centermap_size: 64
  model_precision: 'fp32'
- val_batch_size: 1
+ val_batch_size: 8
  nw: 4
  gmodel_path: '../trained_models/ROMP_hrnet32.pkl'
 

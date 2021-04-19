@@ -19,11 +19,10 @@ class Demo(Base):
         print('Initialization finished!')
 
     def run(self, image_folder):
-        print('Processing {}'.format(image_folder))
-        test_save_dir = self.output_dir
-        os.makedirs(test_save_dir,exist_ok=True)
+        print('Processing {}, saving to {}'.format(image_folder, self.output_dir ))
+        os.makedirs(self.output_dir, exist_ok=True)
         if '-1' not in self.gpu:
-            self.visualizer.result_img_dir = test_save_dir
+            self.visualizer.result_img_dir = self.output_dir 
         counter = Time_counter(thresh=1)
             
         internet_loader = self._create_single_data_loader(dataset='internet',train_flag=False, image_folder=image_folder)
@@ -38,14 +37,14 @@ class Demo(Base):
                     self.reorganize_results(outputs, outputs['meta_data']['imgpath'], reorganize_idx, test_save_dir)
                 if self.save_visualization_on_img:
                     vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], outputs['meta_data'], \
-                    reorganize_idx, centermaps= outputs['center_map']if self.save_centermap else None,save_img=True)#
+                    reorganize_idx, centermaps= outputs['center_map'] if self.save_centermap else None,save_img=True)#
 
                 if self.save_mesh:
                     vids_org = np.unique(reorganize_idx)
                     for idx, vid in enumerate(vids_org):
                         verts_vids = np.where(reorganize_idx==vid)[0]
                         img_path = outputs['meta_data']['imgpath'][verts_vids[0]]
-                        obj_name = (test_save_dir+'/{}'.format(os.path.basename(img_path))).replace('.jpg','.obj').replace('.png','.obj')
+                        obj_name = (self.output_dir +'/{}'.format(os.path.basename(img_path))).replace('.jpg','.obj').replace('.png','.obj')
                         for subject_idx, batch_idx in enumerate(verts_vids):
                             save_obj(outputs['verts'][batch_idx].detach().cpu().numpy().astype(np.float16), \
                                 self.smpl_faces,obj_name.replace('.obj', '_{}.obj'.format(subject_idx)))

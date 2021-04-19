@@ -18,7 +18,7 @@ class SMPLWrapper(nn.Module):
         super(SMPLWrapper,self).__init__()
         self.smpl_model = smpl_model.create(args.smpl_model_path, J_reg_extra9_path=args.smpl_J_reg_extra_path, J_reg_h36m17_path=args.smpl_J_reg_h37m_path, \
             batch_size=args.batch_size,model_type='smpl', gender='neutral', use_face_contour=False, ext='npz',flat_hand_mean=True, use_pca=False)
-        if args.GPUS != -1:
+        if '-1' not in args.GPUS:
             self.smpl_model = self.smpl_model.cuda()
         self.part_name = ['cam', 'global_orient', 'body_pose', 'betas']
         self.part_idx = [args.cam_dim, args.rot_dim, (args.smpl_joint_num-1)*args.rot_dim, 10]

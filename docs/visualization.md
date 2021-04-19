@@ -14,7 +14,7 @@ The layout of smpl data is:
 
 2. Change the config:
 
-Edit the config file, i.e. [configs/webcam.yml](src/configs/webcam.yml).
+Edit the config file, i.e. [configs/webcam.yml](../src/configs/webcam.yml).
 
 ```
 webcam_mesh_color: 'male_tex' # 'male_tex' for using the male texture; 'female_tex' for using the female texture; 'ghostwhite'/'LightCyan' for using the single color texture.

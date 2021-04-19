@@ -15,7 +15,7 @@ import constants
 from config import args
 from models import build_model
 from utils import load_model, get_remove_keys, reorganize_items, save_obj
-from utils.demo_utils import img_preprocess
+from utils.demo_utils import img_preprocess, convert_cam_to_3d_trans
 from utils.projection import vertices_kp3d_projection
 from evaluation import compute_error_verts, compute_similarity_transform, compute_similarity_transform_torch, \
                     batch_compute_similarity_transform_torch, compute_mpjpe

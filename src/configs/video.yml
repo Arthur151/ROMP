@@ -17,7 +17,7 @@ ARGS:
  gmodel_path: '../trained_models/ROMP_hrnet32.pkl'
 
  video_or_frame: True
- input_video_path: '../demo/videos/sample_video.mp4' # None
+ input_video_path: '../demo/videos/sample_video2.mp4' # None
  webcam_mesh_color: 'ghostwhite'  #'LightCyan'
  save_mesh: False
  save_centermap: False

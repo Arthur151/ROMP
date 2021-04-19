@@ -21,9 +21,9 @@ ARGS:
 
  # default: run on demo/images and the results would be saved at demo/images_results
  # for video /path/to/project/CenterHMR_demo/videos/Messi_1
- demo_image_folder: '/path/to/image_folder' #'../demo/videos/Messi_1'
- output_dir: '/path/to/outputdir'
+ demo_image_folder: /home/yusun/ROMP/demo/001-bg-01-090/001-bg-01-090 #'/path/to/image_folder' #'../demo/videos/Messi_1'
+ output_dir: /home/yusun/ROMP/demo/001-bg-01-090_results # '/path/to/outputdir'
  save_mesh: True
- save_centermap: True
+ save_centermap: False
  save_dict_results: True
  multiprocess: False

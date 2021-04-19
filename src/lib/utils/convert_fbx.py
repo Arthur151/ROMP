@@ -37,14 +37,13 @@ from math import radians
 from mathutils import Matrix, Vector, Quaternion, Euler
 
 # Globals
-male_model_path = 'SMPL_unity_v.1.0.0/smpl/Models/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
-female_model_path = 'SMPL_unity_v.1.0.0/smpl/Models/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
-character_model_path = 'character.fbx'
+male_model_path = '/home/yusun/Desktop/unity/SMPL_unity_v.1.0.0/smpl/Models/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
+female_model_path = '/home/yusun/Desktop/unity/SMPL_unity_v.1.0.0/smpl/Models/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
 
 fps_source = 30
 fps_target = 30
 
-gender = 'male' #'character' #
+gender = 'male' #
 
 start_origin = 1
 
@@ -102,9 +101,6 @@ bone_name_from_index_character = {
     22: 'LeftHand',
     23: 'RightHand'
 }
-
-if gender == 'character':
-    bone_name_from_index = bone_name_from_index_character
 
 # Helper functions
 
@@ -177,14 +173,6 @@ def process_pose(current_frame, pose, trans, pelvis_position):
         if index == 0:
             # Rotate pelvis so that avatar stands upright and looks along negative Y avis
             bone.rotation_quaternion = (quat_x_90_cw @ quat_z_90_cw) @ bone_rotation
-        elif index in [1,2,] and gender == 'character':
-            bone.rotation_quaternion = quat_x_p45_cw @ bone_rotation
-        elif index in [4,5] and gender == 'character':
-            bone.rotation_quaternion = quat_x_n135_cw @ bone_rotation
-        elif index == 16 and gender == 'character':
-           bone.rotation_quaternion = bone_rotation @ Matrix(mat_rots[13]).to_quaternion()
-        elif index == 17 and gender == 'character':
-           bone.rotation_quaternion = bone_rotation @ Matrix(mat_rots[14]).to_quaternion()
         else:
            bone.rotation_quaternion = bone_rotation
 
@@ -206,8 +194,12 @@ def process_poses(
     print('Processing: ' + input_path)
 
     data = np.load(input_path, allow_pickle=True)['results'][()]
-    poses = data[person_id]['pose'][None]
-    trans = np.zeros((poses.shape[0], 3))
+    video_name = os.path.basename(input_path)
+    frame_num = len(list(data.keys()))
+    poses, trans = np.zeros((frame_num, 72)), np.zeros((frame_num, 3))
+    for frame_id in range(frame_num):
+        poses[frame_id] = data['{}_{}'.format(video_name.replace('_results.npz', '.mp4'), frame_id)][0]['pose']
+        trans[frame_id] = data['{}_{}'.format(video_name.replace('_results.npz', '.mp4'), frame_id)][0]['trans']
 
     if gender == 'female':
         model_path = female_model_path
@@ -300,7 +292,7 @@ if __name__ == '__main__':
         if bpy.app.background:
 
             parser = argparse.ArgumentParser(description='Create keyframed animated skinned SMPL mesh from VIBE output')
-            parser.add_argument('--input', dest='input_path', type=str, default='test.npz',
+            parser.add_argument('--input', dest='input_path', type=str, default='../demo/videos/sample_video2_results.npz',
                                 help='Input file or directory')
             parser.add_argument('--output', dest='output_path', type=str, default='output.fbx',
                                 help='Output file or directory')

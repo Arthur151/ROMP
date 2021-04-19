@@ -22,8 +22,9 @@ ARGS:
 
  webcam: True
  cam_id: 0
- webcam_mesh_color: 'ghostwhite'  #'LightCyan'
  multiprocess: False
  run_on_remote_server: False
  server_ip: 'localhost'
  server_port: 10086
+ 
+ webcam_mesh_color: 'male_tex' # 'male_tex' for using the male texture; 'female_tex' for using the female texture; 'ghostwhite'/'LightCyan' for using the single color texture.

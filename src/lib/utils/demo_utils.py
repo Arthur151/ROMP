@@ -17,6 +17,15 @@ if root_dir not in sys.path:
 import config
 import constants
 from config import args
+from vedo import *
+from multiprocessing import Process
+
+def convert_cam_to_3d_trans(cams, weight=2.):
+    trans3d = []
+    (s, tx, ty) = cams
+    depth, dx, dy = 1./s, tx/s, ty/s
+    trans3d = np.array([dx, dy, depth])*weight
+    return trans3d
 
 def img_preprocess(image, imgpath, input_size=512, ds='internet', single_img_input=False):
     image = image[:,:,::-1]
@@ -138,10 +147,10 @@ class Open3d_visualizer(object):
         self.view_mat = axangle2mat([1, 0, 0], np.pi) # align different coordinate systems
         self.window_size = 1080
         
-        self.mesh_color = np.array(constants.mesh_color_dict[args.webcam_mesh_color])/255.
         smpl_param_dict = pickle.load(open(os.path.join(args.smpl_model_path,'smpl','SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')
         self.faces = smpl_param_dict['f']
         self.verts_mean = smpl_param_dict['v_template']
+        self.mesh_color = np.array(constants.mesh_color_dict[args.webcam_mesh_color])/255.
 
         self.viewer = o3d.visualization.Visualizer()
         self.viewer.create_window(width=self.window_size+1, height=self.window_size+1, window_name='ROMP - output')
@@ -153,6 +162,7 @@ class Open3d_visualizer(object):
         extrinsic = cam_params.extrinsic.copy()
         extrinsic[0:3, 3] = 0
         cam_params.extrinsic = extrinsic
+        self.count = 0
 
         #cam_params.intrinsic.set_intrinsics(
         #  self.window_size, self.window_size, 620.744, 621.151,
@@ -174,14 +184,15 @@ class Open3d_visualizer(object):
 
     def run(self, verts,frame):
         verts = self.mesh_smoother.process(verts)
-        self.mesh.vertices = o3d.utility.Vector3dVector(np.matmul(self.view_mat, verts.T).T)
+        verts = np.matmul(self.view_mat, verts.T).T
+        self.mesh.vertices = o3d.utility.Vector3dVector(verts)
         self.mesh.compute_triangle_normals()
         self.mesh.compute_vertex_normals()
+
         # for some version of open3d you may need `viewer.update_geometry(mesh)`
         self.viewer.update_geometry(self.mesh)
 
         self.viewer.poll_events()
-
         self.display.blit(
           pygame.surfarray.make_surface(
             np.transpose(cv2.resize(frame, (self.window_size, self.window_size), cv2.INTER_LINEAR), (1, 0, 2))),(0, 0))
@@ -221,7 +232,6 @@ class Open3d_visualizer(object):
         mesh = o3d.geometry.TriangleMesh()
         mesh.triangles = o3d.utility.Vector3iVector(self.faces)
         mesh.vertices = o3d.utility.Vector3dVector(np.matmul(self.view_mat, verts.T).T)
-        mesh.paint_uniform_color(self.mesh_color)
         mesh.compute_triangle_normals()
         mesh.compute_vertex_normals()
         return mesh
@@ -229,8 +239,17 @@ class Open3d_visualizer(object):
     def reset_mesh(self):
         self.mesh.triangles = o3d.utility.Vector3iVector(self.faces)
         self.mesh.vertices = o3d.utility.Vector3dVector(self.verts_mean)
-        self.mesh.paint_uniform_color(self.mesh_color)
+        #self.mesh = self.set_texture(self.mesh)
         self.mesh.compute_vertex_normals()
+
+    def set_texture(self, mesh):
+        if args.webcam_mesh_color=='female_tex' or args.webcam_mesh_color=='male_tex':
+            print('setting texture')
+            mesh.triangle_uvs = o3d.utility.Vector2dVector(self.smpl_uvmap) 
+            mesh.textures = [o3d.geometry.Image(self.smpl_uv_texture)]
+        else:
+            mesh.paint_uniform_color(self.mesh_color)
+        return mesh
         
 
 def frames2video(images, video_name,fps=30):
@@ -239,3 +258,77 @@ def frames2video(images, video_name,fps=30):
     for image in images:
         writer.append_data(image)
     writer.close()
+
+class vedo_visualizer(object):
+    def __init__(self):  
+        smpl_param_dict = pickle.load(open(os.path.join(args.smpl_model_path,'smpl','SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')
+        self.faces = smpl_param_dict['f']
+        #self.verts_mean = smpl_param_dict['v_template']
+        #self.load_smpl_tex()
+        #self.load_smpl_vtk()
+        if args.webcam_mesh_color == 'female_tex':
+            self.uv_map = np.load(args.smpl_uvmap)
+            self.texture_file = args.smpl_female_texture
+        elif args.webcam_mesh_color == 'male_tex':
+            self.uv_map = np.load(args.smpl_uvmap)
+            self.texture_file = args.smpl_male_texture
+        else:
+            self.mesh_color = np.array(constants.mesh_color_dict[args.webcam_mesh_color])/255.
+
+        #self.mesh = self.create_single_mesh(self.verts_mean)
+        self.mesh_smoother = OneEuroFilter(4.0, 0.0)
+        self.vp = Plotter(title='Predicted 3D mesh',interactive=0)#
+        self.vp_2d = Plotter(title='Input frame',interactive=0)
+        #show(self.mesh, axes=1, viewup="y", interactive=0)
+    
+    def load_smpl_tex(self):
+        import scipy.io as sio
+        UV_info = sio.loadmat(os.path.join(args.smpl_model_path,'smpl','UV_Processed.mat'))
+        self.vertex_reorder = UV_info['All_vertices'][0]-1
+        self.faces = UV_info['All_Faces']-1
+        self.uv_map = np.concatenate([UV_info['All_U_norm'], UV_info['All_V_norm']],1)
+
+    def run(self, verts,frame):
+        verts[:,1:] = verts[:,1:]*-1
+        verts = self.mesh_smoother.process(verts)
+        #verts = verts[self.vertex_reorder]
+        #self.mesh.points(verts)
+        mesh = self.create_single_mesh(verts)
+        self.vp.show(mesh,viewup=np.array([0,-1,0]))
+        self.vp_2d.show(Picture(frame))
+        
+        return False
+
+    def create_single_mesh(self, verts):
+        mesh = Mesh([verts, self.faces])
+        mesh.texture(self.texture_file,tcoords=self.uv_map)
+        mesh = self.collapse_triangles_with_large_gradient(mesh)
+        mesh.computeNormals()
+        return mesh
+
+    def collapse_triangles_with_large_gradient(self, mesh, threshold=4.0):
+        points = mesh.points()
+        new_points = np.array(points)
+        mesh_vtk = Mesh(os.path.join(args.smpl_model_path,'smpl','smpl_male.vtk'), c='w').texture(self.texture_file).lw(0.1)
+        grad = mesh_vtk.gradient("tcoords")
+        ugrad, vgrad = np.split(grad, 2, axis=1)
+        ugradm, vgradm = mag(ugrad), mag(vgrad)
+        gradm = np.log(ugradm*ugradm + vgradm*vgradm)
+
+        largegrad_ids = np.arange(mesh.N())[gradm>threshold]
+        for f in mesh.faces():
+            if np.isin(f, largegrad_ids).all():
+                id1, id2, id3 = f
+                uv1, uv2, uv3 = self.uv_map[f]
+                d12 = mag(uv1-uv2)
+                d23 = mag(uv2-uv3)
+                d31 = mag(uv3-uv1)
+                idm = np.argmin([d12, d23, d31])
+                if idm == 0: # d12, collapse segment to pt3
+                    new_points[id1] = new_points[id3]
+                    new_points[id2] = new_points[id3]
+                elif idm == 1: # d23
+                    new_points[id2] = new_points[id1]
+                    new_points[id3] = new_points[id1]
+        mesh.points(new_points)
+        return mesh

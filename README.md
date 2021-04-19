@@ -20,6 +20,7 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 - **Easy to use:** We provide user friendly testing API and webcam demos. 
 
 ### News
+*2021/4/19: Adding support for textured SMPL mesh using [vedo](https://github.com/marcomusy/vedo).* See [visualization.md](docs/visualization.md)for the details.
 *2021/3/30: 1.0 version.* Rebuilding the code. Release the ResNet-50 version and evaluation on 3DPW. 
 *2020/11/26: Optimization for person-person occlusion.* Small changes for video support.  
 *2020/9/11: Real-time webcam demo using local/remote server.* Please refer to [config_guide.md](docs/config_guide.md) for details.  
@@ -124,6 +125,7 @@ Please considering citing
 ## Acknowledgement
 
 We thank [Peng Cheng](https://github.com/CPFLAME) for his constructive comments on Center map training.
+Thanks to [Marco Musy](https://github.com/marcomusy) for his help in [the textured SMPL visualization](https://github.com/marcomusy/vedo/issues/371).
 
 Here are some great resources we benefit:
 
@@ -131,6 +133,7 @@ Here are some great resources we benefit:
 - Webcam pipeline is borrowed from [minimal-hand](https://github.com/CalciferZh/minimal-hand).
 - Some functions are borrowed from [HMR-pytorch](https://github.com/MandyMo/pytorch_HMR).
 - Some functions for data augmentation are borrowed from [SPIN](https://github.com/nkolot/SPIN).
-- Synthetic occlusion is borrowed from [synthetic-occlusion](https://github.com/isarandi/synthetic-occlusion)
+- Synthetic occlusion is borrowed from [synthetic-occlusion](https://github.com/isarandi/synthetic-occlusion).
 - The evaluation code of 3DPW dataset is brought from [3dpw-eval](https://github.com/aymenmir1/3dpw-eval).   
-- For fair comparison, the GT annotations of 3DPW dataset are brought from [VIBE](https://github.com/mkocabas/VIBE)
+- For fair comparison, the GT annotations of 3DPW dataset are brought from [VIBE](https://github.com/mkocabas/VIBE).
+- 3D mesh visualization is supported by [vedo](https://github.com/marcomusy/vedo) and [Open3D]( https://github.com/intel-isl/Open3D).

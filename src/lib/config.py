@@ -81,6 +81,9 @@ smpl_group.add_argument('--cam_dim',type = int,default = 3, help = 'the dimentio
 smpl_group.add_argument('--beta_dim',type = int,default = 10, help = 'the dimention of SMPL shape param, beta')
 smpl_group.add_argument('--smpl_joint_num',type = int,default = 22)
 smpl_group.add_argument('--smpl_model_path',type = str,default = os.path.join(model_dir),help = 'smpl model path')
+smpl_group.add_argument('--smpl_uvmap',type = str,default = os.path.join(model_dir, 'smpl', 'uv_table.npy'),help = 'smpl UV Map coordinates for each vertice')
+smpl_group.add_argument('--smpl_female_texture',type = str,default = os.path.join(model_dir, 'smpl', 'SMPL_sampleTex_f.jpg'),help = 'smpl UV texture for the female')
+smpl_group.add_argument('--smpl_male_texture',type = str,default = os.path.join(model_dir, 'smpl', 'SMPL_sampleTex_m.jpg'),help = 'smpl UV texture for the male')
 smpl_group.add_argument('--smpl_J_reg_h37m_path',type = str,default = os.path.join(model_dir, 'smpl', 'J_regressor_h36m.npy'),help = 'SMPL regressor for 17 joints from H36M datasets')
 smpl_group.add_argument('--smpl_J_reg_extra_path',type = str,default = os.path.join(model_dir, 'smpl', 'J_regressor_extra.npy'),help = 'SMPL regressor for 9 extra joints from different datasets')
 

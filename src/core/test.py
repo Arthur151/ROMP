@@ -20,7 +20,7 @@ class Demo(Base):
 
     def run(self, image_folder):
         print('Processing {}'.format(image_folder))
-        test_save_dir = image_folder+'_results' if not os.path.isdir(self.output_dir) else os.path.join(self.output_dir, image_folder.split('/')[-1])
+        test_save_dir = self.output_dir
         os.makedirs(test_save_dir,exist_ok=True)
         if '-1' not in self.gpu:
             self.visualizer.result_img_dir = test_save_dir
@@ -80,6 +80,7 @@ class Demo(Base):
                 results[img_path][subject_idx]['j3d_op25'] = kp3d_op25_results[batch_idx]
                 results[img_path][subject_idx]['verts'] = verts_results[batch_idx]
                 results[img_path][subject_idx]['pj2d'] = pj2d_results[batch_idx]
+                results[img_path][subject_idx]['trans'] = convert_cam_to_3d_trans(cam_results[batch_idx])
 
         if test_save_dir is not None:
             for img_path, result_dict in results.items():
@@ -126,9 +127,13 @@ class Demo(Base):
         '''
         print('run on local')
         import keyboard
-        from utils.demo_utils import OpenCVCapture, Open3d_visualizer, Image_Reader
+        from utils.demo_utils import OpenCVCapture, Image_Reader 
+        if 'tex' in args.webcam_mesh_color:
+            from utils.demo_utils import vedo_visualizer as Visualizer
+        else:
+            from utils.demo_utils import Open3d_visualizer as Visualizer
         capture = OpenCVCapture(video_file_path)
-        visualizer = Open3d_visualizer()
+        visualizer = Visualizer()
         print('Initialization is down')
 
         # Warm-up

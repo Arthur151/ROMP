@@ -43,7 +43,7 @@ female_model_path = '/home/yusun/Desktop/unity/SMPL_unity_v.1.0.0/smpl/Models/SM
 fps_source = 30
 fps_target = 30
 
-gender = 'male' #
+gender = 'male' #female
 
 start_origin = 1
 
@@ -188,7 +188,7 @@ def process_poses(
         fps_source,
         fps_target,
         start_origin,
-        person_id=1,
+        person_id=0,
 ):
 
     print('Processing: ' + input_path)
@@ -198,8 +198,8 @@ def process_poses(
     frame_num = len(list(data.keys()))
     poses, trans = np.zeros((frame_num, 72)), np.zeros((frame_num, 3))
     for frame_id in range(frame_num):
-        poses[frame_id] = data['{}_{}'.format(video_name.replace('_results.npz', '.mp4'), frame_id)][0]['pose']
-        trans[frame_id] = data['{}_{}'.format(video_name.replace('_results.npz', '.mp4'), frame_id)][0]['trans']
+        poses[frame_id] = data['{}'.format(frame_id)][0]['pose']
+        trans[frame_id] = data['{}'.format(frame_id)][0]['trans']
 
     if gender == 'female':
         model_path = female_model_path
@@ -294,7 +294,7 @@ if __name__ == '__main__':
             parser = argparse.ArgumentParser(description='Create keyframed animated skinned SMPL mesh from VIBE output')
             parser.add_argument('--input', dest='input_path', type=str, default='../demo/videos/sample_video2_results.npz',
                                 help='Input file or directory')
-            parser.add_argument('--output', dest='output_path', type=str, default='output.fbx',
+            parser.add_argument('--output', dest='output_path', type=str, default='../demo/videos/sample_video2.fbx',
                                 help='Output file or directory')
             parser.add_argument('--fps_source', type=int, default=fps_source,
                                 help='Source framerate')
@@ -304,7 +304,7 @@ if __name__ == '__main__':
                                 help='Always use specified gender')
             parser.add_argument('--start_origin', type=int, default=start_origin,
                                 help='Start animation centered above origin')
-            parser.add_argument('--person_id', type=int, default=1,
+            parser.add_argument('--person_id', type=int, default=0,
                                 help='Detected person ID to use for fbx animation')
 
             args = parser.parse_args()

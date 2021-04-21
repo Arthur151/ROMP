@@ -23,15 +23,15 @@ Results would be saved at /path/to/project/ROMP/demo/videos/Messi_1_results.
 
 ###### save_mesh: 
 
-if save the mesh results, please set it to True. The obj files will be saved to demo_image_folder+\_results.
+If you'd like to save the mesh results, please set it to True. The obj files will be saved to demo_image_folder+\_results.
 
 ###### save_centermap: 
 
-if save the estimated Center maps, please set it to True. The visualized images will be save to demo_image_folder+\_results.
+If you'd like to save the estimated Center maps, please set it to True. The visualized images will be save to demo_image_folder+\_results.
 
 ###### save_dict_results: 
 
-if save the estimated parameters, please set it to True. They will be save to demo_image_folder+\.npz.
+If you'd like to save the estimated parameters, please set it to True. They will be save to demo_image_folder+\.npz.
 ```bash
 ## load the results
 np.load('/path/to/*.npz',allow_pickle=True)['results'][()]
@@ -50,6 +50,10 @@ image_name
  - j3d_op25 (25, 3) # 3D pose results in Openpose format
  - verts (6890, 3) # 3D coordinates of 3D human mesh.
 ```
+
+###### save_video_results: 
+
+If you'd like to render the estimated mesh on the image and save it as a video (.mp4), please set it to True. This is only supported in processing video.
 
 ###### val_batch_size: batch size 
 

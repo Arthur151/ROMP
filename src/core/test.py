@@ -40,14 +40,7 @@ class Demo(Base):
                     reorganize_idx, centermaps= outputs['center_map'] if self.save_centermap else None,save_img=True)#
 
                 if self.save_mesh:
-                    vids_org = np.unique(reorganize_idx)
-                    for idx, vid in enumerate(vids_org):
-                        verts_vids = np.where(reorganize_idx==vid)[0]
-                        img_path = outputs['meta_data']['imgpath'][verts_vids[0]]
-                        obj_name = (self.output_dir + '/{}'.format(os.path.basename(img_path))).replace('.jpg','.obj').replace('.png','.obj')
-                        for subject_idx, batch_idx in enumerate(verts_vids):
-                            save_obj(outputs['verts'][batch_idx].detach().cpu().numpy().astype(np.float16), \
-                                self.smpl_faces,obj_name.replace('.obj', '_{}.obj'.format(subject_idx)))
+                    save_meshes(reorganize_idx, outputs, self.output_dir, self.smpl_faces)
                 
                 if test_iter%50==0:
                     print(test_iter,'/',len(internet_loader))
@@ -100,6 +93,12 @@ class Demo(Base):
         from utils.demo_utils import OpenCVCapture, frames2video
         capture = OpenCVCapture(video_file_path)
         video_length = int(capture.cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        video_basename = get_video_bn(video_file_path)
+        print('Processing {}, saving to {}'.format(video_file_path, self.output_dir))
+        os.makedirs(self.output_dir, exist_ok=True)
+        if not os.path.isdir(self.output_dir):
+            self.output_dir = video_file_path.replace(os.path.basename(video_file_path),'')
+
         results, result_frames = {}, []
         for frame_id in range(video_length):
             print('Processing video {}/{}'.format(frame_id, video_length))
@@ -107,18 +106,24 @@ class Demo(Base):
             with torch.no_grad():
                 outputs = self.single_image_forward(frame)
             vis_dict = {'image_org': outputs['meta_data']['image_org'].cpu()}
-            single_batch_results = self.reorganize_results(outputs,[os.path.basename(video_file_path)+'_'+str(frame_id)],outputs['reorganize_idx'].cpu().numpy())
+            img_paths = [str(frame_id) for _ in range(1)]
+            single_batch_results = self.reorganize_results(outputs,img_paths,outputs['reorganize_idx'].cpu().numpy())
             results.update(single_batch_results)
             vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], vis_dict, reorganize_idx=outputs['reorganize_idx'].cpu().numpy())
             result_frames.append(vis_eval_results[0])
+            outputs['meta_data']['imgpath'] = img_paths
+            if self.save_mesh:
+                save_meshes(outputs['reorganize_idx'].cpu().numpy(), outputs, self.output_dir, self.smpl_faces)
         
         if self.save_dict_results:
-            print('Saving parameter results to {}'.format(video_file_path.replace('.mp4', '_results.npz')))
-            np.savez(video_file_path.replace('.mp4', '_results.npz'), results=results)
+            save_dict_path = os.path.join(self.output_dir, video_basename+'_results.npz')
+            print('Saving parameter results to {}'.format(save_dict_path))
+            np.savez(save_dict_path, results=results)
 
-        video_save_name = video_file_path.replace('.mp4', '_results.mp4')
-        print('Writing results to {}'.format(video_save_name))
-        frames2video(result_frames, video_save_name, fps=args.fps_save)
+        if self.save_video_results:
+            video_save_name = os.path.join(self.output_dir, video_basename+'_results.mp4')
+            print('Writing results to {}'.format(video_save_name))
+            frames2video(result_frames, video_save_name, fps=args.fps_save)
             
     def webcam_run_local(self, video_file_path=None):
         '''

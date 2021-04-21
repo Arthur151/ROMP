@@ -73,7 +73,8 @@ To do this you just need to firstly change the input_video_path in src/configs/v
 
 ```bash
  video_or_frame: True
- input_video_path: '../demo/sample_video.mp4' # None
+ input_video_path: '../demo/videos/sample_video.mp4' # None
+ output_dir: '../demo/videos/sample_video_results/'
 ```
 then run 
 
@@ -81,7 +82,9 @@ then run
 cd ROMP/src
 CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/video.yml
 ```
-Results will be saved to `../demo/sample_video_results.mp4` and `../demo/sample_video_results.npz`.
+Results will be saved to `../demo/videos/sample_video_results`.
+
+Please refer to [expert.md](docs/export.md) to export the results to fbx files for Blender usage. Currently, this function only support the single-person cases. Therefore, please test it with `../demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `../demo/videos/sample_video2_results`.
 
 #### Webcam
 

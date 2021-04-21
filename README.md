@@ -84,7 +84,13 @@ CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/video.y
 ```
 Results will be saved to `../demo/videos/sample_video_results`.
 
-Please refer to [expert.md](docs/export.md) to export the results to fbx files for Blender usage. Currently, this function only support the single-person cases. Therefore, please test it with `../demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `../demo/videos/sample_video2_results`.
+##### Export to Blender FBX 
+
+<p float="center">
+  <img src="../assets/demo/animation/fbx_animation.gif" width="50%" />
+</p>
+
+Please refer to [expert.md](docs/export.md) to export the results to fbx files for Blender usage. Currently, this function only support the single-person video cases. Therefore, please test it with `../demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `../demo/videos/sample_video2_results`.
 
 #### Webcam
 

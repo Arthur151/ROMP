@@ -14,7 +14,8 @@ You can also choose the gender of animated model via setting `gender=male` or `g
 
 2. Install the Blender:
 
-I have built the Blender 2.91 on Ubuntu 18.04 LTS following [this instructions](https://wiki.blender.org/wiki/Building_Blender/Linux/Ubuntu)
+I have built the Blender 2.91 on Ubuntu 18.04 LTS following [this instructions](https://github.com/TylerGubala/blenderpy) via:
+```pip install bpy && bpy_post_install```
 
 3. Run the code:
 

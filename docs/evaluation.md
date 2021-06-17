@@ -17,7 +17,7 @@ CUDA_VISIBLE_DEVICES=0 python lib/evaluation/collect_3DPW_results.py --gpu=0 --c
 
 On Tesla P40/ V100 GPU (Centos, Pytorch 1.6.0):  
 +-----------+-------+----------+-------+-------+-------+----------+  
-|   DS/EM   | MPJPE | PA_MPJPE |  PCK  |  AUC  | MPJAE | PA_MPJAE | 
+|   DS/EM   | MPJPE | PA_MPJPE |  PCK  |  AUC  | MPJAE | PA_MPJAE |  
 +-----------+-------+----------+-------+-------+-------+----------+  
 | pw3d_chal |  82.7 |   60.5   |  36.5 |  59.7 |  20.5 |   18.9   |  
 +-----------+-------+----------+-------+-------+-------+----------+   

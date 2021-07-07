@@ -211,6 +211,8 @@ class Time_counter():
         self.frame_num = 0
 
 def main():
+    args = parse_args()
+
     demo = Demo()
     if args.webcam:
         print('Running the code on webcam demo')

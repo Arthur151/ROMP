@@ -114,12 +114,15 @@ class ConfigContext(object):
     accessed anywhere.
     """
     yaml_filename = "active_context.yaml"
-    def __enter__(self, parsed_args):
+    def __init__(self, parsed_args):
+        self.parsed_args = parsed_args
+
+    def __enter__(self):
         # if a yaml is left over here, remove it
         self.clean()
         # store all the parsed_args in a yaml file
         with open(self.yaml_filename, 'w') as f:
-            f.write(yaml.dumps(parsed_args.__dict__))
+            f.write(yaml.dumps(self.parsed_args.__dict__))
 
     def clean(self):
         if os.path.exists(self.yaml_filename):

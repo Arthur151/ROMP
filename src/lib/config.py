@@ -6,6 +6,7 @@ import torch
 import yaml
 import logging
 
+
 def parse_args(input_args=None):
     code_dir = os.path.abspath(__file__).replace('config.py','')
     project_dir = os.path.abspath(__file__).replace('/src/lib/config.py','')
@@ -88,17 +89,51 @@ def parse_args(input_args=None):
     smpl_group.add_argument('--smpl_J_reg_h37m_path',type = str,default = os.path.join(model_dir, 'smpl', 'J_regressor_h36m.npy'),help = 'SMPL regressor for 17 joints from H36M datasets')
     smpl_group.add_argument('--smpl_J_reg_extra_path',type = str,default = os.path.join(model_dir, 'smpl', 'J_regressor_extra.npy'),help = 'SMPL regressor for 9 extra joints from different datasets')
 
-    args = parser.parse_args(args=input_args)
-    args.kernel_sizes = [5]
-    with open(args.configs_yml) as file:
+    parsed_args = parser.parse_args(args=input_args)
+    parsed_args.kernel_sizes = [5]
+    with open(parsed_args.configs_yml) as file:
         configs_update = yaml.full_load(file)
     for key, value in configs_update['ARGS'].items():
         if isinstance(value,str):
-            exec("args.{} = '{}'".format(key, value))
+            exec("parsed_args.{} = '{}'".format(key, value))
         else:
-            exec("args.{} = {}".format(key, value))
+            exec("parsed_args.{} = {}".format(key, value))
 
     hrnet_pretrain = os.path.join(project_dir,'trained_models/pretrain.pkl') #os.path.join(model_dir,'pretrain_models','pose_higher_hrnet_w32_512.pth') #
-    args.tab = '{}_cm{}_{}'.format(args.backbone,args.centermap_size,args.tab)
+    parsed_args.tab = '{}_cm{}_{}'.format(parsed_args.backbone,
+                                          parsed_args.centermap_size,
+                                          parsed_args.tab)
 
+    return parsed_args
+
+
+class ConfigContext(object):
+    """
+    Class to manage the active current configuration, creates temporary `yaml`
+    file containing the configuration currently being used so it can be
+    accessed anywhere.
+    """
+    yaml_filename = "active_context.yaml"
+    def __enter__(self, parsed_args):
+        # if a yaml is left over here, remove it
+        self.clean()
+        # store all the parsed_args in a yaml file
+        with open(self.yaml_filename, 'w') as f:
+            f.write(yaml.dumps(parsed_args.__dict__))
+    
+    def clean(self):
+        if os.path.exists(self.yaml_filename):
+            os.remove(self.yaml_filename)
+
+    def __exit__(self):
+        # delete the yaml file
+        self.clean()
+
+def get_args():
+    args = parse_args(['--tab', 'ROMP_v1']) # have to pass something or it'll try and read stdin
+    with open(ConfigContext.yaml_filename, 'r') as f:
+        argsdict = yaml.load(f)
+    for k, v in argsdict:
+        args.__dict__[k] = v
     return args
+

@@ -122,7 +122,8 @@ class ConfigContext(object):
         self.clean()
         # store all the parsed_args in a yaml file
         with open(self.yaml_filename, 'w') as f:
-            f.write(yaml.dumps(self.parsed_args.__dict__))
+            d = self.parsed_args.__dict__
+            yaml.dump(d, f)
 
     def clean(self):
         if os.path.exists(self.yaml_filename):

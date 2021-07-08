@@ -129,7 +129,7 @@ class ConfigContext(object):
         if os.path.exists(self.yaml_filename):
             os.remove(self.yaml_filename)
 
-    def __exit__(self):
+    def __exit__(self, exception_type, exception_value, traceback):
         # delete the yaml file
         self.clean()
 
@@ -137,8 +137,16 @@ def args():
     # have to pass something or it'll try and read stdin, it should get overwritten on file load
     parsed_args = parse_args(['--tab', 'ROMP_v1']) 
     with open(ConfigContext.yaml_filename, 'r') as f:
-        argsdict = yaml.load(f)
-    for k, v in argsdict:
+        argsdict = yaml.load(f, Loader=yaml.FullLoader)
+    for k, v in argsdict.items():
         parsed_args.__dict__[k] = v
     return parsed_args
 
+if __name__ == "__main__":
+    _args = parse_args()
+    with ConfigContext(_args):
+        with open(ConfigContext.yaml_filename, 'r') as f:
+            print(f.read())
+        for k, v in args().__dict__.items():
+            print(k, v)
+            assert _args.__dict__[k] == v

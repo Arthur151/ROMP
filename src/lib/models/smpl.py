@@ -359,7 +359,7 @@ class SMPL(nn.Module):
             joints = torch.cat([joints, vertices2joints(self.J_regressor_extra9, vertices)],1)
             # use the Pelvis of most 2D image, not the original Pelvis
             root_trans = joints[:,49].unsqueeze(1)
-            if args.model_version!=1 or args.backbone!='hrnet':
+            if args().model_version!=1 or args().backbone!='hrnet':
                 joints = joints - root_trans
                 vertices =  vertices - root_trans
 

@@ -16,12 +16,12 @@ from utils.rot_6D import rot6D_to_angular
 class SMPLWrapper(nn.Module):
     def __init__(self):
         super(SMPLWrapper,self).__init__()
-        self.smpl_model = smpl_model.create(args.smpl_model_path, J_reg_extra9_path=args.smpl_J_reg_extra_path, J_reg_h36m17_path=args.smpl_J_reg_h37m_path, \
-            batch_size=args.batch_size,model_type='smpl', gender='neutral', use_face_contour=False, ext='npz',flat_hand_mean=True, use_pca=False)
-        if '-1' not in args.gpu:
+        self.smpl_model = smpl_model.create(args().smpl_model_path, J_reg_extra9_path=args().smpl_J_reg_extra_path, J_reg_h36m17_path=args().smpl_J_reg_h37m_path, \
+            batch_size=args().batch_size,model_type='smpl', gender='neutral', use_face_contour=False, ext='npz',flat_hand_mean=True, use_pca=False)
+        if '-1' not in args().gpu:
             self.smpl_model = self.smpl_model.cuda()
         self.part_name = ['cam', 'global_orient', 'body_pose', 'betas']
-        self.part_idx = [args.cam_dim, args.rot_dim, (args.smpl_joint_num-1)*args.rot_dim, 10]
+        self.part_idx = [args().cam_dim, args().rot_dim, (args().smpl_joint_num-1)*args().rot_dim, 10]
         self.params_num = np.array(self.part_idx).sum()
 
     def forward(self, outputs, meta_data):
@@ -30,7 +30,7 @@ class SMPLWrapper(nn.Module):
             idx_list.append(idx_list[i] + idx)
             params_dict[name] = outputs['params_pred'][:, idx_list[i]: idx_list[i+1]].contiguous()
 
-        if args.Rot_type=='6D':
+        if args().Rot_type=='6D':
             params_dict['body_pose'] = rot6D_to_angular(params_dict['body_pose'])
             params_dict['global_orient'] = rot6D_to_angular(params_dict['global_orient'])
         N = params_dict['body_pose'].shape[0]

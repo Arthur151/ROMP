@@ -31,8 +31,8 @@ class Image_base(Dataset):
         super(Image_base,self).__init__()
         self.heatmap_mapper = constants.joint_mapping(constants.SMPL_ALL_54, constants.COCO_17)
 
-        self.input_shape = [args.input_size, args.input_size]
-        self.high_resolution=args.high_resolution
+        self.input_shape = [args().input_size, args().input_size]
+        self.high_resolution=args().high_resolution
         self.vis_size = 512 if self.high_resolution else 256
         self.labels, self.images, self.file_paths = [],[],[]
 
@@ -40,7 +40,7 @@ class Image_base(Dataset):
         self.torso_ids = [constants.SMPL_ALL_54[part] for part in ['Neck', 'Neck_LSP', 'R_Shoulder', 'L_Shoulder','Pelvis', 'R_Hip', 'L_Hip']]
         self.heatmap_res = 128
         self.joint_number = len(list(constants.SMPL_ALL_54.keys()))
-        self.max_person = args.max_person
+        self.max_person = args().max_person
 
     def process_kps(self,kps,img_size,set_minus=True):
         kps = kps.astype(np.float32)
@@ -216,5 +216,5 @@ def off_set_pts(keyPoints, leftTop):
 def check_and_mkdir(dir):
     os.makedirs(dir,exist_ok=True)
 
-def denormalize_kp2ds(mat, img_size=args.input_size):
+def denormalize_kp2ds(mat, img_size=args().input_size):
     return (mat+1)/2*img_size

@@ -42,7 +42,7 @@ class Internet(Dataset):
             imgpath = self.get_image_info(index)
             image = cv2.imread(imgpath)
 
-        input_data = img_preprocess(image, imgpath, input_size=args.input_size)
+        input_data = img_preprocess(image, imgpath, input_size=args().input_size)
 
         return input_data
 

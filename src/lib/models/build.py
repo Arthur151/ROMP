@@ -13,12 +13,12 @@ Backbones = {'hrnet': HigherResolutionNet, 'resnet': ResNet_50}
 Heads = {1: ROMPv1}
 
 def build_model():
-    if args.backbone in Backbones:
-        backbone = Backbones[args.backbone]()
+    if args().backbone in Backbones:
+        backbone = Backbones[args().backbone]()
     else:
         raise "Backbone not recognized!!"
-    if args.model_version in Heads:
-        ROMP = Heads[args.model_version]
+    if args().model_version in Heads:
+        ROMP = Heads[args().model_version]
     else:
         raise "Head not recognized!!"
     model = ROMP(backbone=backbone)

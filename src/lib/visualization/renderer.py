@@ -138,7 +138,7 @@ class Renderer:
         return image
 
 def get_renderer(test=False,resolution = (512,512,3),part_segment=False):
-    faces = pickle.load(open(os.path.join(args.smpl_model_path,'smpl','SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')['f']
+    faces = pickle.load(open(os.path.join(args().smpl_model_path,'smpl','SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')['f']
     renderer = Renderer(faces,resolution=resolution[:2])
     
     return renderer

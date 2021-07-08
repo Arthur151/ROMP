@@ -7,13 +7,13 @@ from config import args
 class CenterMap(object):
     def __init__(self,style='heatmap_adaptive_scale'):
         self.style=style
-        self.size = args.centermap_size
-        self.max_person = args.max_person
-        self.shrink_scale = float(args.input_size//self.size)
+        self.size = args().centermap_size
+        self.max_person = args().max_person
+        self.shrink_scale = float(args().input_size//self.size)
         self.dims = 1
         self.sigma = 1
-        self.conf_thresh= args.centermap_conf_thresh
-        self.gk_group, self.pool_group = self.generate_kernels(args.kernel_sizes)
+        self.conf_thresh= args().centermap_conf_thresh
+        self.gk_group, self.pool_group = self.generate_kernels(args().kernel_sizes)
 
     def generate_kernels(self, kernel_size_list):
         gk_group, pool_group = {}, {}
@@ -39,7 +39,7 @@ class CenterMap(object):
         return self.parse_centermap_heatmap_adaptive_scale_batch(center_map)
 
     def parse_centermap_heatmap_adaptive_scale_batch(self, center_maps):
-        center_map_nms = nms(center_maps, pool_func=self.pool_group[args.kernel_sizes[-1]])
+        center_map_nms = nms(center_maps, pool_func=self.pool_group[args().kernel_sizes[-1]])
         b, c, h, w = center_map_nms.shape
         K = self.max_person
 

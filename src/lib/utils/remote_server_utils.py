@@ -12,8 +12,8 @@ from config import args
 
 class Server_port_receiver(object):
     def __init__(self):
-        host = args.server_ip
-        port = args.server_port
+        host = args().server_ip
+        port = args().server_port
         self.server_sock = Listener((host, port))
         self.conn = self.server_sock.accept()
     def receive(self):

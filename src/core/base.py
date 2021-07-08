@@ -21,13 +21,13 @@ from evaluation import compute_error_verts, compute_similarity_transform, comput
                     batch_compute_similarity_transform_torch, compute_mpjpe
 from dataset.mixed_dataset import SingleDataset
 from visualization.visualization import Visualizer
-if args.model_precision=='fp16':
+if args().model_precision=='fp16':
     from torch.cuda.amp import autocast, GradScaler
 
 class Base(object):
     def __init__(self):
         self.project_dir = config.project_dir
-        hparams_dict = self.load_config_dict(vars(args))
+        hparams_dict = self.load_config_dict(vars(args()))
         self._init_params()
 
     def _build_model_(self):

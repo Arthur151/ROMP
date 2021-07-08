@@ -17,7 +17,7 @@ from utils.rot_6D import rot6D_to_angular
 class ResultParser(nn.Module):
     def __init__(self):
         super(ResultParser,self).__init__()
-        self.map_size = args.centermap_size
+        self.map_size = args().centermap_size
         self.params_map_parser = SMPLWrapper()
         self.centermap_parser = CenterMap()
 
@@ -60,7 +60,7 @@ class ResultParser(nn.Module):
                 center_pred = cyxs[vpred_batch_ids==batch_id]
                 center_gt = center_pred[torch.argmin(torch.norm(center_pred.float()-center_gt[None].float().to(device),dim=-1))].long()
                 cy, cx = torch.clamp(center_gt, 0, self.map_size-1)
-                flat_ind = cy*args.centermap_size+cx
+                flat_ind = cy*args().centermap_size+cx
                 mc['batch_ids'].append(batch_id); mc['flat_inds'].append(flat_ind); mc['person_ids'].append(person_id)
         keys_list = list(mc.keys())
         for key in keys_list:
@@ -117,5 +117,5 @@ class ResultParser(nn.Module):
         return outputs,meta_data
 
 def flatten_inds(coords):
-    coords = torch.clamp(coords, 0, args.centermap_size-1)
-    return coords[:,0].long()*args.centermap_size+coords[:,1].long()
+    coords = torch.clamp(coords, 0, args().centermap_size-1)
+    return coords[:,0].long()*args().centermap_size+coords[:,1].long()

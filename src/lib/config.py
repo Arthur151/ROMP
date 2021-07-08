@@ -7,13 +7,13 @@ import yaml
 import logging
 
 
-def parse_args(input_args=None):
-    code_dir = os.path.abspath(__file__).replace('config.py','')
-    project_dir = os.path.abspath(__file__).replace('/src/lib/config.py','')
-    root_dir = project_dir.replace(project_dir.split('/')[-1],'')#os.path.abspath(__file__).replace('/CenterMesh/src/config.py','')
-    model_dir = os.path.join(project_dir,'models')
-    trained_model_dir = os.path.join(project_dir,'trained_models')
+code_dir = os.path.abspath(__file__).replace('config.py','')
+project_dir = os.path.abspath(__file__).replace('/src/lib/config.py','')
+root_dir = project_dir.replace(project_dir.split('/')[-1],'')#os.path.abspath(__file__).replace('/CenterMesh/src/config.py','')
+model_dir = os.path.join(project_dir,'models')
+trained_model_dir = os.path.join(project_dir,'trained_models')
 
+def parse_args(input_args=None):
     parser = argparse.ArgumentParser(description = 'ROMP: Monocular, One-stage, Regression of Multiple 3D People')
     parser.add_argument('--tab',type = str,default = 'ROMP_v1',help = 'additional tabs')
     parser.add_argument('--configs_yml',type = str,default = 'configs/single_image.yml',help = 'setting for training') #'configs/basic_training_v6_ld.yml' 

@@ -124,15 +124,17 @@ class ROMP(Base):
         return kernel_sizes, strides, paddings
 
 if __name__ == '__main__':
-    args().configs_yml = 'configs/basic_training_v1.yml'
-    args().model_version=1
-    from models.build import build_model
-    model = build_model().cuda()
-    outputs=model.feed_forward({'image':torch.rand(4,512,512,3).cuda()})
-    for key, value in outputs.items():
-        if isinstance(value,tuple):
-            print(key, value)
-        elif isinstance(value,list):
-            print(key, value)
-        else:
-            print(key, value.shape)
+    from config import args, ConfigContext, parse_args
+    with ConfigContext(parse_args()):
+        args().configs_yml = 'configs/basic_training_v1.yml'
+        args().model_version=1
+        from models.build import build_model
+        model = build_model().cuda()
+        outputs=model.feed_forward({'image':torch.rand(4,512,512,3).cuda()})
+        for key, value in outputs.items():
+            if isinstance(value,tuple):
+                print(key, value)
+            elif isinstance(value,list):
+                print(key, value)
+            else:
+                print(key, value.shape)

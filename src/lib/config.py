@@ -120,7 +120,7 @@ class ConfigContext(object):
         # store all the parsed_args in a yaml file
         with open(self.yaml_filename, 'w') as f:
             f.write(yaml.dumps(parsed_args.__dict__))
-    
+
     def clean(self):
         if os.path.exists(self.yaml_filename):
             os.remove(self.yaml_filename)
@@ -129,11 +129,12 @@ class ConfigContext(object):
         # delete the yaml file
         self.clean()
 
-def get_args():
-    args = parse_args(['--tab', 'ROMP_v1']) # have to pass something or it'll try and read stdin
+def args():
+    # have to pass something or it'll try and read stdin, it should get overwritten on file load
+    parsed_args = parse_args(['--tab', 'ROMP_v1']) 
     with open(ConfigContext.yaml_filename, 'r') as f:
         argsdict = yaml.load(f)
     for k, v in argsdict:
-        args.__dict__[k] = v
-    return args
+        parsed_args.__dict__[k] = v
+    return parsed_args
 

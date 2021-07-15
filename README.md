@@ -20,6 +20,7 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 - **Easy to use:** We provide user friendly testing API and webcam demos. 
 
 ### News
+*2021/7/15: Adding support for an elegant context manager to run code in a notebook via [this pull](https://github.com/Arthur151/ROMP/pull/58) from [Gavin Gray](https://github.com/gngdb).
 *2021/4/19: Adding support for textured SMPL mesh using [vedo](https://github.com/marcomusy/vedo).* See [visualization.md](docs/visualization.md) for the details.  
 *2021/3/30: 1.0 version.* Rebuilding the code. Release the ResNet-50 version and evaluation on 3DPW.   
 *2020/11/26: Optimization for person-person occlusion.* Small changes for video support.   
@@ -136,6 +137,8 @@ Please considering citing
 We thank [Peng Cheng](https://github.com/CPFLAME) for his constructive comments on Center map training.  
 
 Thanks to [Marco Musy](https://github.com/marcomusy) for his help in [the textured SMPL visualization](https://github.com/marcomusy/vedo/issues/371).
+
+Thanks to [Gavin Gray](https://github.com/gngdb) for adding support for an elegant context manager to run code in a notebook via [this pull](https://github.com/Arthur151/ROMP/pull/58).
 
 Here are some great resources we benefit:
 

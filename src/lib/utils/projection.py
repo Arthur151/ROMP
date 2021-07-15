@@ -8,11 +8,21 @@ if root_dir not in sys.path:
 import constants
 from config import args
 
-def vertices_kp3d_projection(outputs):
+def convert_kp2d_from_input_to_orgimg(kp2ds, offsets):
+    offsets = offsets.float().to(kp2ds.device)
+    leftTop = torch.stack([offsets[:,4]-offsets[:,8], offsets[:,2]-offsets[:,6]],1)
+    kp2ds_org = (kp2ds + 1) * offsets[:,10].unsqueeze(-1).unsqueeze(-1) / 2 + leftTop.unsqueeze(1)
+    return kp2ds_org
+
+
+def vertices_kp3d_projection(outputs, meta_data=None):
     params_dict, vertices, j3ds = outputs['params'], outputs['verts'], outputs['j3d']
     verts_camed = batch_orth_proj(vertices, params_dict['cam'], mode='3d',keep_dim=True)
     pj3d = batch_orth_proj(j3ds, params_dict['cam'], mode='2d')
     projected_outputs = {'verts_camed': verts_camed, 'pj2d': pj3d[:,:,:2]}
+    
+    if meta_data is not None:
+        projected_outputs['pj2d_org'] = convert_kp2d_from_input_to_orgimg(projected_outputs['pj2d'], meta_data['offsets'])
     return projected_outputs
 
 

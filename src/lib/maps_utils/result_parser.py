@@ -34,7 +34,7 @@ class ResultParser(nn.Module):
 
     def match_params(self, outputs, meta_data):
         gt_keys = ['params', 'full_kp2d', 'kp_3d', 'smpl_flag', 'kp3d_flag', 'subject_ids']
-        exclude_keys = ['person_centers','offsets']
+        exclude_keys = [] #['person_centers','offsets']
 
         center_gts_info = process_gt_center(meta_data['person_centers'])
         center_preds_info = self.centermap_parser.parse_centermap(outputs['center_map'])
@@ -42,7 +42,7 @@ class ResultParser(nn.Module):
         batch_ids, flat_inds, person_ids = mc_centers['batch_ids'], mc_centers['flat_inds'], mc_centers['person_ids']
         if len(batch_ids)==0:
             logging.error('number of predicted center is {}'.format(batch_ids))
-            batch_ids, flat_inds = torch.zeros(2).long().to(outputs['center_map'].device), (torch.ones(2)*self.map_size**2/2.).to(outputs['center_map'].device).long()
+            batch_ids, flat_inds = torch.zeros(1).long().to(outputs['center_map'].device), (torch.ones(1)*self.map_size**2/2.).to(outputs['center_map'].device).long()
             person_ids = batch_ids.clone()
         
         params_pred = self.parameter_sampling(outputs['params_maps'], batch_ids, flat_inds, use_transform=True)
@@ -104,7 +104,7 @@ class ResultParser(nn.Module):
         batch_ids, flat_inds, cyxs, top_score = center_preds_info
         if len(batch_ids)==0:
             #logging.error('number of predicted center is {}'.format(batch_ids))
-            batch_ids, flat_inds = torch.zeros(2).long().to(outputs['center_map'].device), (torch.ones(2)*self.map_size**2/2.).to(outputs['center_map'].device).long()
+            batch_ids, flat_inds = torch.zeros(1).long().to(outputs['center_map'].device), (torch.ones(1)*self.map_size**2/2.).to(outputs['center_map'].device).long()
             person_ids = batch_ids.clone()
             outputs['detection_flag'] = False
         else:

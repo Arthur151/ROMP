@@ -41,6 +41,6 @@ class SMPLWrapper(nn.Module):
         outputs.update({'params': params_dict, 'verts': smpl_outs.vertices, 'j3d':smpl_outs.joints, \
             'joints_h36m17':smpl_outs.joints_h36m17, 'joints_smpl24':smpl_outs.joints_smpl24, 'poses':smpl_outs.full_pose})
 
-        outputs.update(vertices_kp3d_projection(outputs))        
+        outputs.update(vertices_kp3d_projection(outputs,meta_data))        
         
         return outputs

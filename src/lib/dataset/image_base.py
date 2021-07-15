@@ -132,8 +132,8 @@ class Image_base(Dataset):
         person_centers, full_kp2d, subject_ids, used_person_inds = \
             self.parse_multiperson_kps(image, full_kps, subject_id)
 
-        offset,lt,rb,size,_ = kps_offset
-        offsets = np.array([image.shape[1],image.shape[0],lt[1],rb[1],lt[0],rb[0],offset[1],size[1],offset[0],size[0]],dtype=np.int)
+        offset,lt,rb,size,img_maxsize = kps_offset
+        offsets = np.array([image.shape[1],image.shape[0],lt[1],rb[1],lt[0],rb[0],offset[1],size[1],offset[0],size[0],img_maxsize],dtype=np.int)
         dst_image = cv2.resize(image, tuple(self.input_shape), interpolation = cv2.INTER_CUBIC)
         org_image = cv2.resize(image_wbg, (self.vis_size, self.vis_size), interpolation=cv2.INTER_CUBIC)
         kp3d, params, kp3d_flag, smpl_flag = self.process_3d(info_3d, used_person_inds)
@@ -205,7 +205,7 @@ def process_image(originImage, full_kps):
     dstImage[offset[1]:size[1] + offset[1], offset[0]:size[0] + offset[0], :] = originImage[lt[1]:rb[1], lt[0]:rb[0],:]
     orgImage_white_bg[offset[1]:size[1] + offset[1], offset[0]:size[0] + offset[0], :] = originImage[lt[1]:rb[1], lt[0]:rb[0],:]
 
-    return dstImage, orgImage_white_bg, [off_set_pts(kps_i, leftTop) for kps_i in full_kps],(offset,lt,rb,size,original_shape[:2])
+    return dstImage, orgImage_white_bg, [off_set_pts(kps_i, leftTop) for kps_i in full_kps],(offset,lt,rb,size,length)
 
 def off_set_pts(keyPoints, leftTop):
     result = keyPoints.copy()
@@ -216,5 +216,5 @@ def off_set_pts(keyPoints, leftTop):
 def check_and_mkdir(dir):
     os.makedirs(dir,exist_ok=True)
 
-def denormalize_kp2ds(mat, img_size=args().input_size):
-    return (mat+1)/2*img_size
+# def denormalize_kp2ds(mat, img_size=args().input_size):
+#     return (mat+1)/2*img_size

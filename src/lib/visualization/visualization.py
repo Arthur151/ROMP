@@ -90,6 +90,14 @@ class Visualizer(object):
             vids_org, verts_vids, single_vids = [np.arange(data['image_org'].shape[0]) for _ in range(3)]
 
         images = data['image_org'].cpu().contiguous().numpy().astype(np.uint8)[single_vids]
+        img_names = np.array(data['imgpath'])[single_vids]
+        if 'pj2d_org' in kwargs:
+            pj2d_org = kwargs['pj2d_org'].detach().cpu().numpy()
+            kp2d_orgimg = draw_skeleton_multiperson(cv2.imread(img_names[0]), pj2d_org, bones=constants.All54_connMat, cm=constants.cm_All54)
+            img_ext = os.path.splitext(img_names[0])[1]
+            save_name = os.path.join(self.result_img_dir, os.path.basename(img_names[0]).replace(img_ext,'_kp2d'+img_ext))
+            cv2.imwrite(save_name, kp2d_orgimg)
+        
         if images.shape[1] != self.vis_size[0]:
             images_new = []
             for image in images:
@@ -111,7 +119,6 @@ class Visualizer(object):
             out_list.append(result_img[:,:,::-1])
             
         if save_img:
-            img_names = np.array(data['imgpath'])[single_vids]
             os.makedirs(self.result_img_dir, exist_ok=True)
             for idx,result_img in enumerate(out_list):
                 name = img_names[idx].split('/')[-2]+'-'+img_names[idx].split('/')[-1]

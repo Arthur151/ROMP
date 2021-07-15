@@ -71,9 +71,10 @@ def img_preprocess(image, imgpath, input_size=512, ds='internet', single_img_inp
         image_org[:padding_org[1]] = 255 
         image_org[-padding_org[1]:] = 255 
 
-    offsets = np.array([image_size[1],image_size[0],resized_image_size[0],\
-        resized_image_size[0]+padding[1],resized_image_size[1],resized_image_size[1]+padding[0],padding[1],\
-        resized_image_size[0],padding[0],resized_image_size[1]],dtype=np.int)
+    offset = (max(image_size) - np.array(image_size))/2
+    offsets = np.array([image_size[1],image_size[0],0,\
+        resized_image_size[0]+padding[1],0,resized_image_size[1]+padding[0],offset[1],\
+        resized_image_size[0],offset[0],resized_image_size[1],max(image_size)],dtype=np.int)
     offsets = torch.from_numpy(offsets).float()
 
     name = os.path.basename(imgpath)

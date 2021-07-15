@@ -36,8 +36,9 @@ class Demo(Base):
                 if self.save_dict_results:
                     self.reorganize_results(outputs, outputs['meta_data']['imgpath'], reorganize_idx, self.output_dir)
                 if self.save_visualization_on_img:
-                    vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], outputs['meta_data'], \
-                    reorganize_idx, centermaps= outputs['center_map'] if self.save_centermap else None,save_img=True)#
+                    vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], \
+                        outputs['meta_data'], reorganize_idx, pj2d_org=outputs['pj2d_org'], \
+                        centermaps=outputs['center_map'] if self.save_centermap else None,save_img=True)#
 
                 if self.save_mesh:
                     save_meshes(reorganize_idx, outputs, self.output_dir, self.smpl_faces)
@@ -57,6 +58,7 @@ class Demo(Base):
         kp3d_op25_results = joints_54[:,constants.joint_mapping(constants.SMPL_ALL_54, constants.OpenPose_25)]
         verts_results = outputs['verts'].detach().cpu().numpy().astype(np.float16)
         pj2d_results = outputs['pj2d'].detach().cpu().numpy().astype(np.float16)
+        pj2d_org_results = outputs['pj2d_org'].detach().cpu().numpy().astype(np.float16)
 
         vids_org = np.unique(reorganize_idx)
         for idx, vid in enumerate(vids_org):
@@ -72,6 +74,7 @@ class Demo(Base):
                 results[img_path][subject_idx]['j3d_op25'] = kp3d_op25_results[batch_idx]
                 results[img_path][subject_idx]['verts'] = verts_results[batch_idx]
                 results[img_path][subject_idx]['pj2d'] = pj2d_results[batch_idx]
+                results[img_path][subject_idx]['pj2d_org'] = pj2d_org_results[batch_idx]
                 results[img_path][subject_idx]['trans'] = convert_cam_to_3d_trans(cam_results[batch_idx])
 
         if test_save_dir is not None:

@@ -4,14 +4,16 @@ import math
 import numpy as np
 import torch
 import yaml
-import logging
-
+import time
 
 code_dir = os.path.abspath(__file__).replace('config.py','')
 project_dir = os.path.abspath(__file__).replace('/src/lib/config.py','')
 root_dir = project_dir.replace(project_dir.split('/')[-1],'')#os.path.abspath(__file__).replace('/CenterMesh/src/config.py','')
 model_dir = os.path.join(project_dir,'models')
 trained_model_dir = os.path.join(project_dir,'trained_models')
+
+time_stamp = time.strftime('%Y-%m-%d_%H:%M:%S',time.localtime(int(round(time.time()*1000))/1000))
+yaml_timestamp = "configs/active_context_{}.yaml".format(time_stamp)
 
 def parse_args(input_args=None):
     parser = argparse.ArgumentParser(description = 'ROMP: Monocular, One-stage, Regression of Multiple 3D People')
@@ -113,7 +115,7 @@ class ConfigContext(object):
     file containing the configuration currently being used so it can be
     accessed anywhere.
     """
-    yaml_filename = "active_context.yaml"
+    yaml_filename = yaml_timestamp
     def __init__(self, parsed_args):
         self.parsed_args = parsed_args
 

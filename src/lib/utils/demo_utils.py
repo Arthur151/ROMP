@@ -134,7 +134,7 @@ class OneEuroFilter:
 class OpenCVCapture:
     def __init__(self, video_file=None):
         if video_file is None:
-            self.cap = cv2.VideoCapture(int(args.cam_id))
+            self.cap = cv2.VideoCapture(int(args().cam_id))
         else:
             self.cap = cv2.VideoCapture(video_file)
 
@@ -162,10 +162,10 @@ class Open3d_visualizer(object):
         self.view_mat = axangle2mat([1, 0, 0], np.pi) # align different coordinate systems
         self.window_size = 1080
         
-        smpl_param_dict = pickle.load(open(os.path.join(args.smpl_model_path,'smpl','SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')
+        smpl_param_dict = pickle.load(open(os.path.join(args().smpl_model_path,'smpl','SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')
         self.faces = smpl_param_dict['f']
         self.verts_mean = smpl_param_dict['v_template']
-        self.mesh_color = np.array(constants.mesh_color_dict[args.webcam_mesh_color])/255.
+        self.mesh_color = np.array(constants.mesh_color_dict[args().webcam_mesh_color])/255.
 
         self.viewer = o3d.visualization.Visualizer()
         self.viewer.create_window(width=self.window_size+1, height=self.window_size+1, window_name='ROMP - output')
@@ -258,7 +258,7 @@ class Open3d_visualizer(object):
         self.mesh.compute_vertex_normals()
 
     def set_texture(self, mesh):
-        if args.webcam_mesh_color=='female_tex' or args.webcam_mesh_color=='male_tex':
+        if args().webcam_mesh_color=='female_tex' or args().webcam_mesh_color=='male_tex':
             print('setting texture')
             mesh.triangle_uvs = o3d.utility.Vector2dVector(self.smpl_uvmap) 
             mesh.textures = [o3d.geometry.Image(self.smpl_uv_texture)]
@@ -276,19 +276,19 @@ def frames2video(images, video_name,fps=30):
 
 class vedo_visualizer(object):
     def __init__(self):  
-        smpl_param_dict = pickle.load(open(os.path.join(args.smpl_model_path,'smpl','SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')
+        smpl_param_dict = pickle.load(open(os.path.join(args().smpl_model_path,'smpl','SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')
         self.faces = smpl_param_dict['f']
         #self.verts_mean = smpl_param_dict['v_template']
         #self.load_smpl_tex()
         #self.load_smpl_vtk()
-        if args.webcam_mesh_color == 'female_tex':
-            self.uv_map = np.load(args.smpl_uvmap)
-            self.texture_file = args.smpl_female_texture
-        elif args.webcam_mesh_color == 'male_tex':
-            self.uv_map = np.load(args.smpl_uvmap)
-            self.texture_file = args.smpl_male_texture
+        if args().webcam_mesh_color == 'female_tex':
+            self.uv_map = np.load(args().smpl_uvmap)
+            self.texture_file = args().smpl_female_texture
+        elif args().webcam_mesh_color == 'male_tex':
+            self.uv_map = np.load(args().smpl_uvmap)
+            self.texture_file = args().smpl_male_texture
         else:
-            self.mesh_color = np.array(constants.mesh_color_dict[args.webcam_mesh_color])/255.
+            self.mesh_color = np.array(constants.mesh_color_dict[args().webcam_mesh_color])/255.
 
         #self.mesh = self.create_single_mesh(self.verts_mean)
         self.mesh_smoother = OneEuroFilter(4.0, 0.0)
@@ -298,7 +298,7 @@ class vedo_visualizer(object):
     
     def load_smpl_tex(self):
         import scipy.io as sio
-        UV_info = sio.loadmat(os.path.join(args.smpl_model_path,'smpl','UV_Processed.mat'))
+        UV_info = sio.loadmat(os.path.join(args().smpl_model_path,'smpl','UV_Processed.mat'))
         self.vertex_reorder = UV_info['All_vertices'][0]-1
         self.faces = UV_info['All_Faces']-1
         self.uv_map = np.concatenate([UV_info['All_U_norm'], UV_info['All_V_norm']],1)
@@ -324,7 +324,7 @@ class vedo_visualizer(object):
     def collapse_triangles_with_large_gradient(self, mesh, threshold=4.0):
         points = mesh.points()
         new_points = np.array(points)
-        mesh_vtk = Mesh(os.path.join(args.smpl_model_path,'smpl','smpl_male.vtk'), c='w').texture(self.texture_file).lw(0.1)
+        mesh_vtk = Mesh(os.path.join(args().smpl_model_path,'smpl','smpl_male.vtk'), c='w').texture(self.texture_file).lw(0.1)
         grad = mesh_vtk.gradient("tcoords")
         ugrad, vgrad = np.split(grad, 2, axis=1)
         ugradm, vgradm = mag(ugrad), mag(vgrad)

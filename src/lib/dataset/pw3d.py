@@ -10,7 +10,7 @@ set_names = {'all':['train','val','test'],'test':['test'],'val':['train','val','
 class PW3D(Image_base):
     def __init__(self,train_flag = False, split='test', mode='vibe', regress_smpl=True, **kwargs):
         super(PW3D,self).__init__(train_flag)
-        self.data_folder = args.dataset_rootdir
+        self.data_folder = args().dataset_rootdir
         self.data3d_dir = os.path.join(self.data_folder,'sequenceFiles')
         self.image_dir = os.path.join(self.data_folder,'imageFiles')
         self.mode = mode
@@ -18,7 +18,7 @@ class PW3D(Image_base):
 
         logging.info('Loading 3DPW in {} mode, split {}'.format(mode,self.split))
         if mode == 'vibe':
-            self.annots_path = args.annot_dir #os.path.join(config.project_dir,'data/vibe_db')
+            self.annots_path = args().annot_dir #os.path.join(config.project_dir,'data/vibe_db')
             self.joint_mapper = constants.joint_mapping(constants.LSP_14,constants.SMPL_ALL_54)
             self.joint3d_mapper = constants.joint_mapping(constants.LSP_14,constants.SMPL_ALL_54)
             self.load_vibe_annots()

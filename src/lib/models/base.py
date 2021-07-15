@@ -15,8 +15,6 @@ if root_dir not in sys.path:
     sys.path.insert(0, root_dir)
 import config
 from config import args
-if args.model_precision=='fp16':
-    from torch.cuda.amp import autocast
 
 BN_MOMENTUM = 0.1
 default_cfg = {'mode':'val', 'calc_loss': False}
@@ -33,7 +31,8 @@ class Base(nn.Module):
             raise NotImplementedError('forward mode is not recognized! please set proper mode (train/val)')
 
     def train_forward(self, meta_data, **cfg):
-        if args.model_precision=='fp16':
+        if args().model_precision=='fp16':
+            from torch.cuda.amp import autocast
             with autocast():
                 outputs = self.feed_forward(meta_data)
                 outputs, meta_data = self._result_parser.train_forward(outputs, meta_data, cfg)
@@ -45,7 +44,8 @@ class Base(nn.Module):
 
     @torch.no_grad()
     def val_forward(self, meta_data, **cfg):
-        if args.model_precision=='fp16':
+        if args().model_precision=='fp16':
+            from torch.cuda.amp import autocast
             with autocast():
                 outputs = self.feed_forward(meta_data)
                 outputs, meta_data = self._result_parser.val_forward(outputs, meta_data, cfg)
@@ -63,7 +63,8 @@ class Base(nn.Module):
 
     @torch.no_grad()
     def pure_forward(self, meta_data, **cfg):
-        if args.model_precision=='fp16':
+        if args().model_precision=='fp16':
+            from torch.cuda.amp import autocast
             with autocast():
                 outputs = self.feed_forward(meta_data)
         else:

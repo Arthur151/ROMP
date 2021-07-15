@@ -1,5 +1,5 @@
 # Monocular, One-stage, Regression of Multiple 3D People
-[![Google Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg#scrollTo=s8gFtokdcEQo)
+[![Google Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg)
 [![arXiv](https://img.shields.io/badge/arXiv-2008.12272v3-00ff00.svg)](https://arxiv.org/pdf/2008.12272v3.pdf)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/centerhmr-a-bottom-up-single-shot-method-for/3d-human-pose-estimation-on-3dpw)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3dpw?p=centerhmr-a-bottom-up-single-shot-method-for)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/centerhmr-a-bottom-up-single-shot-method-for/3d-human-pose-estimation-on-3d-poses-in-the)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3d-poses-in-the?p=centerhmr-a-bottom-up-single-shot-method-for)
@@ -20,7 +20,7 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 - **Easy to use:** We provide user friendly testing API and webcam demos. 
 
 ### News
-*2021/7/15: Adding support for an elegant context manager to run code in a notebook via [this pull](https://github.com/Arthur151/ROMP/pull/58) from [Gavin Gray](https://github.com/gngdb).  
+*2021/7/15: Adding support for an elegant context manager to run code in a notebook.*  See [Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg) for the details.  
 *2021/4/19: Adding support for textured SMPL mesh using [vedo](https://github.com/marcomusy/vedo).* See [visualization.md](docs/visualization.md) for the details.  
 *2021/3/30: 1.0 version.* Rebuilding the code. Release the ResNet-50 version and evaluation on 3DPW.   
 *2020/11/26: Optimization for person-person occlusion.* Small changes for video support.   
@@ -39,7 +39,7 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 </p>
 
 ### Try on Google Colab
-Before installation, you can take a few minutes to try the prepared [Google Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg#scrollTo=s8gFtokdcEQo) a try.  
+Before installation, you can take a few minutes to try the prepared [Google Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg) a try.  
 It allows you to run the project in the cloud, free of charge. 
 
 Please refer to the [bug.md](docs/bugs.md) for unpleasant bugs. Welcome to submit the issues for related bugs.

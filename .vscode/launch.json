@@ -1,0 +1,18 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {"name":"Python: Run Test py","type":"python","request":"launch","program":"${workspaceFolder}/src/core/test.py","console":"integratedTerminal","cwd": "${workspaceFolder}/src","args": ["--gpu=0","--configs_yml=configs/single_image.yml"]},
+        {"name":"Python: Video Process","type":"python","request":"launch","program":"${workspaceFolder}/src/core/test.py","console":"integratedTerminal","cwd": "${workspaceFolder}/src","args": ["--gpu=0","--configs_yml=configs/video.yml"]},
+        {"name":"Python: Export FBX","type":"python","request":"launch","program":"${workspaceFolder}/src/lib/utils/convert_fbx.py","console":"integratedTerminal","cwd": "${workspaceFolder}/src","args": ["--input=../vid/Avi_A_01_results.npz","--output=../vid/Avi_A_01_results.npz.fbx", "--gender=male"]},
+        
+        {
+            "type": "bashdb",
+            "request": "launch",
+            "name": "Bash-Debug (simplest configuration)",
+            "program": "${file}"
+        }
+    ]
+}

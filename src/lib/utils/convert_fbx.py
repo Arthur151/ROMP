@@ -49,6 +49,7 @@ gender = 'male' #female
 
 start_origin = 1
 person_id = 0
+args = []
 
 bone_name_from_index = {
     0 : 'Pelvis',
@@ -288,12 +289,39 @@ def process_poses(
 
     return frame
 
+def rotate_armature(use):
+    if use == True:
+        # Switch to Pose Mode
+        bpy.ops.object.posemode_toggle()
+        
+        # Find the Armature & Bones
+        ob = bpy.data.objects['Armature']
+        armature = ob.data
+        bones = armature.bones
+        rootbone = bones[0]
+        
+        # Find the Root bone
+        for bone in bones:
+            if "avg_root" in bone.name:
+                rootbone = bone
+                
+        rootbone.select = True
+        
+        # Rotate the Root bone by 90 euler degrees on the Y axis. Set --rotate_Y=False if the rotation is not needed.
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, True, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False, release_confirm=True)
+        # Revert back to Object Mode
+        bpy.ops.object.posemode_toggle()
+        
+
 
 def export_animated_mesh(output_path):
     # Create output directory if needed
     output_dir = os.path.dirname(output_path)
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir, exist_ok=True)
+
+    # Fix Rotation
+    rotate_armature(args.rotate_y)
 
     # Select only skinned mesh and rig
     bpy.ops.object.select_all(action='DESELECT')
@@ -315,7 +343,7 @@ def export_animated_mesh(output_path):
 
 
 if __name__ == '__main__':
-
+    
     person_id = 0
     try:
         if bpy.app.background:
@@ -335,7 +363,8 @@ if __name__ == '__main__':
                                 help='Start animation centered above origin')
             parser.add_argument('--person_id', type=int, default=0,
                                 help='Detected person ID to use for fbx animation')
-
+            parser.add_argument('--rotate_y',type = bool,default = True,help = 'whether to rotate the root bone on the Y axis by -90 on export. Otherwise it may be rotated incorrectly')
+            
             args = parser.parse_args()
 
             input_path = args.input_path

@@ -140,6 +140,8 @@ Thanks to [Marco Musy](https://github.com/marcomusy) for his help in [the textur
 
 Thanks to [Gavin Gray](https://github.com/gngdb) for adding support for an elegant context manager to run code in a notebook via [this pull](https://github.com/Arthur151/ROMP/pull/58).
 
+Thanks to [VLT Media](https://github.com/vltmedia) for adding support for running on Windows.
+
 Here are some great resources we benefit:
 
 - SMPL models and layer is borrowed from MPII [SMPL-X model](https://github.com/vchoutas/smplx).

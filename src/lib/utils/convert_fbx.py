@@ -29,7 +29,7 @@ import os
 import sys
 import bpy
 import time
-import joblib
+# import joblib
 import argparse
 import numpy as np
 import addon_utils
@@ -37,6 +37,8 @@ from math import radians
 from mathutils import Matrix, Vector, Quaternion, Euler
 
 # Globals
+# male_model_path = "C:/temp/mocap/smpl/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx"
+# female_model_path = "C:/temp/mocap/smpl/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx"
 male_model_path = '/home/yusun/Desktop/unity/SMPL_unity_v.1.0.0/smpl/Models/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
 female_model_path = '/home/yusun/Desktop/unity/SMPL_unity_v.1.0.0/smpl/Models/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
 
@@ -46,6 +48,7 @@ fps_target = 30
 gender = 'male' #female
 
 start_origin = 1
+person_id = 0
 
 bone_name_from_index = {
     0 : 'Pelvis',
@@ -152,8 +155,25 @@ def process_pose(current_frame, pose, trans, pelvis_position):
     # Pelvis: X-Right, Y-Up, Z-Forward (Blender -Y)
 
     # Set absolute pelvis location relative to Pelvis bone head
-    bones[bone_name_from_index[0]].location = Vector((100*trans[1], 100*trans[2], 100*trans[0])) - pelvis_position
-
+    try:
+        bones[bone_name_from_index[0]].location = Vector((100*trans[1], 100*trans[2], 100*trans[0])) - pelvis_position
+    except :
+        # Handle missing / wrong gender bones. This will change the models gender if a problem is found and continue on.
+        bonename = bone_name_from_index[0]
+        if "m_" in bonename:
+            for bone in bone_name_from_index:
+                bone_name_from_index[bone] = bone_name_from_index[bone].replace("m_", "f_")
+                
+            bone_name_from_index[0] = bonename.replace("m_", "f_")
+            bones[bonename.replace("m_", "f_")].location = Vector((100*trans[1], 100*trans[2], 100*trans[0])) - pelvis_position
+            
+            
+        if "f_" in bonename:
+            for bone in bone_name_from_index:
+                bone = bone.replace("f_", "m_")
+            bone_name_from_index[0] = bonename.replace("f_", "m_")
+            bones[bonename.replace("f_", "m_")].location = Vector((100*trans[1], 100*trans[2], 100*trans[0])) - pelvis_position
+            
     # bones['Root'].location = Vector(trans)
     bones[bone_name_from_index[0]].keyframe_insert('location', frame=current_frame)
 
@@ -236,8 +256,15 @@ def process_poses(
     # Retrieve pelvis world position.
     # Unit is [cm] due to Armature scaling.
     # Need to make copy since reference will change when bone location is modified.
+    armaturee = bpy.data.armatures[0]
+    ob = bpy.data.objects['Armature']
+    armature = ob.data
+
     bpy.ops.object.mode_set(mode='EDIT')
-    pelvis_position = Vector(bpy.data.armatures[0].edit_bones[bone_name_from_index[0]].head)
+    # get specific bone name 'Bone'
+    pelvis_bone = armature.edit_bones[bone_name_from_index[0]]
+    # pelvis_bone = armature.edit_bones['f_avg_Pelvis']
+    pelvis_position = Vector(pelvis_bone.head)
     bpy.ops.object.mode_set(mode='OBJECT')
 
     source_index = 0
@@ -288,6 +315,8 @@ def export_animated_mesh(output_path):
 
 
 if __name__ == '__main__':
+
+    person_id = 0
     try:
         if bpy.app.background:
 
@@ -351,7 +380,7 @@ if __name__ == '__main__':
                 fps_source=fps_source,
                 fps_target=fps_target,
                 start_origin=start_origin,
-                person_id=args.person_id
+                person_id=person_id
             )
         export_animated_mesh(output_path)
 

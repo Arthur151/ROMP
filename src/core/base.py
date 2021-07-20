@@ -57,6 +57,7 @@ class Base(object):
     def _create_single_data_loader(self, **kwargs):
         logging.info('gathering datasets')
         datasets = SingleDataset(**kwargs)
+        print(datasets)
         return DataLoader(dataset = datasets, shuffle = False,batch_size = self.val_batch_size,\
                 drop_last = False if self.eval else True, pin_memory = True, num_workers = self.nw)
 

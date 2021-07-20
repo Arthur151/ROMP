@@ -5,10 +5,12 @@ demo/000003*
 trained_models
 models/smplx
 models/smpl
-
+src/configs/active_*.yaml
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *.log
 *.mp4
+*.npz
+*.fbx
 src/utils/bvh_utils.py

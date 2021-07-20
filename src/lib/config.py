@@ -5,15 +5,37 @@ import numpy as np
 import torch
 import yaml
 import time
+import platform 
 
-code_dir = os.path.abspath(__file__).replace('config.py','')
-project_dir = os.path.abspath(__file__).replace('/src/lib/config.py','')
+
+currentfile = os.path.abspath(__file__)
+code_dir = currentfile.replace('config.py','')
+project_dir = currentfile.replace('/src/lib/config.py','')
+source_dir = currentfile.replace('/lib/config.py','')
+
+plt = platform.system()
+if plt == "Windows":
+    project_dir = currentfile.replace('\\src\\lib\\config.py','')
+    source_dir = currentfile.replace('\\lib\\config.py','')
+    # do x y z
+# elif plt == "Linux":
+#     print("Your system is Linux")
+#     # do x y z
+# elif plt == "Darwin":
+#     print("Your system is MacOS")
+#     # do x y z
+# else:
+#     print("Unidentified system")
+
 root_dir = project_dir.replace(project_dir.split('/')[-1],'')#os.path.abspath(__file__).replace('/CenterMesh/src/config.py','')
 model_dir = os.path.join(project_dir,'models')
 trained_model_dir = os.path.join(project_dir,'trained_models')
 
 time_stamp = time.strftime('%Y-%m-%d_%H:%M:%S',time.localtime(int(round(time.time()*1000))/1000))
-yaml_timestamp = "configs/active_context_{}.yaml".format(time_stamp)
+yaml_timestamp =os.path.abspath(os.path.join( source_dir + "/configs/active_context_{}.yaml".format(time_stamp).replace(":","_")))
+# yaml_timestamp =os.path.abspath(os.path.join( source_dir + "/configs/active_context_2021-07-19_21_36_15".replace(":","_")))
+print("yaml_timestamp ", yaml_timestamp)
+# print("source_dir ", source_dir)
 
 def parse_args(input_args=None):
     parser = argparse.ArgumentParser(description = 'ROMP: Monocular, One-stage, Regression of Multiple 3D People')
@@ -116,6 +138,7 @@ class ConfigContext(object):
     accessed anywhere.
     """
     yaml_filename = yaml_timestamp
+    
     def __init__(self, parsed_args):
         self.parsed_args = parsed_args
 
@@ -126,6 +149,20 @@ class ConfigContext(object):
         with open(self.yaml_filename, 'w') as f:
             d = self.parsed_args.__dict__
             yaml.dump(d, f)
+
+    def __forceyaml__(self, filepath):
+        # if a yaml is left over here, remove it
+        self.yaml_filename = filepath
+        self.clean()
+        # store all the parsed_args in a yaml file
+        with open(self.yaml_filename, 'w') as f:
+            d = self.parsed_args.__dict__
+            yaml.dump(d, f)
+            print("----------------------------------------------")
+            print("__forceyaml__ DUMPING YAML ")
+            print("self.yaml_filename", self.yaml_filename)
+            print("----------------------------------------------")
+            
 
     def clean(self):
         if os.path.exists(self.yaml_filename):
@@ -138,8 +175,21 @@ class ConfigContext(object):
 def args():
     # have to pass something or it'll try and read stdin, it should get overwritten on file load
     parsed_args = parse_args(['--tab', 'ROMP_v1']) 
-    with open(ConfigContext.yaml_filename, 'r') as f:
-        argsdict = yaml.load(f, Loader=yaml.FullLoader)
+    # ConfigContext.parsed_args = parsed_args()
+    if os.path.exists(ConfigContext.yaml_filename):
+        with open(ConfigContext.yaml_filename, 'r') as f:
+            argsdict = yaml.load(f, Loader=yaml.FullLoader)
+    else:
+        # This will write a new Yaml if the yaml doesn't exist.
+        # configcontext.__forceyaml__(configcontext.yaml_filename)
+        with open(ConfigContext.yaml_filename, 'w') as f:
+            
+            d = parsed_args.__dict__
+            yaml.dump(d, f)
+        with open(ConfigContext.yaml_filename, 'r') as f:
+            argsdict = yaml.load(f, Loader=yaml.FullLoader)
+        
+        
     for k, v in argsdict.items():
         parsed_args.__dict__[k] = v
     return parsed_args
@@ -147,6 +197,7 @@ def args():
 if __name__ == "__main__":
     _args = parse_args()
     with ConfigContext(_args):
+        
         with open(ConfigContext.yaml_filename, 'r') as f:
             print(f.read())
         for k, v in args().__dict__.items():

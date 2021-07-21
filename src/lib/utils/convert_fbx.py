@@ -29,6 +29,7 @@ import os
 import sys
 import bpy
 import time
+import platform
 # import joblib
 import argparse
 import numpy as np
@@ -36,12 +37,19 @@ import addon_utils
 from math import radians
 from mathutils import Matrix, Vector, Quaternion, Euler
 
+
 # Globals
-# male_model_path = "C:/temp/mocap/smpl/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx"
-# female_model_path = "C:/temp/mocap/smpl/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx"
+# Add your UNIX paths here!
 male_model_path = '/home/yusun/Desktop/unity/SMPL_unity_v.1.0.0/smpl/Models/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
 female_model_path = '/home/yusun/Desktop/unity/SMPL_unity_v.1.0.0/smpl/Models/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
-
+# Handle fall back if files don't exist, also keeping the unix version before attempting the windows version.
+plt = platform.system()
+if plt == "Windows":
+    # Add your Windows paths here!
+    male_model_path = "C:/temp/mocap/smpl/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx"
+    female_model_path = "C:/temp/mocap/smpl/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx"
+    
+    
 fps_source = 30
 fps_target = 30
 
@@ -418,8 +426,8 @@ if __name__ == '__main__':
         print('Poses processed: ', poses_processed)
         print('Processing time : ', time.perf_counter() - startTime)
         print('--------------------------------------------------')
-
     except SystemExit as ex:
+        print("closing")
         if ex.code is None:
             exit_status = 0
         else:

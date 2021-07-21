@@ -85,6 +85,19 @@ CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/video.y
 ```
 Results will be saved to `../demo/videos/sample_video_results`.
 
+#### Batch Videos
+You can also batch process a directory of videos. 
+Please refer to [batch_videos.md](docs/batch_videos.md) for more info.
+###### Unix
+```shell
+python lib/utils/batch_videos.py --input=/home/user/Animations/mocap/cleaned --output=/home/user/Animations/mocap/cleaned/processed --extension mp4 --run_conversion
+```
+
+###### Windows
+```sh
+python lib/utils/batch_videos.py --input=M:/Animations/mocap/cleaned --output=M:/Animations/mocap/cleaned/processed --extension mp4 --windows --run_conversion
+```
+
 ##### Export to Blender FBX 
 
 <p float="center">
@@ -140,7 +153,7 @@ Thanks to [Marco Musy](https://github.com/marcomusy) for his help in [the textur
 
 Thanks to [Gavin Gray](https://github.com/gngdb) for adding support for an elegant context manager to run code in a notebook via [this pull](https://github.com/Arthur151/ROMP/pull/58).
 
-Thanks to [VLT Media](https://github.com/vltmedia) for adding support for running on Windows.
+Thanks to [VLT Media](https://github.com/vltmedia) for adding support for running on Windows & batch_videos.py.
 
 Here are some great resources we benefit:
 

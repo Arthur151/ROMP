@@ -114,8 +114,9 @@ class Demo(Base):
             img_paths = [str(frame_id) for _ in range(1)]
             single_batch_results = self.reorganize_results(outputs,img_paths,outputs['reorganize_idx'].cpu().numpy())
             results.update(single_batch_results)
-            vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], vis_dict, reorganize_idx=outputs['reorganize_idx'].cpu().numpy())
-            result_frames.append(vis_eval_results[0])
+            if self.save_video_results:
+                vis_eval_results = self.visualizer.visulize_result_onorg(outputs['verts'], outputs['verts_camed'], vis_dict, reorganize_idx=outputs['reorganize_idx'].cpu().numpy())
+                result_frames.append(vis_eval_results[0])
             outputs['meta_data']['imgpath'] = img_paths
             if self.save_mesh:
                 save_meshes(outputs['reorganize_idx'].cpu().numpy(), outputs, self.output_dir, self.smpl_faces)

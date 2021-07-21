@@ -122,7 +122,10 @@ class Visualizer(object):
         if save_img:
             os.makedirs(self.result_img_dir, exist_ok=True)
             for idx,result_img in enumerate(out_list):
-                name = img_names[idx].split('\\')[-2]+'-'+img_names[idx].split('\\')[-1]
+                if '\\' in img_names[idx]:
+                    name = img_names[idx].split('\\')[-2]+'-'+img_names[idx].split('\\')[-1]
+                else:
+                    name = img_names[idx].split('/')[-2]+'-'+img_names[idx].split('/')[-1]
                 name_save = os.path.join(self.result_img_dir,name)
                 cv2.imwrite(name_save,result_img)
                 if centermaps is not None:

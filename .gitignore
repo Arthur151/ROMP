@@ -13,4 +13,5 @@ __pycache__/
 *.mp4
 *.npz
 *.fbx
+.vscode
 src/utils/bvh_utils.py

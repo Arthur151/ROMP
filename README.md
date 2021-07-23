@@ -136,12 +136,12 @@ The code will be gradually open sourced according to:
 ## Citation
 Please considering citing 
 ```bibtex
-@inproceedings{ROMP,
-  title = {Monocular, One-stage, Regression of Multiple 3D People},
-  author = {Yu, Sun and Qian, Bao and Wu, Liu and Yili, Fu and Black, Michael J. and Tao, Mei},
-  booktitle = {arxiv:2008.12272},
-  month = {August},
-  year = {2020}
+@InProceedings{ROMP,
+author = {Sun, Yu and Bao, Qian and Liu, Wu and Fu, Yili and Michael J., Black and Mei, Tao},
+title = {Monocular, One-stage, Regression of Multiple 3D People},
+booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+month = {October},
+year = {2021}
 }
 ```
 

@@ -98,20 +98,12 @@ python lib/utils/batch_videos.py --input=/home/user/Animations/mocap/cleaned --o
 python lib/utils/batch_videos.py --input=M:/Animations/mocap/cleaned --output=M:/Animations/mocap/cleaned/processed --extension mp4 --windows --run_conversion
 ```
 
-##### Export to Blender FBX 
-
-<p float="center">
-  <img src="../assets/demo/animation/fbx_animation.gif" width="50%" />
-</p>
-
-Please refer to [expert.md](docs/export.md) to export the results to fbx files for Blender usage. Currently, this function only support the single-person video cases. Therefore, please test it with `../demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `../demo/videos/sample_video2_results`.
-
 #### Webcam
 
 We also provide the webcam demo code, which can run at real-time on a 1070Ti GPU / remote server.  
-Currently, limited by the visualization pipeline, the webcam visulization code only support the single-person mesh.
+Currently, limited by the visualization pipeline, the webcam visualization code only support the single-person mesh.
 
-To do this you just need to run
+To do this you just need to run:
 ```bash
 cd ROMP/src
 CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/webcam.yml
@@ -120,14 +112,25 @@ CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/webcam_
 ```
 Press Up/Down to end the demo. Pelease refer to [config_guide.md](docs/config_guide.md) for running webcam demo on remote server, setting mesh color or camera id.
 
+### Blender
+
+##### Export to Blender FBX 
+
+<p float="center">
+  <img src="../assets/demo/animation/fbx_animation.gif" width="50%" />
+</p>
+
+Please refer to [expert.md](docs/export.md) to export the results to fbx files for Blender usage. Currently, this function only support the single-person video cases. Therefore, please test it with `../demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `../demo/videos/sample_video2_results`.
+##### Blender Addons
+
+- [vltmedia/QuickMocap-BlenderAddon: Use this Blender Addon to import & clean Mocap Pose data from .npz or .pkl files. These files may have been created using Numpy, ROMP, or other motion capture processes that package their files accordingly. (github.com)](https://github.com/vltmedia/QuickMocap-BlenderAddon)
+  - Reads the .npz file created by ROMP. Clean & smooth the resulting keyframes.
+  - ![Quick Mocap v0.3.0](https://github.com/vltmedia/QuickMocap-BlenderAddon/raw/master/images/QuickMocap_v0.3.0.png)
+
 ### Evaluation
 
 Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks.
 
-### Blender Addons
-
-- [vltmedia/QuickMocap-BlenderAddon: Use this Blender Addon to import & clean Mocap Pose data from .npz or .pkl files. These files may have been created using Numpy, ROMP, or other motion capture processes that package their files accordingly. (github.com)](https://github.com/vltmedia/QuickMocap-BlenderAddon)
-  - Reads the .npz file created by ROMP. Clean & smooth the resulting keyframes.
 
 
 

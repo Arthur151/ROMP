@@ -124,6 +124,13 @@ Press Up/Down to end the demo. Pelease refer to [config_guide.md](docs/config_gu
 
 Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks.
 
+### Blender Addons
+
+- [vltmedia/QuickMocap-BlenderAddon: Use this Blender Addon to import & clean Mocap Pose data from .npz or .pkl files. These files may have been created using Numpy, ROMP, or other motion capture processes that package their files accordingly. (github.com)](https://github.com/vltmedia/QuickMocap-BlenderAddon)
+  - Reads the .npz file created by ROMP. Clean & smooth the resulting keyframes.
+
+
+
 ## TODO LIST
 
 The code will be gradually open sourced according to:

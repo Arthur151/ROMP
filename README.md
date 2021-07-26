@@ -90,12 +90,12 @@ You can also batch process a directory of videos.
 Please refer to [batch_videos.md](docs/batch_videos.md) for more info.
 ###### Unix
 ```shell
-python lib/utils/batch_videos.py --input=/home/user/Animations/mocap/cleaned --output=/home/user/Animations/mocap/cleaned/processed --extension mp4 --run_conversion
+python lib/utils/batch_videos.py --input=/home/user/Animations/mocap/cleaned --output=/home/user/Animations/mocap/cleaned/processed --extension mp4 --run_conversion --yaml_template=configs/video-batch.yml
 ```
 
 ###### Windows
 ```sh
-python lib/utils/batch_videos.py --input=M:/Animations/mocap/cleaned --output=M:/Animations/mocap/cleaned/processed --extension mp4 --windows --run_conversion
+python lib/utils/batch_videos.py --input=M:/Animations/mocap/cleaned --output=M:/Animations/mocap/cleaned/processed --extension mp4 --windows --run_conversion --yaml_template=configs/video-batch.yml
 ```
 
 #### Webcam

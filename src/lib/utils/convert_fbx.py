@@ -50,8 +50,8 @@ if plt == "Windows":
     female_model_path = "C:/temp/mocap/smpl/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx"
     
     
-fps_source = 25
-fps_target = 25
+fps_source = 30
+fps_target = 30
 
 gender = 'male' #female
 

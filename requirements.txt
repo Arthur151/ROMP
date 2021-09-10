@@ -17,3 +17,5 @@ keyboard
 transforms3d
 bvhtoolbox
 vedo
+imgaug
+lap

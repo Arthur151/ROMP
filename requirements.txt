@@ -11,7 +11,7 @@ trimesh
 shyaml
 PyYAML>=5.1.2
 numpy-quaternion
-open3d
+open3d==0.9.0
 pygame
 keyboard
 transforms3d

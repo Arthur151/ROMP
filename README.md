@@ -30,14 +30,14 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 *2020/9/4: Google Colab demo.* Saving a npy file per imag. 
 
 <p float="center">
-  <img src="assets/demo/animation/live_demo_guangboticao.gif" width="48%" />
-  <img src="assets/demo/animation/live_demo_sit.gif" width="48%" />
+  <img src="../assets/demo/animation/live_demo_guangboticao.gif" width="48%" />
+  <img src="../assets/demo/animation/live_demo_sit.gif" width="48%" />
 </p>
 
 <p float="center">
-  <img src="assets/demo/animation/c1_results_compressed.gif" width="32%" />
-  <img src="assets/demo/animation/c4_results_compressed.gif" width="32%" />
-  <img src="assets/demo/animation/c0_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c1_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c4_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c0_results_compressed.gif" width="32%" />
 </p>
 
 ### Try on Google Colab
@@ -94,7 +94,7 @@ Pelease refer to [config_guide.md](docs/config_guide.md) for configurations.
 ##### Export to Blender FBX 
 
 <p float="center">
-  <img src="assets/demo/animation/fbx_animation.gif" width="50%" />
+  <img src="../assets/demo/animation/fbx_animation.gif" width="50%" />
 </p>
 
 Please refer to [expert.md](docs/export.md) to export the results to fbx files for Blender usage. Currently, this function only support the single-person video cases. Therefore, please test it with `demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `demo/videos/sample_video2_results`.

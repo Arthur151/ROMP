@@ -1,0 +1,20 @@
+ARGS:
+ tab: 'crowdpose_test'
+ eval_dataset: 'crowdpose_test'
+ GPUS: 0
+ model_version: 1
+ 
+ val_batch_size: 32
+ nw_eval: 2
+ eval: True
+ collision_aware_centermap: False
+ collision_factor: 0.2
+ calc_PVE_error: False
+
+ backbone: 'resnet' #'hrnet'
+ centermap_size: 64
+ centermap_conf_thresh: 0.2
+ smpl_mesh_root_align: True # False
+
+ model_path: trained_models/ROMP_ResNet50_V1.pkl #trained_models/ROMP_HRNet32_V1_CAR.pkl
+ dataset_rootdir: '/media/yusun/Extreme SSD/dataset' #'/path/to/dataset/3DPW'

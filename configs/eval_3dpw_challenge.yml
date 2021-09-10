@@ -1,0 +1,22 @@
+ARGS:
+ tab: 'pw3d_challenge'
+ eval_dataset: 'pw3d_challenge'
+ GPUS: 0
+ model_version: 1
+ 
+ val_batch_size: 16
+ nw_eval: 2
+ eval: True
+ collision_aware_centermap: False
+ collision_factor: 0.2
+ calc_PVE_error: False
+
+ backbone: 'hrnet'
+ centermap_size: 64
+ centermap_conf_thresh: 0.2
+ model_precision: 'fp16'
+ smpl_mesh_root_align: False
+
+ model_path: trained_models/ROMP_HRNet32_V1.pkl
+ dataset_rootdir: "/media/yusun/Extreme SSD/dataset" #'/path/to/folder that contains 3DPW dataset'
+ output_dir: '/media/yusun/Extreme SSD/ROMP/results/' #'/path/to/vibe_db where 3dpw_test_db.pt located'

@@ -1,0 +1,24 @@
+
+ARGS:
+ tab: 'process_video'
+ GPUS: 0 
+
+ backbone: 'hrnet'
+ model_precision: 'fp32'
+ val_batch_size: 8
+ nw: 4
+ model_path: trained_models/ROMP_HRNet32_V1.pkl #  '../trained_models/ROMP_ResNet50_V1.pkl'
+ smpl_mesh_root_align: False
+ centermap_conf_thresh: 0.15
+
+ temporal_optimization: True
+ show_largest_person_only: False
+
+ inputs: 'demo/videos/sample_video.mp4' # None
+ output_dir: 'demo/sample_video_results/'
+ save_mesh: False
+ save_centermap: False
+ save_dict_results: True
+ save_visualization_on_img: True
+ fps_save: 24
+ mesh_cloth: 'ghostwhite'  #'LightCyan'

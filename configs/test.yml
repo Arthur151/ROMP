@@ -1,0 +1,25 @@
+ARGS:
+ tab: 'pw3d_test_train_state'
+ # pw3d_test pw3d_pc pw3d_nc pw3d_oc crowdpose_val  crowdpose_test  cmup  MuPoTs  runtime  
+ eval_dataset: pw3d_test #'mpiinf_test' 'agora' 'pw3d_test' # mupots pw3d_test  cmup pw3d_nc pw3d_oc
+ test_tracking: False
+ GPUS: 1,2,3,0
+ model_version: 1
+ 
+ val_batch_size: 64
+ nw_eval: 4
+ eval: True
+ collision_factor: 0.2
+ calc_PVE_error: True
+ acquire_pa_trans_scale: False
+
+ backbone: 'resnet' # 'hrnet' # 
+ centermap_size: 64
+ centermap_conf_thresh: 0.2
+ visualize_all_results: False
+
+ head_block_num: 2
+ merge_smpl_camera_head: False
+ fine_tune: True
+
+ model_path: /export/home/suny/CenterMesh/trained_models/resnet_cm64_V1_resnet_vibe_88.79_52.53_h36m,mpiinf,coco,mpii,lsp,muco,crowdpose.pkl

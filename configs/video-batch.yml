@@ -1,0 +1,30 @@
+
+ARGS:
+ tab: 'test'
+ GPUS: 0 
+ multi_person: True
+ kernel_sizes: [5]
+ use_coordmaps: True
+ fine_tune: True
+ eval: False
+
+ backbone: 'hrnet'
+ input_size: 512
+ centermap_size: 64
+ model_precision: 'fp32'
+ val_batch_size: 1
+ nw: 4
+ model_path: trained_models/ROMP_HRNet32_V1.pkl #  '../trained_models/ROMP_ResNet50_V1.pkl'
+ smpl_mesh_root_align: False
+
+ video_or_frame: True
+ input_video_path: '$FPATH' # None
+ output_dir: '$OUTPATH'
+ webcam_mesh_color: 'ghostwhite'  #'LightCyan'
+ save_mesh: False
+ save_centermap: False
+ save_dict_results: True
+ save_video_results: True
+ webcam: False
+ fps_save: 30
+ multiprocess: False

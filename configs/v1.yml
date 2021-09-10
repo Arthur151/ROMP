@@ -1,0 +1,56 @@
+
+ARGS:
+ tab: 'V1_hrnet' 
+ dataset: 'h36m,mpiinf,coco,mpii,lsp,muco,crowdpose'
+ GPUS: 0,1,2,3
+ distributed_training: False
+ model_version: 1
+ pretrain: 'imagenet'
+ match_preds_to_gts_for_supervision: True
+
+ master_batch_size: -1
+ val_batch_size: 16
+ batch_size: 64
+ nw: 4
+ nw_eval: 2
+ lr: 0.00005
+
+ fine_tune: False
+ fix_backbone_training_scratch: False
+ eval: False
+ supervise_global_rot: False
+
+ model_return_loss: False
+ collision_aware_centermap: True
+ collision_factor: 0.2
+ homogenize_pose_space: True
+ shuffle_crop_mode: True
+ shuffle_crop_ratio_2d: 0.1
+ shuffle_crop_ratio_3d: 0.4
+
+ merge_smpl_camera_head: False
+ head_block_num: 2
+
+ backbone: 'hrnet'
+ centermap_size: 64
+ centermap_conf_thresh: 0.2
+
+ model_path: None
+
+loss_weight:
+  MPJPE: 200.
+  PAMPJPE: 360.
+  P_KP2D: 400.
+  Pose: 80.
+  Shape: 6.
+  Prior: 1.6
+  CenterMap: 160.
+
+sample_prob:
+ h36m: 0.2
+ mpiinf: 0.16
+ coco: 0.2
+ lsp: 0.06
+ mpii: 0.1
+ muco: 0.14
+ crowdpose: 0.14

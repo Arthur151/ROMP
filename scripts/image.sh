@@ -1,0 +1,1 @@
+python -u -m romp.predict.image --configs_yml='configs/image.yml'

@@ -1,0 +1,21 @@
+ARGS:
+ tab: 'pw3d_test'
+ eval_dataset: 'pw3d_test'
+ GPUS: 0
+ model_version: 1
+ 
+ val_batch_size: 32
+ nw_eval: 2
+ eval: True
+ collision_aware_centermap: False
+ collision_factor: 0.2
+ calc_PVE_error: False
+
+ backbone: 'resnet'
+ centermap_size: 64
+ centermap_conf_thresh: 0.2
+ model_precision: 'fp32'
+ smpl_mesh_root_align: True
+
+ model_path: trained_models/ROMP_ResNet50_V1.pkl
+ dataset_rootdir: '/media/yusun/Extreme SSD/dataset' #'/path/to/dataset/3DPW'

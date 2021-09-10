@@ -4,38 +4,40 @@
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/centerhmr-a-bottom-up-single-shot-method-for/3d-human-pose-estimation-on-3dpw)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3dpw?p=centerhmr-a-bottom-up-single-shot-method-for)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/centerhmr-a-bottom-up-single-shot-method-for/3d-human-pose-estimation-on-3d-poses-in-the)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3d-poses-in-the?p=centerhmr-a-bottom-up-single-shot-method-for)
 
-ROMP is a one-stage network for multi-person 3D mesh recovery from a single image.
 > [**Monocular, One-stage, Regression of Multiple 3D People**](https://arxiv.org/abs/2008.12272),            
 > Yu Sun, Qian Bao, Wu Liu, Yili Fu, Michael J. Black, Tao Mei,        
 > *arXiv paper ([arXiv 2008.12272](https://arxiv.org/abs/2008.12272))*
 
-Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to contact me for related questions or discussions! 
+ROMP is a one-stage network for multi-person 3D mesh recovery from a single image.
 
-- **Simple:** Simultaneously predicting the body center locations and corresponding 3D body mesh parameters for all people at each pixel.
+- **Simple:** Concise one-stage framework for simultaneous person detection and 3D body mesh recovery.
 
-- **Fast:** ROMP ResNet-50 model runs over *30* FPS on a 1070Ti GPU.
+- **Fast:** ROMP can run over *30* FPS on a 1070Ti GPU.
 
-- **Strong**: ROMP achieves superior performance on multiple challenging multi-person/occlusion benchmarks, including 3DPW, CMU Panoptic, and 3DOH50K.
+- **Strong**: ROMP achieves superior performance on multiple challenging multi-person/occlusion benchmarks.
 
 - **Easy to use:** We provide user friendly testing API and webcam demos. 
 
+Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to contact me for related questions or discussions! 
+
 ### News
+*2021/9/10: Training code release. API optimization. *
 *2021/7/15: Adding support for an elegant context manager to run code in a notebook.*  See [Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg) for the details.  
 *2021/4/19: Adding support for textured SMPL mesh using [vedo](https://github.com/marcomusy/vedo).* See [visualization.md](docs/visualization.md) for the details.  
 *2021/3/30: 1.0 version.* Rebuilding the code. Release the ResNet-50 version and evaluation on 3DPW.   
 *2020/11/26: Optimization for person-person occlusion.* Small changes for video support.   
-*2020/9/11: Real-time webcam demo using local/remote server.* Please refer to [config_guide.md](docs/config_guide.md) for details.  
-*2020/9/4: Google Colab demo.* Saving a npy file per imag. Please refer to [config_guide.md](docs/config_guide.md) for details.
+*2020/9/11: Real-time webcam demo using local/remote server.* 
+*2020/9/4: Google Colab demo.* Saving a npy file per imag. 
 
 <p float="center">
-  <img src="../assets/demo/animation/live_demo_guangboticao.gif" width="48%" />
-  <img src="../assets/demo/animation/live_demo_sit.gif" width="48%" />
+  <img src="assets/demo/animation/live_demo_guangboticao.gif" width="48%" />
+  <img src="assets/demo/animation/live_demo_sit.gif" width="48%" />
 </p>
 
 <p float="center">
-  <img src="../assets/demo/animation/c1_results_compressed.gif" width="32%" />
-  <img src="../assets/demo/animation/c4_results_compressed.gif" width="32%" />
-  <img src="../assets/demo/animation/c0_results_compressed.gif" width="32%" />
+  <img src="assets/demo/animation/c1_results_compressed.gif" width="32%" />
+  <img src="assets/demo/animation/c4_results_compressed.gif" width="32%" />
+  <img src="assets/demo/animation/c0_results_compressed.gif" width="32%" />
 </p>
 
 ### Try on Google Colab
@@ -46,56 +48,33 @@ Please refer to the [bug.md](docs/bugs.md) for unpleasant bugs. Welcome to submi
 
 ### Installation
 
-Please refer to [install.md](docs/install.md) for installation.
+Please refer to [install.md](docs/installation.md) for installation.
 
-### Demo
+### Processing images
 
-Currently, the released code is used to re-implement demo results. Only 1-2G GPU memory is needed.
-
-To do this you just need to run
+To re-implement the demo results, please run
 ```bash
-cd ROMP/src
-sh run.sh
+cd ROMP
+sh scripts/image.sh
 # if there are any bugs about shell script, please consider run the following command instead:
-CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/single_image.yml
+python -u -m romp.predict.image --configs_yml='configs/image.yml'
 ```
-Results will be saved in ROMP/demo/images_results.
-
-#### Internet images
-You can also run the code on random internet images via putting the images under ROMP/demo/images.
-
+Results will be saved in ROMP/demo/images_results. You can also run the code on other images via putting the images under ROMP/demo/images or passing the path of image folder via
+```bash
+python -u -m romp.predict.image --inputs=/path/to/image_folder --output_dir='demo/image_results'
+```
 Please refer to [config_guide.md](docs/config_guide.md) for **saving the estimated mesh/Center maps/parameters dict**.
 
-#### Internet videos
+#### Processing videos
 
-You can also run the code on random internet videos.
-
-To do this you just need to firstly change the input_video_path in src/configs/video.yml to /path/to/your/video. For example, set
-
+To process videos, you can change the `inputs` in configs/video.yml to /path/to/your/video, then run 
 ```bash
- video_or_frame: True
- input_video_path: '../demo/videos/sample_video.mp4' # None
- output_dir: '../demo/videos/sample_video_results/'
+cd ROMP
+sh scripts/video.sh
 ```
-then run 
-
+or simply run the command like
 ```bash
-cd ROMP/src
-CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/video.yml
-```
-Results will be saved to `../demo/videos/sample_video_results`.
-
-#### Batch Videos
-You can also batch process a directory of videos. 
-Please refer to [batch_videos.md](docs/batch_videos.md) for more info.
-###### Unix
-```shell
-python lib/utils/batch_videos.py --input=/home/user/Animations/mocap/cleaned --output=/home/user/Animations/mocap/cleaned/processed --extension mp4 --run_conversion --yaml_template=configs/video-batch.yml
-```
-
-###### Windows
-```sh
-python lib/utils/batch_videos.py --input=M:/Animations/mocap/cleaned --output=M:/Animations/mocap/cleaned/processed --extension mp4 --windows --run_conversion --yaml_template=configs/video-batch.yml
+python -u -m romp.predict.video --inputs=demo/videos/sample_video.mp4 --output_dir='demo/sample_video_results'
 ```
 
 #### Webcam
@@ -105,22 +84,20 @@ Currently, limited by the visualization pipeline, the webcam visualization code 
 
 To do this you just need to run:
 ```bash
-cd ROMP/src
-CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/webcam.yml
-# or try to use the model with ResNet-50 as backbone.
-CUDA_VISIBLE_DEVICES=0 python core/test.py --gpu=0 --configs_yml=configs/webcam_resnet.yml
+cd ROMP
+sh scripts/webcam.sh
 ```
-Press Up/Down to end the demo. Pelease refer to [config_guide.md](docs/config_guide.md) for running webcam demo on remote server, setting mesh color or camera id.
+Pelease refer to [config_guide.md](docs/config_guide.md) for configurations.
 
 ### Blender
 
 ##### Export to Blender FBX 
 
 <p float="center">
-  <img src="../assets/demo/animation/fbx_animation.gif" width="50%" />
+  <img src="assets/demo/animation/fbx_animation.gif" width="50%" />
 </p>
 
-Please refer to [expert.md](docs/export.md) to export the results to fbx files for Blender usage. Currently, this function only support the single-person video cases. Therefore, please test it with `../demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `../demo/videos/sample_video2_results`.
+Please refer to [expert.md](docs/export.md) to export the results to fbx files for Blender usage. Currently, this function only support the single-person video cases. Therefore, please test it with `demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `demo/videos/sample_video2_results`.
 ##### Blender Addons
 
 - [vltmedia/QuickMocap-BlenderAddon: Use this Blender Addon to import & clean Mocap Pose data from .npz or .pkl files. These files may have been created using Numpy, ROMP, or other motion capture processes that package their files accordingly. (github.com)](https://github.com/vltmedia/QuickMocap-BlenderAddon)
@@ -131,9 +108,6 @@ Please refer to [expert.md](docs/export.md) to export the results to fbx files f
 
 Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks.
 
-
-
-
 ## TODO LIST
 
 The code will be gradually open sourced according to:
@@ -141,7 +115,8 @@ The code will be gradually open sourced according to:
   - [x] demo code for internet images / videos / webcam
   - [x] runtime optimization
   - [x] benchmark evaluation
-  - [ ] training
+  - [x] training
+  - [ ] virtual character animation
 
 ## Citation
 Please considering citing 
@@ -174,4 +149,4 @@ Here are some great resources we benefit:
 - Synthetic occlusion is borrowed from [synthetic-occlusion](https://github.com/isarandi/synthetic-occlusion).
 - The evaluation code of 3DPW dataset is brought from [3dpw-eval](https://github.com/aymenmir1/3dpw-eval).   
 - For fair comparison, the GT annotations of 3DPW dataset are brought from [VIBE](https://github.com/mkocabas/VIBE).
-- 3D mesh visualization is supported by [vedo](https://github.com/marcomusy/vedo) and [Open3D]( https://github.com/intel-isl/Open3D).
+- 3D mesh visualization is supported by [vedo](https://github.com/marcomusy/vedo), [EasyMocap](https://github.com/zju3dv/EasyMocap) and [Open3D]( https://github.com/intel-isl/Open3D).

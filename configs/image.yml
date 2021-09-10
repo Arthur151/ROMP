@@ -1,0 +1,22 @@
+
+ARGS:
+ tab: 'process_images'
+ GPUS: 0
+
+ backbone: 'hrnet' #'resnet' #
+ model_precision: 'fp32' # 'fp16'
+ val_batch_size: 4
+ nw: 4
+ model_path: trained_models/ROMP_HRNet32_V1.pkl #  'trained_models/ROMP_ResNet50_V1.pkl'
+ save_visualization_on_img: True
+ smpl_mesh_root_align: False
+
+ # default: run on demo/images and the results would be saved at demo/images_results
+ # for video demo/videos/Messi_1
+ inputs: '/path/to/image_folder' #'demo/videos/Messi_1'
+ collect_subdirs: False # whether to collect images from the sub-folder of the input path.
+ output_dir: 'demo/image_results'
+ save_mesh: True
+ save_centermap: False
+ save_dict_results: True
+ mesh_cloth: 'ghostwhite'  #'LightCyan'

@@ -1,0 +1,1 @@
+python romp/exports/convert_fbx.py --input=demo/videos/action_frames/1_results/1_ts_results.npz --output=demo/videos/a1.fbx --gender=female

@@ -21,7 +21,7 @@ ROMP is a one-stage network for multi-person 3D mesh recovery from a single imag
 Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to contact me for related questions or discussions! 
 
 ### News
-*2021/9/10: Training code release. API optimization. *
+*2021/9/10: Training code release. API optimization. *  
 *2021/7/15: Adding support for an elegant context manager to run code in a notebook.*  See [Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg) for the details.  
 *2021/4/19: Adding support for textured SMPL mesh using [vedo](https://github.com/marcomusy/vedo).* See [visualization.md](docs/visualization.md) for the details.  
 *2021/3/30: 1.0 version.* Rebuilding the code. Release the ResNet-50 version and evaluation on 3DPW.   

@@ -21,7 +21,7 @@ I have built the Blender 2.91 on Ubuntu 18.04 LTS following [this instructions](
 
 ```
 cd src/
-python lib/utils/convert_fbx.py --input=/home/yusun/ROMP/demo/videos/sample_video2_results/sample_video2_results.npz --output=../demo/videos/sample_video2.fbx --gender=female
+python export/convert_fbx.py --input=/home/yusun/ROMP/demo/videos/sample_video2_results/sample_video2_results.npz --output=../demo/videos/sample_video2.fbx --gender=female
 ```
 
 4.Open the fbx animation in Blender:

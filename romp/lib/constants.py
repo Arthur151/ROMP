@@ -314,41 +314,6 @@ PVE_ds = ['pw3d_pc', 'pw3d_nc','pw3d_oc','pw3d_vibe', 'pw3d_normal', 'oh','agora
 dataset_depth = ['mupots','agora']
 #dataset_smplparams = ['h36m', 'pw3d','oh','agora']
 
-pretrained_models = {
-    'V1+HRNet-50+md':'/export/home/suny/CenterMesh/trained_models/3dpw_88_57.8.pkl',
-    'V1+HRNet-50+md+CAR':'/export/home/suny/CenterMesh/trained_models/pw3d-hc_97.64_76.93_pw3d-vibe_84.85_59.97_86.26_100.39_20.77_oh_38.38_h36m_52.93.pkl',
-    'V1+HRNet-50+md+CAR+3DPW':'/export/home/suny/CenterMesh/trained_models/pw3d_finetuned_testset_76.02_46.67_92.36_18.76.pkl',
-    # 注意：　model/resnet_50.py的预处理的均值方差不一样
-    'V1+ResNet-50+ld':'/export/home/suny/CenterMesh/trained_models/V1_noCAR0.2_pc_103.55_79.69_136.22_oc_98.05_67.03_109.97_nc_95.50_56.75_106.81.pkl',
-    'V1+ResNet-50+CAR0.1+ld':'/export/home/suny/CenterMesh/trained_models/resnet_cm64_V1_CAR0.1_vibe_91.33_54.97_pc_77.6_oc_66.6_nc_55.6_h36m,mpiinf,coco,mpii,lsp,up,aich.pkl',
-    'V1+ResNet-50+CAR0.2+ld':'/export/home/suny/CenterMesh/trained_models/V1_CAR0.2_pc_103.75_75.76_oc_99.37_67.07_110.70_nc_97.99_57.15_108.26.pkl',
-    'V1+ResNet-50+CAR0.3+ld':'/export/home/suny/CenterMesh/trained_models/V1_CAR0.3_pc_102.97_77.02_134.52_oc_97.78_66.48_108.99_nc_95.05_56.40_105.25.pkl',
-    'V1+ResNet-50+md+CAR':'/export/home/suny/CenterMesh/trained_models/resnet_cm64_V1_resnet_vibe_89.3_53.5_105.6_h36m,mpiinf,coco,mpii,lsp,oh,posetrack,crowdpose,aich,ochuman,up,jta,muco.pkl',
-    'V1+ResNet-50+md+CAR+3DPW':'/export/home/suny/CenterMesh/trained_models/resnet_cm64_V1_resnet_vibe_trainmode_test_79.7_49.4_94.7_pw3d0.8,crowdpose0.2.pkl',
-    'V1+ResNet-50+md+CAR_2':'/export/home/suny/CenterMesh/trained_models/resnet_cm64_V1_resnet_vibe_88.79_52.53_h36m,mpiinf,coco,mpii,lsp,muco,crowdpose.pkl',
-
-    'V1+HRNet-50+md+CAR+AGORA': '/export/home/suny/CenterMesh/trained_models/V1_hrnet_agora_ft76_val_108.02_71.79.pkl',
-
-}
-
-age_threshold = {'adult': [-0.04,0,0.04], 'teen':[0.04, 0.18, 0.36], 'kid':[0.36, 0.48, 0.6], 'baby':[0.6,0.78,1]}
-
-def get_cam3dmap_anchor(FOV, centermap_size):
-    depth_level = np.array([1, 10, 20, 100], dtype=np.float32)
-    #map_coord_range_each_level = (np.array([4/64., 50/64., 6/64., 4/64.], dtype=np.float32) * args().centermap_size).astype(np.int)
-    map_coord_range_each_level = (np.array([2/64., 25/64., 3/64., 2/64.], dtype=np.float32) * centermap_size).astype(np.int)
-    scale_level = 1/np.tan(np.radians(FOV/2.))/depth_level
-    cam3dmap_anchor = []
-    scale_cache = 8
-    for scale, coord_range in zip(scale_level, map_coord_range_each_level):
-        cam3dmap_anchor.append(scale_cache-np.arange(1,coord_range+1)/coord_range*(scale_cache-scale))
-        scale_cache = scale
-    cam3dmap_anchor = np.concatenate(cam3dmap_anchor)
-    return cam3dmap_anchor
-
-# from config import args
-# get_cam3dmap_anchor(args().FOV, args().centermap_size)
-
 img_exts = ['.bmp', '.dib', '.jpg', '.jpeg', '.jpe', '.png', '.webp', '.pbm', '.pgm', '.ppm', '.pxm', '.pnm', '.tiff', '.tif', '.sr', '.ras', '.exr', '.hdr', '.pic',\
             '.PNG', '.JPG', '.JPEG']
 video_exts = ['.mp4', '.avi', '.webm', '.gif', '.MP4', '.AVI', '.WEBM', '.GIF']

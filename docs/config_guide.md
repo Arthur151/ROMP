@@ -73,6 +73,7 @@ The number of dataloader workers.
 #### model_precision (str)  
 If you installed Pytorch 1.6+, then you can use the automatic mix precision (AMP), by setting`model_precision: fp16`
 
+
 ### Video setting 
 
 The video configure file is ROMP/configs/video.yml
@@ -88,24 +89,27 @@ Temporal motion smoothing is just a testing function. We need to first track the
 #### fps_save (int)  
 The FPS of the saved video results. 
 
+
 ### Webcam setting 
 
 The webcam configure file is ROMP/configs/webcam.yml
 
-#### webcam: whether run using webcam video
+#### cam_id (int)
+Web camera id, default 0. 
 
-#### cam_id: web camera id, default 0. 
+#### mesh_cloth (str)
+The texture of the estimated mesh. 
+We have a wardrobe in ROMP/model_data/wardrobe, to dress on the cloth, please find the cloth id in wardrobe (romp/lib/constants.py)
+Feel free to paint the estimated mesh results in your favorite color.
+Currently, we have LightCyan, ghostwhite, Azure, Cornislk, Honeydew, LavenderBlush. 
+If your favorite color is not included, please add it to the mesh_color_dict (romp/lib/constants.py).
 
-#### webcam_mesh_color: mesh color, default ghostwhite.
+#### run_on_remote_server (bool)
+Whether run webcam (captured locally) demo on remote server 
 
-Currently, we have LightCyan, ghostwhite, Azure, Cornislk, Honeydew, LavenderBlush. Feel free to paint the estimated mesh results in your favorite color.
+#### server_ip (str)
+ IP address of remote server.
 
-If your favorite color is not included, please add it to the mesh_color_dict (src/lib/constants.py) and set the webcam_mesh_color.
-
-#### run_on_remote_server: whether run webcam (captured locally) demo on remote server 
-
-#### server_ip: IP address of remote server.
-
-#### server_port: Port of remote server, default 10086.
-
-Please change to the other port if 10086 has been used.
+#### server_port (int)
+Port of remote server, default 10086.
+Please change to the other port if 10086 has been occupied.

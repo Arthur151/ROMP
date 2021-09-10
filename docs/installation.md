@@ -17,7 +17,11 @@ Clone the repo:
 git clone -b master --single-branch https://github.com/Arthur151/ROMP
 ```
 
-Then download the [model_data.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/model_data.zip) and [trained_models.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/trained_models.zip) from Github release, [Google drive](https://drive.google.com/drive/folders/1YdsHh62KGuQMowRjKM9Vzj_7pflb51BB?usp=sharing). 
+Then download the [model_data.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/model_data.zip) from Github release, [Google drive](https://drive.google.com/drive/folders/1YdsHh62KGuQMowRjKM9Vzj_7pflb51BB?usp=sharing). 
+
+If you want a fast try of ROMP, please download [trained_models_try.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/trained_models_try.zip).
+
+If you want to re-implement all results presented in our paper, please download all [trained_models.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/trained_models.zip).
 
 The layout would be
 ```bash

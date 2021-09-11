@@ -9,9 +9,11 @@ Please follow the directory structure to organize them.
 |   |-- h36m
 |   |   |-- images
 |   |   |-- annots.npz
+|   |   |-- cluster_results...
 |   |-- mpi-inf-3dhp
 |   |   |-- images
 |   |   |-- annots.npz
+|   |   |-- cluster_results...
 |   |-- MuCo
 |   |   |-- augmented_set
 |   |   |-- annots_augmented.npz

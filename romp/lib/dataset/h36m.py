@@ -66,7 +66,7 @@ class H36M(Image_base):
             self.file_paths = self.file_paths[::self.test2val_sample_ratio]
 
         if self.homogenize_pose_space:
-            cluster_results_file = os.path.join(args().dataset_rootdir, 'pose_space_optimization', 'data', 'cluster_results_noumap_h36m_kmeans.npz')
+            cluster_results_file = os.path.join(self.data_folder, 'cluster_results_noumap_h36m_kmeans.npz')
             self.cluster_pool = self.parse_cluster_results(cluster_results_file,self.file_paths)
 
     def get_image_info(self,index,total_frame=None):

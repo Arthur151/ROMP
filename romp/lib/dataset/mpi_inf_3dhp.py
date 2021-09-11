@@ -40,7 +40,7 @@ class MPI_INF_3DHP(Image_base):
         self.shuffle_ratio = args().shuffle_crop_ratio_3d
 
         if self.homogenize_pose_space:
-            cluster_results_file = os.path.join(args().dataset_rootdir, 'pose_space_optimization', 'data', 'cluster_results_noumap_mpiinf_kmeans.npz')
+            cluster_results_file = os.path.join(self.data_folder, 'cluster_results_noumap_mpiinf_kmeans.npz')
             self.cluster_pool = self.parse_cluster_results(cluster_results_file,self.file_paths)
         logging.info('Loaded MPI-INF-3DHP {} set,total {} samples'.format(set_name, self.__len__()))
 

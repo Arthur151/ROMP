@@ -21,8 +21,8 @@ ROMP is a one-stage network for multi-person 3D mesh recovery from a single imag
 Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to contact me for related questions or discussions! 
 
 ### News
-*2021/9/13: Low FPS / args parsing bugs are fixed. Support calling as a python lib.* Please refer to [this issue](https://github.com/Arthur151/ROMP/issues/52#issuecomment-917988564) for the details or just upgrade to the latest version. 
-*2021/9/10: Training code release. API optimization.*  
+*2021/9/13: Low FPS / args parsing bugs are fixed. Support calling as a python lib.*   
+*2021/9/10: Training code release. API optimization.*    
 [Old logs](docs/updates.md)
 
 <p float="center">

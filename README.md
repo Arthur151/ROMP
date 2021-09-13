@@ -102,8 +102,8 @@ Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks
 ### Export
 
 <p float="center">
-  <img src="../assets/demo/animation/fbx_animation.gif" width="50%" />
-  <img src="https://github.com/vltmedia/QuickMocap-BlenderAddon/raw/master/images/QuickMocap_v0.3.0.png" width="40%" />
+  <img src="../assets/demo/animation/fbx_animation.gif" width="56%" />
+  <img src="https://github.com/vltmedia/QuickMocap-BlenderAddon/raw/master/images/QuickMocap_v0.3.0.png" width="18%" />
 </p>
 
 ##### Export to Blender FBX 

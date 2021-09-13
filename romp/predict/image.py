@@ -21,7 +21,7 @@ class Image_processor(Predictor):
         self.visualizer.result_img_dir = self.output_dir 
         counter = Time_counter(thresh=1)
 
-        file_list = collect_image_list(image_folder=image_folder, collect_subdirs=args().collect_subdirs, img_exts=constants.img_exts)
+        file_list = collect_image_list(image_folder=image_folder, collect_subdirs=self.collect_subdirs, img_exts=constants.img_exts)
         internet_loader = self._create_single_data_loader(dataset='internet', train_flag=False, file_list=file_list, shuffle=False)
         counter.start()
 

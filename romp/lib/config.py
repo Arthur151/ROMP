@@ -37,6 +37,10 @@ def parse_args(input_args=None):
     parser.add_argument('--configs_yml', type = str, default = 'configs/v1.yml', help = 'settings') 
     parser.add_argument('--inputs', type = str, help = 'path to inputs') 
     parser.add_argument('--output_dir', type = str, help = 'path to save outputs') 
+    parser.add_argument('--show_largest_person_only',type = bool,default = True,help = 'whether to only show the results of the largest person in the image')
+    parser.add_argument('--temporal_optimization',type = bool,default = False,help = 'whether to optimize the temporal smoothness')
+    parser.add_argument('--save_visualization_on_img',type = bool,default = True,help = 'whether to rendering the mesh back to image, which is time consuming')
+    parser.add_argument('--fps_save', type = int, default = 24, help = 'the fps of the save video')
     parser.add_argument('-f', type = str, default = None, help = 'do nothing, just to deal with the invalid input args from jupyter notebook') 
 
     mode_group = parser.add_argument_group(title='mode options')
@@ -149,8 +153,8 @@ def parse_args(input_args=None):
     #smpl_group.add_argument('--smpl-model',type = str,default = os.path.join(model_dir,'parameters','neutral_smpl_with_cocoplus_reg.txt'),
     #    help = 'smpl model path')
     smpl_group.add_argument('--smpl_mesh_root_align',type = bool,default =True)
-    mode_group.add_argument('--Rot_type', type=str, default='6D', help='rotation representation type: angular, 6D')
-    mode_group.add_argument('--rot_dim', type=int, default=6, help='rotation representation type: 3D angular, 6D')
+    smpl_group.add_argument('--Rot_type', type=str, default='6D', help='rotation representation type: angular, 6D')
+    smpl_group.add_argument('--rot_dim', type=int, default=6, help='rotation representation type: 3D angular, 6D')
     smpl_group.add_argument('--cam_dim',type = int,default = 3, help = 'the dimention of camera param')
     smpl_group.add_argument('--beta_dim',type = int,default = 10, help = 'the dimention of SMPL shape param, beta')
     smpl_group.add_argument('--smpl_joint_num',type = int,default = 22, help = 'joint number of SMPL model we estimate')

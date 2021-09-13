@@ -6,10 +6,10 @@ This evaluation has been implemented in our released version 1.0, while the late
 
 2 steps to re-implement our results in Tab. 1 of the main paper. 
 
-1. Set paths
-a. change the dataset_rootdir in configs/eval_3dpw_challenge.yml to the absolute path of the folder that contains 3DPW dataset.
-b. change the model_path in configs/eval_3dpw_challenge.yml to the absolute path of model checkpoint.
-c. change the output_dir in configs/eval_3dpw_challenge.yml to the absolute path of saving the results.zip file.
+1. Set paths:  
+a. change the dataset_rootdir in configs/eval_3dpw_challenge.yml to the absolute path of the folder that contains 3DPW dataset.  
+b. change the model_path in configs/eval_3dpw_challenge.yml to the absolute path of model checkpoint.  
+c. change the output_dir in configs/eval_3dpw_challenge.yml to the absolute path of saving the results.zip file.  
 
 2. Run:
 ```bash
@@ -17,8 +17,8 @@ cd ROMP
 CUDA_VISIBLE_DEVICES=0 python romp/lib/evaluation/collect_3DPW_results.py --configs_yml=configs/eval_3dpw_challenge.yml
 ```
 
-3. Results of ROMP (HRNet-32) on different device:
-The model is trained in mixed precision (fp16) mode. The evaluation results are different on different devices. 
+3. Results of ROMP (HRNet-32) on different device:  
+The model is trained in mixed precision (fp16) mode.
 
 On Tesla P40/ V100 GPU (Centos, Pytorch 1.6.0):  
 
@@ -34,11 +34,11 @@ On Tesla P40/ V100 GPU (Centos, Pytorch 1.6.0):
 
 
 ### Evaluation on 3DPW test set
-2 steps to re-implement our results in Tab. 2 and Tab.3 of the main paper. 
+2 steps to re-implement our results in Tab. 2 and Tab. 3 of the main paper. 
 
-1. Set paths
-a. change the dataset_rootdir in configs/eval_3dpw_test.yml to the absolute path of 3DPW datasets.
-b. change the model_path in configs/eval_3dpw_test.yml to the absolute path of model checkpoint.
+1. Set paths:  
+a. change the dataset_rootdir in configs/eval_3dpw_test.yml to the absolute path of 3DPW datasets.  
+b. change the model_path in configs/eval_3dpw_test.yml to the absolute path of model checkpoint.  
 
 2. Run:
 ```bash
@@ -94,13 +94,11 @@ python -m romp.test --configs_yml=configs/eval_crowdpose_val.yml
 ```
 
 ### Test FPS
-To re-implement our results in Tab. 7 of the main paper. 
-Please try our webcam demo.
-
-On a GTX 1070Ti GPU (Ubuntu, Pytorch 1.6.0):  
+To re-implement our results in Tab. 7 of the main paper. Please try our webcam demo.  
+On a GTX 1070Ti GPU (Ubuntu, Pytorch 1.9.0, CUDA 10.2):  
 
 |  Backbone | HRNet-32 | ResNet-50 |  
 |:---------:|:--------:|:---------:|  
-|    FPS    |   20.8   |    30.9   |  
+|    FPS    |   23.8   |    30.9   |  
 
 

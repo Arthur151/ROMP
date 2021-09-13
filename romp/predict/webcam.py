@@ -7,8 +7,8 @@ if sum(whether_set_yml)==0:
 from .base_predictor import *
 
 class Webcam_processor(Predictor):
-    def __init__(self):
-        super(Webcam_processor, self).__init__()
+    def __init__(self, **kwargs):
+        super(Webcam_processor, self).__init__(**kwargs)
 
     def webcam_run_local(self, video_file_path=None):
         '''
@@ -68,7 +68,7 @@ class Webcam_processor(Predictor):
 def main():
     with ConfigContext(parse_args(sys.argv[1:])) as args:
         print('Loading the configurations from {}'.format(args.configs_yml))
-        processor = Webcam_processor()
+        processor = Webcam_processor(args=args)
         print('Running the code on webcam demo')
         if args.run_on_remote_server:
             processor.webcam_run_remote()

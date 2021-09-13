@@ -21,14 +21,9 @@ ROMP is a one-stage network for multi-person 3D mesh recovery from a single imag
 Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to contact me for related questions or discussions! 
 
 ### News
-*2021/9/10: Fix low FPS bug. Please refer to [this issue](https://github.com/Arthur151/ROMP/issues/52#issuecomment-917988564) for the details or just upgrade to the latest version *
-*2021/9/10: Training code release. API optimization. *  
-*2021/7/15: Adding support for an elegant context manager to run code in a notebook.*  See [Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg) for the details.  
-*2021/4/19: Adding support for textured SMPL mesh using [vedo](https://github.com/marcomusy/vedo).* See [visualization.md](docs/visualization.md) for the details.  
-*2021/3/30: 1.0 version.* Rebuilding the code. Release the ResNet-50 version and evaluation on 3DPW.   
-*2020/11/26: Optimization for person-person occlusion.* Small changes for video support.   
-*2020/9/11: Real-time webcam demo using local/remote server.* 
-*2020/9/4: Google Colab demo.* Saving a npy file per imag. 
+*2021/9/13: Fix low FPS bug.* Please refer to [this issue](https://github.com/Arthur151/ROMP/issues/52#issuecomment-917988564) for the details or just upgrade to the latest version. 
+*2021/9/10: Training code release. API optimization.*  
+[Old logs](docs/updates.md)
 
 <p float="center">
   <img src="../assets/demo/animation/live_demo_guangboticao.gif" width="48%" />
@@ -51,45 +46,41 @@ Please refer to the [bug.md](docs/bugs.md) for unpleasant bugs. Welcome to submi
 
 Please refer to [install.md](docs/installation.md) for installation.
 
+### Inference
 
-### Processing images
+Currently, we support processing images, video or real-time webcam.    
+Pelease refer to [config_guide.md](docs/config_guide.md) for configurations.  
+
+#### Processing images
 
 To re-implement the demo results, please run
 ```bash
 cd ROMP
+# change the `inputs` in configs/image.yml to /path/to/your/image folder, then run 
 sh scripts/image.sh
-# if there are any bugs about shell script, please consider run the following command instead:
-python -u -m romp.predict.image --configs_yml='configs/image.yml'
-```
-Results will be saved in ROMP/demo/images_results. You can also run the code on other images via putting the images under ROMP/demo/images or passing the path of image folder via
-```bash
-python -u -m romp.predict.image --inputs=/path/to/image_folder --output_dir='demo/image_results'
+# or run the command like
+python -m romp.predict.image --inputs=demo/images --output_dir=demo/image_results
 ```
 Please refer to [config_guide.md](docs/config_guide.md) for **saving the estimated mesh/Center maps/parameters dict**.
 
 #### Processing videos
 
-To process videos, you can change the `inputs` in configs/video.yml to /path/to/your/video, then run 
 ```bash
 cd ROMP
+# change the `inputs` in configs/video.yml to /path/to/your/video file or a folder containing video frames, then run 
 sh scripts/video.sh
-```
-or simply run the command like
-```bash
-python -u -m romp.predict.video --inputs=demo/videos/sample_video.mp4 --output_dir='demo/sample_video_results'
+# or run the command like
+python -u -m romp.predict.video --inputs=demo/videos/sample_video.mp4 --output_dir=demo/sample_video_results
 ```
 
 #### Webcam
-
-We also provide the webcam demo code, which can run at real-time on a 1070Ti GPU / remote server.  
-Currently, limited by the visualization pipeline, the webcam visualization code only support the single-person mesh.
 
 To do this you just need to run:
 ```bash
 cd ROMP
 sh scripts/webcam.sh
 ```
-Pelease refer to [config_guide.md](docs/config_guide.md) for configurations.
+Currently, limited by the visualization pipeline, the real-time webcam demo only visualize the results of the largest person in the frames.
 
 ### Train
 

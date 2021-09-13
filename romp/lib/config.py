@@ -37,6 +37,7 @@ def parse_args(input_args=None):
     parser.add_argument('--configs_yml', type = str, default = 'configs/v1.yml', help = 'settings') 
     parser.add_argument('--inputs', type = str, help = 'path to inputs') 
     parser.add_argument('--output_dir', type = str, help = 'path to save outputs') 
+    parser.add_argument('-f', type = str, default = None, help = 'do nothing, just to deal with the invalid input args from jupyter notebook') 
 
     mode_group = parser.add_argument_group(title='mode options')
     # mode settings

@@ -10,8 +10,8 @@ import glob
 from utils.util import collect_image_list
 
 class Image_processor(Predictor):
-    def __init__(self):
-        super(Image_processor, self).__init__()
+    def __init__(self, **kwargs):
+        super(Image_processor, self).__init__(**kwargs)
         self.__initialize__()
 
     @torch.no_grad()
@@ -56,7 +56,7 @@ class Image_processor(Predictor):
 def main():
     with ConfigContext(parse_args(sys.argv[1:])) as args:
         print('Loading the configurations from {}'.format(args.configs_yml))
-        processor = Image_processor()
+        processor = Image_processor(args=args)
         inputs = args.inputs
         if not os.path.exists(inputs):
             print("Didn't find the target directory: {}. \n Running the code on the demo images".format(inputs))

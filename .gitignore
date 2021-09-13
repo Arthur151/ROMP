@@ -9,6 +9,7 @@ __pycache__/
 *.mp4
 *.npz
 *.fbx
+*.zip
 .vscode
 model_data/
 active_configs

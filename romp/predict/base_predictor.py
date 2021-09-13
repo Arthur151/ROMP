@@ -5,8 +5,8 @@ from utils.util import save_result_dict_tonpz
 from dataset.internet import img_preprocess
 
 class Predictor(Base):
-    def __init__(self):
-        super(Predictor, self).__init__()
+    def __init__(self, **kwargs):
+        super(Predictor, self).__init__(**kwargs)
         self._build_model_()
         self._prepare_modules_()
         self.demo_cfg = {'mode':'parsing', 'calc_loss': False}

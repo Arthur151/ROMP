@@ -10,8 +10,8 @@ from utils.demo_utils import frames2video, video2frame
 import itertools
 
 class Video_processor(Image_processor):
-    def __init__(self):
-        super(Video_processor, self).__init__()
+    def __init__(self, **kwargs):
+        super(Video_processor, self).__init__(**kwargs)
 
     @staticmethod
     def toframe(video_file_path):
@@ -96,7 +96,7 @@ class Video_processor(Image_processor):
 def main():
     with ConfigContext(parse_args(sys.argv[1:])) as args:
         print('Loading the configurations from {}'.format(args.configs_yml))
-        processor = Video_processor()
+        processor = Video_processor(args=args)
         print('Processing video: ',args.inputs)
         processor.process_video(args.inputs)
 

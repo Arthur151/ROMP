@@ -54,10 +54,10 @@ class Image_processor(Predictor):
 
 
 def main():
-    with ConfigContext(parse_args(sys.argv[1:])) as args:
-        print('Loading the configurations from {}'.format(args.configs_yml))
-        processor = Image_processor(args=args)
-        inputs = args.inputs
+    with ConfigContext(parse_args(sys.argv[1:])) as args_set:
+        print('Loading the configurations from {}'.format(args_set.configs_yml))
+        processor = Image_processor(args_set=args_set)
+        inputs = args_set.inputs
         if not os.path.exists(inputs):
             print("Didn't find the target directory: {}. \n Running the code on the demo images".format(inputs))
             inputs = os.path.join(processor.demo_dir,'images')

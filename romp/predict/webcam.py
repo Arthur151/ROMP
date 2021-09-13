@@ -66,11 +66,11 @@ class Webcam_processor(Predictor):
                 capture.send(['failed'])
 
 def main():
-    with ConfigContext(parse_args(sys.argv[1:])) as args:
-        print('Loading the configurations from {}'.format(args.configs_yml))
-        processor = Webcam_processor(args=args)
+    with ConfigContext(parse_args(sys.argv[1:])) as args_set:
+        print('Loading the configurations from {}'.format(args_set.configs_yml))
+        processor = Webcam_processor(args_set=args_set)
         print('Running the code on webcam demo')
-        if args.run_on_remote_server:
+        if args_set.run_on_remote_server:
             processor.webcam_run_remote()
         else:
             processor.webcam_run_local()

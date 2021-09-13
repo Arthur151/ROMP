@@ -52,7 +52,7 @@ class Video_processor(Image_processor):
             counter.count(self.val_batch_size)
             results = self.reorganize_results(outputs, outputs['meta_data']['imgpath'], reorganize_idx)
 
-            if args().show_largest_person_only:
+            if self.show_largest_person_only:
                 results_track = {int(os.path.splitext(os.path.basename(img_path))[0]):result for img_path, result in results.items()}
                 for frame_id in sorted(list(results_track.keys())):
                     max_id = np.argmax(np.array([result['cam'][0] for result in results_track[frame_id]]))
@@ -94,11 +94,11 @@ class Video_processor(Image_processor):
             frames2video(sorted(save_frame_list), video_save_name, fps=args().fps_save)
 
 def main():
-    with ConfigContext(parse_args(sys.argv[1:])) as args:
-        print('Loading the configurations from {}'.format(args.configs_yml))
-        processor = Video_processor(args=args)
-        print('Processing video: ',args.inputs)
-        processor.process_video(args.inputs)
+    with ConfigContext(parse_args(sys.argv[1:])) as args_set:
+        print('Loading the configurations from {}'.format(args_set.configs_yml))
+        processor = Video_processor(args_set=args_set)
+        print('Processing video: ',args_set.inputs)
+        processor.process_video(args_set.inputs)
 
 if __name__ == '__main__':
     main()

@@ -27,9 +27,9 @@ if args().model_precision=='fp16':
     from torch.cuda.amp import autocast, GradScaler
 
 class Base(object):
-    def __init__(self, args=None):
+    def __init__(self, args_set=None):
         self.project_dir = config.project_dir
-        hparams_dict = self.load_config_dict(vars(args() if args is None else args))
+        hparams_dict = self.load_config_dict(vars(args() if args_set is None else args_set))
         self._init_log(hparams_dict)
         self._init_params()
         self.visualizer = Visualizer(resolution=(512,512), result_img_dir=self.result_img_dir, with_renderer=True)

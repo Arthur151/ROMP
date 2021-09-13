@@ -19,20 +19,19 @@ CUDA_VISIBLE_DEVICES=0 python romp/lib/evaluation/collect_3DPW_results.py --conf
 
 3. Results of ROMP (HRNet-32) on different device:
 The model is trained in mixed precision (fp16) mode. The evaluation results are different on different devices. 
-```
+
 On Tesla P40/ V100 GPU (Centos, Pytorch 1.6.0):  
 
 |   DS/EM   | MPJPE | PA_MPJPE |  PCK  |  AUC  | MPJAE | PA_MPJAE |  
-|:-----------:|:-------:|:----------:|:-------:|:-------:|:-------:|:----------:|  
+|:---------:|:-----:|:--------:|:-----:|:-----:|:-----:|:--------:|  
 | pw3d_chal |  82.7 |   60.5   |  36.5 |  59.7 |  20.5 |   18.9   |  
  
  On a GTX 1070Ti GPU (Ubuntu, Pytorch 1.6.0):  
 
 |   DS/EM   | MPJPE | PA_MPJPE |  PCK  |  AUC  | MPJAE | PA_MPJAE |  
-|:-----------:|:-------:|:----------:|:-------:|:-------:|:-------:|:----------:|  
+|:---------:|:-----:|:--------:|:-----:|:-----:|:-----:|:--------:|  
 | pw3d_chal |  81.8 |   58.6   |  37.3 |  59.9 |  20.8 |   19.1   |  
 
-```
 
 ### Evaluation on 3DPW test set
 2 steps to re-implement our results in Tab. 2 and Tab.3 of the main paper. 
@@ -55,20 +54,20 @@ python -m romp.test --configs_yml=configs/eval_3dpw_test_resnet_ft.yml
 ```
 
 Results of ROMP (HRNet-32) on different device:
-```
+
 On Tesla P40/ V100 GPU (Centos, Pytorch 1.6.0):  
 
 |   DS/EM   | MPJPE | PA_MPJPE |  PVE   |  
-|:-----------:|:-------:|:----------:|:--------:|  
+|:---------:|:-----:|:--------:|:------:|  
 | pw3d_vibe | 85.48 |  53.14   | 103.02 |  
 
 
 On a GTX 1070Ti GPU (Ubuntu, Pytorch 1.6.0):  
 
 |   DS/EM   | MPJPE | PA_MPJPE |  
-|:-----------:|:-------:|:----------:|  
+|:---------:|:-----:|:--------:|  
 | pw3d_vibe | 87.10 |  53.11   |  
-```
+
 
 ### Evaluation on CMU Panoptic
 1 step to re-implement our results in Tab. 5 of the main paper. 
@@ -97,11 +96,11 @@ python -m romp.test --configs_yml=configs/eval_crowdpose_val.yml
 ### Test FPS
 To re-implement our results in Tab. 7 of the main paper. 
 Please try our webcam demo.
-```
+
 On a GTX 1070Ti GPU (Ubuntu, Pytorch 1.6.0):  
 
 |  Backbone | HRNet-32 | ResNet-50 |  
-|:-----------:|:----------:|:-----------:|  
+|:---------:|:--------:|:---------:|  
 |    FPS    |   20.8   |    30.9   |  
 
-```
+

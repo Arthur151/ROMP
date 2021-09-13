@@ -230,22 +230,23 @@ class ConfigContext(object):
         # delete the yaml file
         self.clean()
 
-# def args():
-#     return ConfigContext.parsed_args
-
 def args():
-    parsed_args = parse_args(['--tab', 'ROMP_v1']) 
-    if os.path.exists(ConfigContext.yaml_filename):
-        with open(ConfigContext.yaml_filename, 'r') as f:
-            argsdict = yaml.load(f, Loader=yaml.FullLoader)
-    else:
-        # This will write a new Yaml if the yaml doesn't exist.
-        # configcontext.__forceyaml__(configcontext.yaml_filename)
-        with open(ConfigContext.yaml_filename, 'w') as f:
-            d = ConfigContext.parsed_args.__dict__
-            yaml.dump(d, f)
-        with open(ConfigContext.yaml_filename, 'r') as f:
-            argsdict = yaml.load(f, Loader=yaml.FullLoader)
-    for k, v in argsdict.items():
-        parsed_args.__dict__[k] = v
-    return parsed_args
+    return ConfigContext.parsed_args
+
+# This would result in low FPS
+# def args():
+#     parsed_args = parse_args(['--tab', 'ROMP_v1']) 
+#     if os.path.exists(ConfigContext.yaml_filename):
+#         with open(ConfigContext.yaml_filename, 'r') as f:
+#             argsdict = yaml.load(f, Loader=yaml.FullLoader)
+#     else:
+#         # This will write a new Yaml if the yaml doesn't exist.
+#         # configcontext.__forceyaml__(configcontext.yaml_filename)
+#         with open(ConfigContext.yaml_filename, 'w') as f:
+#             d = ConfigContext.parsed_args.__dict__
+#             yaml.dump(d, f)
+#         with open(ConfigContext.yaml_filename, 'r') as f:
+#             argsdict = yaml.load(f, Loader=yaml.FullLoader)
+#     for k, v in argsdict.items():
+#         parsed_args.__dict__[k] = v
+#     return parsed_args

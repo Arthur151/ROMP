@@ -21,7 +21,7 @@ ROMP is a one-stage network for multi-person 3D mesh recovery from a single imag
 Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to contact me for related questions or discussions! 
 
 ### News
-*2021/9/13: Low FPS / args parsing bugs are fixed.* Please refer to [this issue](https://github.com/Arthur151/ROMP/issues/52#issuecomment-917988564) for the details or just upgrade to the latest version. 
+*2021/9/13: Low FPS / args parsing bugs are fixed. Support calling as a python lib.* Please refer to [this issue](https://github.com/Arthur151/ROMP/issues/52#issuecomment-917988564) for the details or just upgrade to the latest version. 
 *2021/9/10: Training code release. API optimization.*  
 [Old logs](docs/updates.md)
 
@@ -49,7 +49,9 @@ Please refer to [install.md](docs/installation.md) for installation.
 ### Inference
 
 Currently, we support processing images, video or real-time webcam.    
-Pelease refer to [config_guide.md](docs/config_guide.md) for configurations.  
+Pelease refer to [config_guide.md](docs/config_guide.md) for configurations.   
+
+ROMP can be called as a python lib inside the python code, jupyter notebook, or from command line / scripts, please refer to [Google Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg) for examples.
 
 #### Processing images
 
@@ -63,6 +65,21 @@ python -m romp.predict.image --inputs=demo/images --output_dir=demo/image_result
 ```
 Please refer to [config_guide.md](docs/config_guide.md) for **saving the estimated mesh/Center maps/parameters dict**.
 
+Here, we show an example of calling ROMP as a python lib.
+```bash
+# set the absolute path to ROMP
+path_to_romp = '/path/to/ROMP'
+import os,sys
+sys.path.append(path_to_romp)
+# set the detailed configurations
+from romp.lib.config import ConfigContext, parse_args, args
+ConfigContext.parsed_args = parse_args(["--configs_yml=configs/image.yml",'--inputs=/path/to/images_folder', '--output_dir=/path/to/save/image_results', '--save_centermap', False]) # Be caution that setting the bool configs needs two elements, ['--config', True/False]
+# import the ROMP image processor
+from romp.predict.image import Image_processor
+processor = Image_processor(args_set=args())
+results_dict = processor.run(args().inputs) # you can change the args().inputs to other /path/to/images_folder
+````
+
 #### Processing videos
 
 ```bash
@@ -72,6 +89,21 @@ sh scripts/video.sh
 # or run the command like
 python -u -m romp.predict.video --inputs=demo/videos/sample_video.mp4 --output_dir=demo/sample_video_results
 ```
+
+Here, we show an example of calling ROMP as a python lib.
+```bash
+# set the absolute path to ROMP
+path_to_romp = '/path/to/ROMP'
+import os,sys
+sys.path.append(path_to_romp)
+# set the detailed configurations
+from romp.lib.config import ConfigContext, parse_args, args
+ConfigContext.parsed_args = parse_args(["--configs_yml=configs/video.yml",'--inputs=/path/to/video', '--output_dir=/path/to/save/video_results', '--save_visualization_on_img',False]) # Be caution that setting the bool configs needs two elements, ['--config', True/False]
+# import the ROMP image processor
+from romp.predict.video import Video_processor
+processor = Video_processor(args_set=args())
+results_dict = processor.run(args().inputs) # you can change the args().inputs to other /path/to/video
+````
 
 #### Webcam
 

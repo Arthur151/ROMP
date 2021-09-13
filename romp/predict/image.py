@@ -24,7 +24,7 @@ class Image_processor(Predictor):
         file_list = collect_image_list(image_folder=image_folder, collect_subdirs=self.collect_subdirs, img_exts=constants.img_exts)
         internet_loader = self._create_single_data_loader(dataset='internet', train_flag=False, file_list=file_list, shuffle=False)
         counter.start()
-
+        results_all = {}
         for test_iter,meta_data in enumerate(internet_loader):
             outputs = self.net_forward(meta_data, cfg=self.demo_cfg)
             reorganize_idx = outputs['reorganize_idx'].cpu().numpy()
@@ -51,6 +51,8 @@ class Image_processor(Predictor):
             if test_iter%8==0:
                 print('Processed {} / {} images'.format(test_iter * self.val_batch_size, len(internet_loader.dataset)))
             counter.start()
+            results_all.update(results)
+        return results_all
 
 
 def main():

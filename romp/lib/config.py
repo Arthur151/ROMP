@@ -34,7 +34,7 @@ def parse_args(input_args=None):
 
     parser = argparse.ArgumentParser(description = 'ROMP: Monocular, One-stage, Regression of Multiple 3D People')
     parser.add_argument('--tab', type = str, default = 'ROMP_v1', help = 'additional tabs')
-    parser.add_argument('--configs_yml', type = str, default = 'configs/v1.yml', help = 'settings') 
+    parser.add_argument('--configs_yml', type = str, default = os.path.join(project_dir,'configs/v1.yml'), help = 'settings') 
     parser.add_argument('--inputs', type = str, help = 'path to inputs') 
     parser.add_argument('--output_dir', type = str, help = 'path to save outputs') 
     parser.add_argument('--show_largest_person_only',type = bool,default = True,help = 'whether to only show the results of the largest person in the image')
@@ -172,7 +172,8 @@ def parse_args(input_args=None):
     parsed_args = parser.parse_args(args=input_args)
     parsed_args.adjust_lr_epoch = []
     parsed_args.kernel_sizes = [5]
-    with open(parsed_args.configs_yml) as file:
+    config_yml_path = os.path.join(project_dir, parsed_args.configs_yml)
+    with open(config_yml_path) as file:
         configs_update = yaml.full_load(file)
     
     for key, value in configs_update['ARGS'].items():

@@ -92,6 +92,7 @@ class Video_processor(Image_processor):
             video_save_name = os.path.join(self.output_dir, video_basename+'_results.mp4')
             print('Writing results to {}'.format(video_save_name))
             frames2video(sorted(save_frame_list), video_save_name, fps=self.fps_save)
+        return results_frames
 
 def main():
     with ConfigContext(parse_args(sys.argv[1:])) as args_set:

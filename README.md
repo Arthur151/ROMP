@@ -50,6 +50,7 @@ Please refer to the [bug.md](docs/bugs.md) for unpleasant bugs. Welcome to submi
 
 Please refer to [install.md](docs/installation.md) for installation.
 
+
 ### Processing images
 
 To re-implement the demo results, please run
@@ -89,24 +90,29 @@ sh scripts/webcam.sh
 ```
 Pelease refer to [config_guide.md](docs/config_guide.md) for configurations.
 
-### Blender
+### Train
 
-##### Export to Blender FBX 
-
-<p float="center">
-  <img src="../assets/demo/animation/fbx_animation.gif" width="50%" />
-</p>
-
-Please refer to [expert.md](docs/export.md) to export the results to fbx files for Blender usage. Currently, this function only support the single-person video cases. Therefore, please test it with `demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `demo/videos/sample_video2_results`.
-##### Blender Addons
-
-- [vltmedia/QuickMocap-BlenderAddon: Use this Blender Addon to import & clean Mocap Pose data from .npz or .pkl files. These files may have been created using Numpy, ROMP, or other motion capture processes that package their files accordingly. (github.com)](https://github.com/vltmedia/QuickMocap-BlenderAddon)
-  - Reads the .npz file created by ROMP. Clean & smooth the resulting keyframes.
-  - ![Quick Mocap v0.3.0](https://github.com/vltmedia/QuickMocap-BlenderAddon/raw/master/images/QuickMocap_v0.3.0.png)
+Please prepare the training datasets following [dataset.md](docs/dataset.md), and then refer to [train.md](docs/train.md) for training.
 
 ### Evaluation
 
 Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks.
+
+### Export
+
+<p float="center">
+  <img src="../assets/demo/animation/fbx_animation.gif" width="50%" />
+  <img src="https://github.com/vltmedia/QuickMocap-BlenderAddon/raw/master/images/QuickMocap_v0.3.0.png" width="50%" />
+</p>
+
+##### Export to Blender FBX 
+
+Please refer to [expert.md](docs/export.md) to export the results to fbx files for Blender usage. Currently, this function only support the single-person video cases. Therefore, please test it with `demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `demo/videos/sample_video2_results`.
+
+##### Blender Addons
+
+[VLT Media](https://github.com/vltmedia) creates a [QuickMocap-BlenderAddon](https://github.com/vltmedia/QuickMocap-BlenderAddon) to  read the .npz file created by ROMP. Clean & smooth the resulting keyframes.
+
 
 ## TODO LIST
 
@@ -130,23 +136,24 @@ year = {2021}
 }
 ```
 
+## Contributor
+
+This repository is currently maintained by [Yu Sun](https://github.com/Arthur151). 
+
+ROMP has also benefited from many developers, including 
+ - [Marco Musy](https://github.com/marcomusy) : help in [the textured SMPL visualization](https://github.com/marcomusy/vedo/issues/371).
+ - [Gavin Gray](https://github.com/gngdb) : adding support for an elegant context manager to run code in a notebook.
+ - [VLT Media](https://github.com/vltmedia) : adding support for running on Windows & batch_videos.py.
+
 ## Acknowledgement
 
 We thank [Peng Cheng](https://github.com/CPFLAME) for his constructive comments on Center map training.  
 
-Thanks to [Marco Musy](https://github.com/marcomusy) for his help in [the textured SMPL visualization](https://github.com/marcomusy/vedo/issues/371).
-
-Thanks to [Gavin Gray](https://github.com/gngdb) for adding support for an elegant context manager to run code in a notebook via [this pull](https://github.com/Arthur151/ROMP/pull/58).
-
-Thanks to [VLT Media](https://github.com/vltmedia) for adding support for running on Windows & batch_videos.py.
-
 Here are some great resources we benefit:
 
 - SMPL models and layer is borrowed from MPII [SMPL-X model](https://github.com/vchoutas/smplx).
-- Webcam pipeline is borrowed from [minimal-hand](https://github.com/CalciferZh/minimal-hand).
-- Some functions are borrowed from [HMR-pytorch](https://github.com/MandyMo/pytorch_HMR).
-- Some functions for data augmentation are borrowed from [SPIN](https://github.com/nkolot/SPIN).
-- Synthetic occlusion is borrowed from [synthetic-occlusion](https://github.com/isarandi/synthetic-occlusion).
-- The evaluation code of 3DPW dataset is brought from [3dpw-eval](https://github.com/aymenmir1/3dpw-eval).   
-- For fair comparison, the GT annotations of 3DPW dataset are brought from [VIBE](https://github.com/mkocabas/VIBE).
-- 3D mesh visualization is supported by [vedo](https://github.com/marcomusy/vedo), [EasyMocap](https://github.com/zju3dv/EasyMocap) and [Open3D]( https://github.com/intel-isl/Open3D).
+- Some functions are borrowed from [HMR-pytorch](https://github.com/MandyMo/pytorch_HMR) and [SPIN](https://github.com/nkolot/SPIN).
+- The evaluation code and GT annotations of 3DPW dataset is brought from [3dpw-eval](https://github.com/aymenmir1/3dpw-eval) and [VIBE](https://github.com/mkocabas/VIBE).
+- 3D mesh visualization is supported by [vedo](https://github.com/marcomusy/vedo), [EasyMocap](https://github.com/zju3dv/EasyMocap), [minimal-hand](https://github.com/CalciferZh/minimal-hand) and [Open3D]( https://github.com/intel-isl/Open3D).
+
+Please consider citing their papers.

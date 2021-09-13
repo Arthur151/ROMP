@@ -1,6 +1,6 @@
 ## Train
 
-1. Please first prepare your datasets follow [dataset.md](docs/dataset.md) and finish the installation follow [installation.md](docs/installation.md).
+1. Please first prepare your datasets follow [dataset.md](dataset.md) and finish the installation follow [installation.md](installation.md).
 
 2. Run the script:
 You can train ROMP via

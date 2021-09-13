@@ -65,7 +65,7 @@ Batch size during inference/validation.
 
 #### backbone (str)    
 To switch backbone from HRNet-32 to ResNet-50:
-Set the `backbone: hrnet` to `backbone: resnet`, meanwhile change the checkout from `gmodel_path: trained_models/ROMP_HRNet32_V1.pkl` to `gmodel_path: trained_models/ROMP_ResNet50_V1.pkl`.
+Set the `backbone: hrnet` to `backbone: resnet`, meanwhile change the checkout from `model_path: trained_models/ROMP_HRNet32_V1.pkl` to `model_path: trained_models/ROMP_ResNet50_V1.pkl`.
 
 #### nw (int)  
 The number of dataloader workers. 

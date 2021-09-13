@@ -11,7 +11,7 @@ The layout of smpl data is:
 
 2. Change the config:
 
-Edit the config file, i.e. [configs/webcam.yml](configs/webcam.yml).
+Edit the config file, i.e. [configs/webcam.yml](../configs/webcam.yml).
 
 ```
  # for picking up sepcific cloth from the wardrobe in model_data, please refer to romp/lib/constants.py

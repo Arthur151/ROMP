@@ -170,6 +170,7 @@ def parse_args(input_args=None):
     debug_group.add_argument('--track_memory_usage',type = bool,default = False)
 
     parsed_args = parser.parse_args(args=input_args)
+    print(parsed_args)
     parsed_args.adjust_lr_epoch = []
     parsed_args.kernel_sizes = [5]
     with open(parsed_args.configs_yml) as file:
@@ -177,10 +178,13 @@ def parse_args(input_args=None):
     
     for key, value in configs_update['ARGS'].items():
         # make sure to update the configurations from .yml that not appears in input_args.
+        appear_in_input_args = False
         for input_arg in input_args:
             if isinstance(input_arg, str):
                 if '--{}'.format(key) in input_arg:
-                    continue
+                    appear_in_input_args = True
+        if appear_in_input_args:
+            continue
         
         if isinstance(value,str):
             exec("parsed_args.{} = '{}'".format(key, value))

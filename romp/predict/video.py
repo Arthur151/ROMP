@@ -1,3 +1,9 @@
+import sys 
+whether_set_yml = ['configs_yml' in input_arg for input_arg in sys.argv]
+if sum(whether_set_yml)==0:
+    default_webcam_configs_yml = "--configs_yml=configs/video.yml"
+    print('No configs_yml is set, set it to the default {}'.format(default_webcam_configs_yml))
+    sys.argv.append(default_webcam_configs_yml)
 from .image import *
 import keyboard
 from utils.demo_utils import frames2video, video2frame
@@ -88,13 +94,11 @@ class Video_processor(Image_processor):
             frames2video(sorted(save_frame_list), video_save_name, fps=args().fps_save)
 
 def main():
-    input_args = sys.argv[1:]
-    if sum(['configs_yml' in input_arg for input_arg in input_args])==0:
-        input_args.append("--configs_yml=configs/video.yml")
-    with ConfigContext(parse_args(input_args)):
+    with ConfigContext(parse_args(sys.argv[1:])) as args:
+        print('Loading the configurations from {}'.format(args.configs_yml))
         processor = Video_processor()
-        print('Processing video: ',args().inputs)
-        processor.process_video(args().inputs)
+        print('Processing video: ',args.inputs)
+        processor.process_video(args.inputs)
 
 if __name__ == '__main__':
     main()

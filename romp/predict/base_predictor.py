@@ -38,7 +38,7 @@ class Predictor(Base):
 
     def single_image_forward(self,image):
         meta_data = img_preprocess(image, '0', input_size=args().input_size, single_img_input=True)
-        if '-1' not in self.gpu:
+        if '-1' not in self.GPUS:
             meta_data['image'] = meta_data['image'].cuda()
         outputs = self.net_forward(meta_data, cfg=self.demo_cfg)
         return outputs

@@ -1,3 +1,9 @@
+import sys 
+whether_set_yml = ['configs_yml' in input_arg for input_arg in sys.argv]
+if sum(whether_set_yml)==0:
+    default_webcam_configs_yml = "--configs_yml=configs/webcam.yml"
+    print('No configs_yml is set, set it to the default {}'.format(default_webcam_configs_yml))
+    sys.argv.append(default_webcam_configs_yml)
 from .base_predictor import *
 
 class Webcam_processor(Predictor):
@@ -6,9 +12,8 @@ class Webcam_processor(Predictor):
 
     def webcam_run_local(self, video_file_path=None):
         '''
-        20.9 FPS of forward prop. on 1070Ti
+        24.4 FPS of forward prop. on 1070Ti
         '''
-        print('run on local')
         import keyboard
         from utils.demo_utils import OpenCVCapture, Image_Reader 
         capture = OpenCVCapture(video_file_path, show=True)
@@ -28,7 +33,6 @@ class Webcam_processor(Predictor):
                 continue
 
             frame_id+=1
-            print(frame.shape)
             counter.start()
             with torch.no_grad():
                 outputs = self.single_image_forward(frame)
@@ -61,15 +65,12 @@ class Webcam_processor(Predictor):
             else:
                 capture.send(['failed'])
 
-
 def main():
-    input_args = sys.argv[1:]
-    if sum(['configs_yml' in input_arg for input_arg in input_args])==0:
-        input_args.append("--configs_yml=configs/webcam.yml")
-    with ConfigContext(parse_args(input_args)):
+    with ConfigContext(parse_args(sys.argv[1:])) as args:
+        print('Loading the configurations from {}'.format(args.configs_yml))
         processor = Webcam_processor()
         print('Running the code on webcam demo')
-        if args().run_on_remote_server:
+        if args.run_on_remote_server:
             processor.webcam_run_remote()
         else:
             processor.webcam_run_local()

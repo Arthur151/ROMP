@@ -1,7 +1,6 @@
 demo/videos
 demo/animation
-demo/images_results
-demo/000003*
+demo/*_results
 trained_models
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -12,3 +11,4 @@ __pycache__/
 *.fbx
 .vscode
 model_data/
+active_configs

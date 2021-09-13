@@ -10,7 +10,6 @@ import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data import Dataset, DataLoader, ConcatDataset
 
-#from pudb import set_trace; set_trace(paused=False)
 import config
 import constants
 from config import args, parse_args, ConfigContext
@@ -56,7 +55,7 @@ class Base(object):
         else:
             if self.master_batch_size!=-1:
                 # balance the multi-GPU memory via adjusting the batch size of each GPU.
-                self.model = DataParallel(model.cuda(), device_ids=self.gpus, chunk_sizes=self.chunk_sizes)
+                self.model = DataParallel(model.cuda(), device_ids=self.GPUS, chunk_sizes=self.chunk_sizes)
             else:
                 self.model = nn.DataParallel(model.cuda())
 
@@ -80,25 +79,25 @@ class Base(object):
         self.summary_writer = SummaryWriter(self.log_path)
         save_yaml(hparams_dict, self.log_file.replace('.log', '.yml'))
 
-        self.result_img_dir = os.path.join(config.root_dir, 'result_images', '{}_on_gpu{}_val'.format(self.tab, self.gpu))
+        self.result_img_dir = os.path.join(config.root_dir, 'result_images', '{}_on_gpu{}_val'.format(self.tab, self.GPUS))
         os.makedirs(self.result_img_dir,exist_ok=True)
-        self.train_img_dir = os.path.join(config.root_dir, 'result_image_train', '{}_on_gpu{}_val'.format(self.tab, self.gpu))
+        self.train_img_dir = os.path.join(config.root_dir, 'result_image_train', '{}_on_gpu{}_val'.format(self.tab, self.GPUS))
         os.makedirs(self.train_img_dir,exist_ok=True)
-        self.model_save_dir = os.path.join(config.root_dir, 'checkpoints', '{}_on_gpu{}_val'.format(self.tab, self.gpu))
+        self.model_save_dir = os.path.join(config.root_dir, 'checkpoints', '{}_on_gpu{}_val'.format(self.tab, self.GPUS))
         os.makedirs(self.model_save_dir,exist_ok=True)
 
     def _init_params(self):
         self.global_count = 0
         self.eval_cfg = {'mode':'matching_gts', 'is_training':False, 'calc_loss': False}
         self.val_cfg = {'mode':'parsing', 'calc_loss': False}
-        self.gpus = [int(i) for i in self.gpu.split(',')]
+        self.GPUS = str(self.GPUS).split(',')
 
         if not self.distributed_training and self.master_batch_size != -1:
             rest_batch_size = (self.batch_size - self.master_batch_size)
             self.chunk_sizes = [self.master_batch_size]
-            for i in range(len(self.gpus) - 1):
-              slave_chunk_size = rest_batch_size // (len(self.gpus) - 1)
-              if i < rest_batch_size % (len(self.gpus) - 1):
+            for i in range(len(self.GPUS) - 1):
+              slave_chunk_size = rest_batch_size // (len(self.GPUS) - 1)
+              if i < rest_batch_size % (len(self.GPUS) - 1):
                 slave_chunk_size += 1
               self.chunk_sizes.append(slave_chunk_size)
             logging.info('training chunk_sizes:{}'.format(self.chunk_sizes))

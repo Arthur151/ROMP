@@ -1,3 +1,9 @@
+import sys 
+whether_set_yml = ['configs_yml' in input_arg for input_arg in sys.argv]
+if sum(whether_set_yml)==0:
+    default_webcam_configs_yml = "--configs_yml=configs/image.yml"
+    print('No configs_yml is set, set it to the default {}'.format(default_webcam_configs_yml))
+    sys.argv.append(default_webcam_configs_yml)
 from .base_predictor import *
 import constants
 import glob
@@ -48,13 +54,10 @@ class Image_processor(Predictor):
 
 
 def main():
-    input_args = sys.argv[1:]
-    if sum(['configs_yml' in input_arg for input_arg in input_args])==0:
-        input_args.append("--configs_yml=configs/image.yml")
-    with ConfigContext(parse_args(input_args)):
-        print(args().configs_yml)
+    with ConfigContext(parse_args(sys.argv[1:])) as args:
+        print('Loading the configurations from {}'.format(args.configs_yml))
         processor = Image_processor()
-        inputs = args().inputs
+        inputs = args.inputs
         if not os.path.exists(inputs):
             print("Didn't find the target directory: {}. \n Running the code on the demo images".format(inputs))
             inputs = os.path.join(processor.demo_dir,'images')

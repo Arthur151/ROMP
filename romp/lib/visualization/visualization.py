@@ -36,7 +36,7 @@ class Visualizer(object):
             encoding='latin1')['f'].astype(np.int32)).unsqueeze(0)
         if with_renderer:
             self.perps_proj = args().perspective_proj
-            T= None if self.perps_proj else torch.Tensor([[0.,0.,100]])                
+            T = None if self.perps_proj else torch.Tensor([[0.,0.,100]])                
             self.renderer = get_renderer(resolution=self.resolution, perps=self.perps_proj, T=T)
         self.result_img_dir = result_img_dir
         self.heatmap_kpnum = 17

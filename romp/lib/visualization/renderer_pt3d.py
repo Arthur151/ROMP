@@ -40,13 +40,15 @@ colors = {
 
 
 class Renderer(nn.Module):
-    def __init__(self, resolution=(512,512), perps=True, R=None, T=None, use_gpu=args().gpu!='-1'):
+    def __init__(self, resolution=(512,512), perps=True, R=None, T=None, use_gpu='-1' not in str(args().GPUS)):
         super(Renderer, self).__init__()
         self.perps = perps
         if use_gpu:
-            self.device = torch.device('cuda:{}'.format(args().gpu.split(',')[0]))
+            self.device = torch.device('cuda:{}'.format(str(args().GPUS).split(',')[0]))
+            print('visualize in gpu mode')
         else:
             self.device = torch.device('cpu')
+            print('visualize in cpu mode')
 
         if R is None:
             R = torch.Tensor([[[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]]])
@@ -62,8 +64,7 @@ class Renderer(nn.Module):
         raster_settings = RasterizationSettings(
             image_size=resolution[0], 
             blur_radius=0.0, 
-            faces_per_pixel=1, 
-        )
+            faces_per_pixel=1)
 
         # Create a Phong renderer by composing a rasterizer and a shader. The textured Phong shader will 
         # interpolate the texture uv coordinates for each vertex, sample from a texture image and 
@@ -71,14 +72,11 @@ class Renderer(nn.Module):
         self.renderer = MeshRenderer(
             rasterizer=MeshRasterizer(
                 cameras=self.cameras, 
-                raster_settings=raster_settings
-            ),
+                raster_settings=raster_settings),
             shader=SoftPhongShader(
                 device=self.device,
                 cameras=self.cameras,
-                lights=self.lights
-            )
-        )
+                lights=self.lights))
 
     def __call__(self, verts, faces, colors=torch.Tensor(colors['neutral']), merge_meshes=True, cam_params=None):
         assert len(verts.shape) == 3, print('The input verts of visualizer is bounded to be 3-dims (Nx6890 x3) tensor')

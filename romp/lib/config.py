@@ -48,12 +48,12 @@ def parse_args(input_args=None):
 
     train_group = parser.add_argument_group(title='training options')
     # basic training settings
-    train_group.add_argument('--lr', help='lr',default=3e-4,type=float)
-    train_group.add_argument('--adjust_lr_factor',type = float,default = 0.1,help = 'factor for adjusting the lr')
-    train_group.add_argument('--weight_decay', help='weight_decay',default=1e-6,type=float)
+    train_group.add_argument('--lr', help='lr', default=3e-4,type=float)
+    train_group.add_argument('--adjust_lr_factor',type = float, default = 0.1, help = 'factor for adjusting the lr')
+    train_group.add_argument('--weight_decay', help='weight_decay', default=1e-6,type=float)
     train_group.add_argument('--epoch', type = int, default = 120, help = 'training epochs')
-    train_group.add_argument('--fine_tune',type = bool,default = True,help = 'whether to run online')
-    train_group.add_argument('--gpu',default='0',help='gpus',type=str)
+    train_group.add_argument('--fine_tune',type = bool, default = True, help = 'whether to run online')
+    train_group.add_argument('--GPUS',type=str, default='0', help='gpus')
     train_group.add_argument('--batch_size',default=64,help='batch_size',type=int)
     train_group.add_argument('--input_size',default=512,type=int,help = 'size of input image')
     train_group.add_argument('--master_batch_size',default=-1,help='batch_size',type=int)
@@ -159,7 +159,7 @@ def parse_args(input_args=None):
     
     smpl_group.add_argument('--smpl_uvmap',type = str,default = os.path.join(model_dir, 'parameters', 'smpl_vt_ft.npz'),help = 'smpl UV Map coordinates for each vertice')
     smpl_group.add_argument('--wardrobe', type = str, default=os.path.join(model_dir, 'wardrobe'), help = 'path of smpl UV textures')
-    smpl_group.add_argument('--cloth',type = str,default = 'f1',help = 'pick up cloth from the wardrobe or simplely use a single color')
+    smpl_group.add_argument('--mesh_cloth',type = str,default = '031',help = 'pick up cloth from the wardrobe or simplely use a single color')
 
     debug_group = parser.add_argument_group(title='Debug options')
     debug_group.add_argument('--track_memory_usage',type = bool,default = False)
@@ -169,7 +169,9 @@ def parse_args(input_args=None):
     parsed_args.kernel_sizes = [5]
     with open(parsed_args.configs_yml) as file:
         configs_update = yaml.full_load(file)
+    
     for key, value in configs_update['ARGS'].items():
+        # make sure to update the configurations from .yml that not appears in input_args.
         if sum(['--{}'.format(key) in input_arg for input_arg in input_args])==0:
             if isinstance(value,str):
                 exec("parsed_args.{} = '{}'".format(key, value))
@@ -196,7 +198,7 @@ class ConfigContext(object):
     accessed anywhere.
     """
     yaml_filename = yaml_timestamp
-    parsed_args = parse_args(sys.argv[1:]) 
+    parsed_args = parse_args(sys.argv[1:])
     def __init__(self, parsed_args=None):
         if parsed_args is not None:
             self.parsed_args = parsed_args
@@ -208,6 +210,7 @@ class ConfigContext(object):
         with open(self.yaml_filename, 'w') as f:
             d = self.parsed_args.__dict__
             yaml.dump(d, f)
+        return self.parsed_args
 
     def __forceyaml__(self, filepath):
         # if a yaml is left over here, remove it

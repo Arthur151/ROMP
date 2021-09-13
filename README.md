@@ -21,6 +21,7 @@ ROMP is a one-stage network for multi-person 3D mesh recovery from a single imag
 Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to contact me for related questions or discussions! 
 
 ### News
+*2021/9/10: Fix low FPS bug. Please refer to [this issue](https://github.com/Arthur151/ROMP/issues/52#issuecomment-917988564) for the details or just upgrade to the latest version *
 *2021/9/10: Training code release. API optimization. *  
 *2021/7/15: Adding support for an elegant context manager to run code in a notebook.*  See [Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg) for the details.  
 *2021/4/19: Adding support for textured SMPL mesh using [vedo](https://github.com/marcomusy/vedo).* See [visualization.md](docs/visualization.md) for the details.  
@@ -102,7 +103,7 @@ Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks
 
 <p float="center">
   <img src="../assets/demo/animation/fbx_animation.gif" width="50%" />
-  <img src="https://github.com/vltmedia/QuickMocap-BlenderAddon/raw/master/images/QuickMocap_v0.3.0.png" width="50%" />
+  <img src="https://github.com/vltmedia/QuickMocap-BlenderAddon/raw/master/images/QuickMocap_v0.3.0.png" width="40%" />
 </p>
 
 ##### Export to Blender FBX 

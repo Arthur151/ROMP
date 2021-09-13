@@ -170,7 +170,6 @@ def parse_args(input_args=None):
     debug_group.add_argument('--track_memory_usage',type = bool,default = False)
 
     parsed_args = parser.parse_args(args=input_args)
-    print(parsed_args)
     parsed_args.adjust_lr_epoch = []
     parsed_args.kernel_sizes = [5]
     with open(parsed_args.configs_yml) as file:

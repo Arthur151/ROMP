@@ -177,11 +177,16 @@ def parse_args(input_args=None):
     
     for key, value in configs_update['ARGS'].items():
         # make sure to update the configurations from .yml that not appears in input_args.
-        if sum(['--{}'.format(key) in input_arg for input_arg in input_args])==0:
-            if isinstance(value,str):
-                exec("parsed_args.{} = '{}'".format(key, value))
-            else:
-                exec("parsed_args.{} = {}".format(key, value))
+        for input_arg in input_args:
+            if isinstance(input_arg, str):
+                if '--{}'.format(key) in input_arg:
+                    continue
+        
+        if isinstance(value,str):
+            exec("parsed_args.{} = '{}'".format(key, value))
+        else:
+            exec("parsed_args.{} = {}".format(key, value))
+
     if 'loss_weight' in configs_update:
         for key, value in configs_update['loss_weight'].items():
             exec("parsed_args.{}_weight = {}".format(key, value))

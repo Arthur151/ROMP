@@ -149,7 +149,7 @@ class SMPL(nn.Module):
     def __init__(self, model_path, J_reg_extra9_path=None, J_reg_h36m17_path=None,\
                  data_struct=None, betas=None, global_orient=None,\
                  body_pose=None, transl=None, dtype=torch.float32, batch_size=1,\
-                 joint_mapper=None, gender='neutral', age='adult',kid_template_path=None,vertex_ids=None, **kwargs):
+                 joint_mapper=None, gender='neutral', vertex_ids=None, **kwargs):
         ''' SMPL model constructor
 
             Parameters
@@ -189,8 +189,6 @@ class SMPL(nn.Module):
         '''
 
         self.gender = gender
-        self.age = age
-
         if data_struct is None:
             if osp.isdir(model_path):
                 model_fn = 'SMPL_{}.{ext}'.format(gender.upper(), ext='pkl')
@@ -216,14 +214,6 @@ class SMPL(nn.Module):
 
         # The shape components
         shapedirs = data_struct.shapedirs
-        if self.age=='kid':
-            if kid_template_path is None:
-                kid_template_path = os.path.join(model_path, 'smpl_kid_template.npy')
-            v_template_smil = np.load(kid_template_path)
-            v_template_smil -= np.mean(v_template_smil, axis=0)
-            v_template_diff = np.expand_dims(v_template_smil - data_struct.v_template, axis=2)
-            shapedirs = np.concatenate((shapedirs[:, :, :self.NUM_BETAS], v_template_diff), axis=2)
-            self.NUM_BETAS = self.NUM_BETAS + 1
 
         self.vertex_joint_selector = VertexJointSelector(
             vertex_ids=vertex_ids, **kwargs)
@@ -366,8 +356,6 @@ class SMPL(nn.Module):
             transl = torch.from_numpy(transl).float()
         default_device = self.shapedirs.device
         betas, poses = betas.to(default_device), poses.to(default_device)
-        if self.age=='kid' and betas.shape[-1]==10:
-            betas = torch.cat([betas, torch.ones_like(betas[:,[0]])], -1)
 
         vertices, joints = lbs(betas, poses, self.v_template,
                                self.shapedirs, self.posedirs,

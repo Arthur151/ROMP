@@ -1,4 +1,8 @@
-<h1 align="center"> ROMP </h1>
+<h1 align="center"> 
+  <p float="center">
+  <img src="../assets/demo/ROMP_logo.png" width="20%" />
+  </p> 
+</h1>
 <h2 align="center"> Monocular, One-stage, Regression of Multiple 3D People </h2>
 
 [![Google Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg)

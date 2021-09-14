@@ -12,7 +12,7 @@ ROMP is a concise one-stage network for multi-person 3D mesh recovery from a sin
 
 - **Fast.** ROMP can run over *30* FPS on a 1070Ti GPU.
 
-- **Strong** ROMP achieves superior performance on multiple challenging multi-person/occlusion benchmarks.
+- **Strong.** ROMP achieves superior performance on multiple challenging multi-person/occlusion benchmarks.
 
 - **Easy to use.** We provide user friendly testing API and webcam demos. 
 

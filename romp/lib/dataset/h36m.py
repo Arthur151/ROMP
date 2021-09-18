@@ -74,7 +74,7 @@ class H36M(Image_base):
             index = index*self.compress_length + random.randint(0,self.compress_length-1)
         if self.homogenize_pose_space:
             index = self.homogenize_pose_sample(index)
-        imgpath = self.file_paths[index%len(self.file_paths)]
+        imgpath = os.path.join(self.image_folder,self.file_paths[index%len(self.file_paths)])
         info = self.annots[os.path.basename(imgpath)].copy()
 
         img_name = os.path.basename(imgpath)

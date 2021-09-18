@@ -41,6 +41,7 @@ Please follow the directory structure to organize them.
 |   |   |-- vibe_db
 |   |   |-- annots.npz
 ```
+If you meet 'Download limit' problem from google drive, you can make a copy of the file to your personal google drive account to avoid this.
 
 2: Download the images from the official websites, [COCO 2014 images](https://cocodataset.org/#download), [MPII](http://human-pose.mpi-inf.mpg.de/#download), [CrowdPose](https://drive.google.com/file/d/1VprytECcLtU4tKP32SYi_7oDRbw7yUTL/view), [3DPW](https://virtualhumans.mpi-inf.mpg.de/3DPW/license.html). Please rename the image folder to 'images'.  
 

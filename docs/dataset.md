@@ -26,6 +26,7 @@ Please follow the directory structure to organize them.
 |   |   |-- annots_val2014.npz
 |   |-- mpii
 |   |   |-- images
+|   |   |-- annot
 |   |   |-- eft_annots.npz
 |   |-- lsp
 |   |   |-- hr-lspet

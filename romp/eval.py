@@ -90,10 +90,6 @@ def print_results(ED):
     MPJPE_result = np.concatenate(MPJPE_list,axis=0).mean()
     PA_MPJPE_result = np.concatenate(PA_MPJPE_list,axis=0).mean()
 
-    for key, results in ED['root_depth'].items():
-        if len(results)>0:
-            print('Root trans error of {}: {:.4f} '.format(key, np.concatenate(results,axis=0).mean()))
-
     eval_matrix = {}
     eval_matrix.update(process_matrix(ED['MPJPE'],'MPJPE'))
     eval_matrix.update(process_matrix(ED['PA_MPJPE'],'PA_MPJPE'))

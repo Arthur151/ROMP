@@ -228,7 +228,7 @@ def process_poses(
     poses, trans = [], []
 
     data = np.load(input_path, allow_pickle=True)['results'][()]
-    subject_ids = 0 #list(data.keys())
+    subject_id = 0 #list(data.keys())
     print('Exporting motion sequence of subject {}'.format(subject_id))
     frame_nums = list(data.keys())
     poses, trans = np.zeros((len(frame_nums), 72)), np.zeros((len(frame_nums), 3))

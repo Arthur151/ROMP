@@ -1,4 +1,6 @@
 src/
 trained_models/
 models/
-demo/videos/sample_video2.fbx
+demo/videos/
+model_data/
+romp/

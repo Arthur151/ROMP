@@ -10,6 +10,9 @@ ARGS:
  model_path: trained_models/ROMP_HRNet32_V1.pkl #  'trained_models/ROMP_ResNet50_V1.pkl'
  save_visualization_on_img: True
  smpl_mesh_root_align: False
+ show_mesh_stand_on_image: False
+ soi_camera: 'far' # 'close'
+ interactive_vis: False
 
  # default: run on demo/images and the results would be saved at demo/images_results
  # for video demo/videos/Messi_1

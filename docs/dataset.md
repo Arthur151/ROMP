@@ -52,3 +52,12 @@ python ROMP/romp/lib/dataset/preprocess/h36m_extract_frames.py h36m_extract_fram
 python h36m_extract_frames.py archives images
 ```
 
+### Test the data loading
+
+We can test the data loading of a datasets, like lsp via 
+```
+cd ROMP
+python -m romp.lib.dataset.lsp
+
+```
+Annotations will be drawed on the input image. The test results will be saved in ROMP/test/.

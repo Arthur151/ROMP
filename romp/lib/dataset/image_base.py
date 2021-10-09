@@ -18,9 +18,6 @@ from PIL import Image
 import torchvision
 from torch.utils.data import Dataset, DataLoader
 
-root_dir = os.path.join(os.path.dirname(__file__),'..')
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
 from models.smpl_regressor import SMPLR
 from utils import Synthetic_occlusion, process_image, calc_aabb, flip_kps, rot_imgplane, pose_processing
 from maps_utils import HeatmapGenerator, JointsGenerator,CenterMap
@@ -529,10 +526,7 @@ def test_dataset(dataset,with_3d=False,with_smpl=False):
             pose, betas = params[valid_mask][:,:66].float(), params[valid_mask][:,-10:].float()
             pose = torch.cat([pose, torch.zeros(len(pose),6)],-1).float()
             output = smpl(poses=pose, betas=betas, get_skin = True)
-            if r['valid_masks'][0,0,6]:
-                verts = r['verts'][0][r['valid_masks'][0,:,6]]
-            else:
-                verts = output['verts']
+            verts = output['verts']
             joints = output['j3d']
 
             verts[:,:,2] += 2

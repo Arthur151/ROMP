@@ -76,7 +76,8 @@ def save_model(model, title, parent_folder=None):
 
 def process_idx(reorganize_idx, vids=None):
     result_size = reorganize_idx.shape[0]
-    reorganize_idx = reorganize_idx.cpu().numpy()
+    if isinstance(reorganize_idx, torch.Tensor):
+        reorganize_idx = reorganize_idx.cpu().numpy()
     used_idx = reorganize_idx[vids] if vids is not None else reorganize_idx
     used_org_inds = np.unique(used_idx)
     per_img_inds = [np.where(reorganize_idx==org_idx)[0] for org_idx in used_org_inds]

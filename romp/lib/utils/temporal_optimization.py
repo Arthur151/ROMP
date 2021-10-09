@@ -15,18 +15,18 @@ def extract_motion_sequence(results_track_video, video_track_ids):
         
     return motion_sequence
 
-def creat_OneEuroFilter():
-  return {'cam': OneEuroFilter(0, 1.0), 'global_orient': OneEuroFilter(0, 1.0), 'pose': OneEuroFilter(0, 1.0), 'betas': OneEuroFilter(0., 0.6)} 
+def create_OneEuroFilter(smooth_coeff):
+  return {'cam': OneEuroFilter(3., .0), 'global_orient': OneEuroFilter(2., .0), 'poses': OneEuroFilter(smooth_coeff, 0), 'betas': OneEuroFilter(0.6, .0)} 
 
 
 def temporal_optimize_result(result, filter_dict):
   result['cam'] = filter_dict['cam'].process(result['cam'])
   result['betas'] = filter_dict['betas'].process(result['betas'])
-  pose_euler = np.array([transform_rot_representation(vec, input_type='vec',out_type='euler') for vec in result['pose'].reshape((-1,3))])
+  pose_euler = np.array([transform_rot_representation(vec, input_type='vec',out_type='euler') for vec in result['poses'].reshape((-1,3))])
   #global_orient_euler = filter_dict['global_orient'].process(pose_euler[:1])
-  #result['pose'][:3] = transform_rot_representation(global_orient_euler, input_type='euler',out_type='vec')
-  body_pose_euler = filter_dict['pose'].process(pose_euler[1:].reshape(-1)) #,print_inter=True
-  result['pose'][3:] = np.array([transform_rot_representation(bodypose, input_type='euler',out_type='vec') for bodypose in body_pose_euler.reshape(-1,3)]).reshape(-1)
+  #result['poses'][:3] = transform_rot_representation(global_orient_euler, input_type='euler',out_type='vec')
+  body_pose_euler = filter_dict['poses'].process(pose_euler[1:].reshape(-1)) #,print_inter=True
+  result['poses'][3:] = np.array([transform_rot_representation(bodypose, input_type='euler',out_type='vec') for bodypose in body_pose_euler.reshape(-1,3)]).reshape(-1)
   return result
 
 '''

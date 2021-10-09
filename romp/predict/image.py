@@ -21,6 +21,11 @@ class Image_processor(Predictor):
         self.visualizer.result_img_dir = self.output_dir 
         counter = Time_counter(thresh=1)
 
+        if self.show_mesh_stand_on_image:
+            from visualization.vedo_visualizer import Vedo_visualizer
+            visualizer = Vedo_visualizer()
+            stand_on_imgs_frames = []
+
         file_list = collect_image_list(image_folder=image_folder, collect_subdirs=self.collect_subdirs, img_exts=constants.img_exts)
         internet_loader = self._create_single_data_loader(dataset='internet', train_flag=False, file_list=file_list, shuffle=False)
         counter.start()
@@ -44,6 +49,10 @@ class Image_processor(Predictor):
                 for img_name, mesh_rendering_orgimg in zip(img_names, results_dict['mesh_rendering_orgimgs']['figs']):
                     save_name = os.path.join(self.output_dir, os.path.basename(img_name))
                     cv2.imwrite(save_name, cv2.cvtColor(mesh_rendering_orgimg, cv2.COLOR_RGB2BGR))
+
+            if self.show_mesh_stand_on_image:
+                stand_on_imgs = visualizer.plot_multi_meshes_batch(outputs['verts'], outputs['params']['cam'], outputs['meta_data'], outputs['reorganize_idx'].cpu().numpy(), interactive_show=self.interactive_vis)
+                stand_on_imgs_frames += stand_on_imgs
 
             if self.save_mesh:
                 save_meshes(reorganize_idx, outputs, self.output_dir, self.smpl_faces)

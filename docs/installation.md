@@ -7,7 +7,7 @@ We have tested the code on Ubuntu 18.04 and Centos 7.
 ##### Release:
 
 Directly download the full-packed released package from Github:
-1. [ROMP v1.1 beta](https://github.com/Arthur151/ROMP/releases/tag/v1.1) with both training and evaluation functions.
+1. [ROMP v1.1](https://github.com/Arthur151/ROMP/releases/tag/v1.1) with all functions.
 2. [ROMP v1.0](https://github.com/Arthur151/ROMP/releases/download/v1.0/ROMP_v1.0.zip) with the basic functions to process images/videos/webcam.
 
 ##### Up-to-date:
@@ -17,7 +17,7 @@ Clone the repo:
 git clone -b master --single-branch https://github.com/Arthur151/ROMP
 ```
 
-Then download the [model_data.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/model_data.zip) from Github release, [Google drive](https://drive.google.com/drive/folders/1YdsHh62KGuQMowRjKM9Vzj_7pflb51BB?usp=sharing). 
+Then download the [model_data.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/model_data.zip) and [demo_data.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/demo_videos.zip) from Github release, [Google drive](https://drive.google.com/drive/folders/1YdsHh62KGuQMowRjKM9Vzj_7pflb51BB?usp=sharing). 
 
 If you want a fast try of ROMP, please download [trained_models_try.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/trained_models_try.zip).
 

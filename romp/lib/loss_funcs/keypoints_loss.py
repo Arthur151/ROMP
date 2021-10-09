@@ -4,10 +4,6 @@ from __future__ import print_function
 
 import torch
 import torch.nn as nn
-import sys, os
-root_dir = os.path.join(os.path.dirname(__file__),'..')
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
 
 import time
 import pickle

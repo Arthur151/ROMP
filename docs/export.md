@@ -1,4 +1,22 @@
+### Blender character animation
+
+1. Download the [BlenderAddon](https://github.com/yanch2116/LiveMocap-BlenderAddon) and install the [Blender](https://www.blender.org/).
+2. Install the Addon in Blender:
+Edit -> Preferences -> Add-ons -> install -> select ROMP/romp/exports/blender_mocap.py  
+Click to active the 'Real Time Mocap' add-on.  
+3. Run the ROMP webcam demo code:  
+```
+cd ROMP
+sh scripts/webcam_blender.sh
+```
+
 ### Export the results to fbx
+
+<p float="center">
+  <img src="../../assets/demo/animation/fbx_animation.gif" width="40%" />
+</p>
+
+Currently, this function can only export the motion of a single person at each time. Therefore, please test it with `demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `demo/videos/sample_video2_results`.
 
 1. Prepare the data:
 
@@ -29,3 +47,4 @@ python export/convert_fbx.py --input=demo/videos/sample_video2_results/sample_vi
 File -> Import -> FBX(.fbx)
 
 Now, you can display the estimated animation in Blender via pushing the play button at the bottom.
+

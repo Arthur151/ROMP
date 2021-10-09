@@ -1,0 +1,51 @@
+host: '127.0.0.1'
+port: 9999
+
+width: 1920
+height: 1080
+
+max_human: 10
+track: True
+filter: True
+block: True # block visualization or not, True for visualize each frame, False in realtime applications
+rotate: False
+debug: False
+write: False
+out: 'none'
+
+body_model:
+  module: "models.smpl.SMPL"
+
+camera:
+  phi: 0
+  theta: -10
+  cx: 0.
+  cy: 0.2
+  cz: 6.
+
+scene:
+  # "visualization.vis_utils.create_coord":
+  #   camera: [0, 0, 0]
+  #   radius: 1.
+  #   scale: 1.
+  # "visualization.vis_utils.create_bbox":
+  #   min_bound: [-3, -3, 0]
+  #   max_bound: [3, 3, 2]
+  #   flip: False
+  "visualization.vis_utils_o3d13.create_ground":
+    center: [0, 0, -1.6]
+    xdir: [1, 0, 0]
+    ydir: [0, 1, 0]
+    step: 1
+    xrange: 6
+    yrange: 6
+    white: [1., 1., 1.]
+    black: [0.,0.,0.]
+    two_sides: True
+
+range:
+  minr: [-100, -100, -100]
+  maxr: [ 100,  100,  100]
+  rate_inlier: 0.8
+  min_conf: 0.1
+

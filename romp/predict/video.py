@@ -7,6 +7,10 @@ if sum(whether_set_yml)==0:
 from .image import *
 import keyboard
 from utils.demo_utils import frames2video, video2frame
+#from tracking.tracker import Tracker
+from norfair import Detection, Tracker, Video, draw_tracked_objects
+import norfair
+from utils.temporal_optimization import create_OneEuroFilter, temporal_optimize_result
 import itertools
 
 class Video_processor(Image_processor):
@@ -45,6 +49,21 @@ class Video_processor(Image_processor):
 
         results_frames = {}
         save_frame_list = []
+        results_track_video = {}
+        video_track_ids = {}
+        subjects_motion_sequences = {}
+
+        if self.make_tracking:
+            #tracker = Tracker()
+            tracker = Tracker(distance_function=euclidean_distance, distance_threshold=30)
+            
+        if self.temporal_optimization:
+            filter_dict = {}
+        
+        if self.show_mesh_stand_on_image:
+            from visualization.vedo_visualizer import Vedo_visualizer
+            visualizer = Vedo_visualizer()
+            stand_on_imgs_frames = []
 
         for test_iter,meta_data in enumerate(internet_loader):
             outputs = self.net_forward(meta_data, cfg=self.demo_cfg)
@@ -52,16 +71,67 @@ class Video_processor(Image_processor):
             counter.count(self.val_batch_size)
             results = self.reorganize_results(outputs, outputs['meta_data']['imgpath'], reorganize_idx)
 
-            if self.show_largest_person_only:
-                results_track = {int(os.path.splitext(os.path.basename(img_path))[0]):result for img_path, result in results.items()}
-                for frame_id in sorted(list(results_track.keys())):
+            img_paths = [img_path for img_path in results]
+            results_track = {os.path.splitext(os.path.basename(img_path))[0]:results[img_path] for img_path in img_paths}
+            for frame_id in sorted(list(results_track.keys())):
+                params_dict_new = {'cam':[], 'betas':[], 'poses':[]}
+                item_names = list(params_dict_new.keys())
+                reorganize_idx_uq = np.unique(reorganize_idx)
+                to_org_inds = np.array([np.where(reorganize_idx==ind)[0][0] for ind in reorganize_idx_uq])
+
+                if self.show_largest_person_only:
                     max_id = np.argmax(np.array([result['cam'][0] for result in results_track[frame_id]]))
                     results_track[frame_id] = [results_track[frame_id][max_id]]
                     video_track_ids[frame_id] = [0]
+                elif self.make_tracking:
+                    detections = [Detection(points=(result['cam'][[1,2]]+1)/2.*args().input_size) for result in results_track[frame_id]]
+                    if test_iter==0:
+                        for _ in range(8):
+                            tracked_objects = tracker.update(detections=detections)
+                    tracked_objects = tracker.update(detections=detections)
+                    tracked_ids = get_tracked_ids(detections, tracked_objects)
+                    # frame = np.ones([512,512,3])
+                    # norfair.draw_tracked_objects(frame, tracked_objects,id_size=5,id_thickness=2)
+                    # cv2.imshow('tracking results', frame[:,:,::-1])
+                    # cv2.waitKey(1)
+                    video_track_ids[frame_id] = tracked_ids
+
+            if self.temporal_optimization or self.show_largest_person_only:
+                reorganize_idx_new, img_paths_new = [], []
+                for fid, frame_id in enumerate(sorted(list(results_track.keys()))):
+                    for sid, tid in enumerate(video_track_ids[frame_id]):
+                        if self.temporal_optimization:
+                            if tid not in filter_dict:
+                                filter_dict[tid] = create_OneEuroFilter(args().smooth_coeff)
+                            results_track[frame_id][sid] = temporal_optimize_result(results_track[frame_id][sid], filter_dict[tid])
+                        
+                        for item in item_names:
+                            params_dict_new[item].append(torch.from_numpy(results_track[frame_id][sid][item]))
+                        reorganize_idx_new.append(fid)
+                        img_paths_new.append(img_paths[fid])
+                        if tid not in subjects_motion_sequences:
+                            subjects_motion_sequences[tid] = {}
+                        subjects_motion_sequences[tid][frame_id] = results_track[frame_id][sid]
+
+                # update the vertices
+                for item in item_names:
+                    params_dict_new[item] = torch.stack(params_dict_new[item]).cuda()
+                outputs['meta_data']['offsets'] = outputs['meta_data']['offsets'][to_org_inds][reorganize_idx_new]
+                with autocast():
+                    outputs.update(self.model.module._result_parser.params_map_parser.recalc_outputs(params_dict_new, outputs['meta_data']))
+                
+                outputs['meta_data']['image'] = outputs['meta_data']['image'][to_org_inds][reorganize_idx_new]
+                results = self.reorganize_results(outputs, img_paths_new, reorganize_idx_new)
+                outputs['reorganize_idx'] = torch.Tensor(reorganize_idx_new)
+                outputs['meta_data']['imgpath'] = img_paths_new
 
             if self.save_dict_results:
                 save_result_dict_tonpz(results, self.output_dir)
                 
+            if self.show_mesh_stand_on_image:
+                stand_on_imgs = visualizer.plot_multi_meshes_batch(outputs['verts'], outputs['params']['cam'], outputs['meta_data'], outputs['reorganize_idx'].cpu().numpy())
+                stand_on_imgs_frames += stand_on_imgs
+
             if self.save_visualization_on_img:
                 show_items_list = ['org_img', 'mesh']
                 if self.save_centermap:
@@ -88,11 +158,32 @@ class Video_processor(Image_processor):
             print('Saving parameter results to {}'.format(save_dict_path))
             np.savez(save_dict_path, results=results_frames)
 
+        if len(subjects_motion_sequences)>0:
+            save_dict_path = os.path.join(self.output_dir, video_basename+'_ts_results.npz')
+            print('Saving parameter results to {}'.format(save_dict_path))
+            np.savez(save_dict_path, results=subjects_motion_sequences)
+
         if len(save_frame_list)>0:
             video_save_name = os.path.join(self.output_dir, video_basename+'_results.mp4')
             print('Writing results to {}'.format(video_save_name))
             frames2video(sorted(save_frame_list), video_save_name, fps=self.fps_save)
+
+        if self.show_mesh_stand_on_image:
+            video_save_name = os.path.join(self.output_dir, video_basename+'_soi_results.mp4')
+            print('Writing results to {}'.format(video_save_name))
+            frames2video(stand_on_imgs_frames, video_save_name, fps=self.fps_save)
         return results_frames
+
+
+def get_tracked_ids(detections, tracked_objects):
+    tracked_ids_out = np.array([obj.id for obj in tracked_objects])
+    tracked_points = np.array([obj.last_detection.points for obj in tracked_objects])
+    org_points = np.array([obj.points for obj in detections])
+    tracked_ids = [tracked_ids_out[np.argmin(np.linalg.norm(tracked_points-point[None], axis=1))] for point in org_points]
+    return tracked_ids
+
+def euclidean_distance(detection, tracked_object):
+    return np.linalg.norm(detection.points - tracked_object.estimate)
 
 def main():
     with ConfigContext(parse_args(sys.argv[1:])) as args_set:

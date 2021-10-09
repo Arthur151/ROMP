@@ -37,9 +37,13 @@ def parse_args(input_args=None):
     parser.add_argument('--configs_yml', type = str, default = os.path.join(project_dir,'configs/v1.yml'), help = 'settings') 
     parser.add_argument('--inputs', type = str, help = 'path to inputs') 
     parser.add_argument('--output_dir', type = str, help = 'path to save outputs') 
-    parser.add_argument('--show_largest_person_only',type = bool,default = True,help = 'whether to only show the results of the largest person in the image')
-    parser.add_argument('--temporal_optimization',type = bool,default = False,help = 'whether to optimize the temporal smoothness')
-    parser.add_argument('--save_visualization_on_img',type = bool,default = True,help = 'whether to rendering the mesh back to image, which is time consuming')
+    parser.add_argument('--interactive_vis',action='store_true',help = 'whether to show the results in an interactive mode')
+    parser.add_argument('--show_largest_person_only',action='store_true',help = 'whether to only show the results of the largest person in the image')
+    parser.add_argument('--show_mesh_stand_on_image',action='store_true',help = 'whether to show the estimated meshes standing on the image')
+    parser.add_argument('--make_tracking',action='store_true',help = 'whether to make tracking')
+    parser.add_argument('--temporal_optimization',action='store_true',help = 'whether to optimize the temporal smoothness')
+    parser.add_argument('--save_dict_results',action='store_true',help = 'whether to save the predictions to a dict (.npz)')
+    parser.add_argument('--save_visualization_on_img',action='store_true',help = 'whether to rendering the mesh back to image, which is time consuming')
     parser.add_argument('--fps_save', type = int, default = 24, help = 'the fps of the save video')
     parser.add_argument('-f', type = str, default = None, help = 'do nothing, just to deal with the invalid input args from jupyter notebook') 
 
@@ -50,6 +54,7 @@ def parse_args(input_args=None):
     mode_group.add_argument('--multi_person',type = bool,default = True,help = 'whether to make Multi-person Recovery')
     mode_group.add_argument('--new_training',type = bool,default = False, help='learning centermap only in first few iterations for stable training.')
     mode_group.add_argument('--perspective_proj',type = bool,default = False,help = 'whether to use perspective projection, else use orthentic projection.')
+    mode_group.add_argument('--FOV',type = float,default = 60, help = 'The camera field of view (eular angle) used for visualization')
 
     train_group = parser.add_argument_group(title='training options')
     # basic training settings

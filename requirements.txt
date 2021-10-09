@@ -11,7 +11,6 @@ trimesh
 shyaml
 PyYAML>=5.1.2
 numpy-quaternion
-open3d==0.9.0
 pygame
 keyboard
 transforms3d
@@ -19,3 +18,10 @@ bvhtoolbox
 vedo
 imgaug
 lap
+tensorboard
+smplx
+pycocotools
+plotly
+open3d
+addict
+loguru 

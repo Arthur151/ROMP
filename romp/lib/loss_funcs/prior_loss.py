@@ -6,11 +6,11 @@ import torch
 import torch.nn as nn
 import sys
 import os
-from config import args
-
 import time
 import pickle
 import numpy as np
+
+from config import args
 
 DEFAULT_DTYPE = torch.float32
 

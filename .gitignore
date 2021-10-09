@@ -13,3 +13,4 @@ __pycache__/
 .vscode
 model_data/
 active_configs
+romp/lib/models/nvxia.py

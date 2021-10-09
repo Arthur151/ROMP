@@ -7,10 +7,7 @@ import ipywidgets
 from ipywidgets.widgets import Layout, HBox, VBox
 from ipywidgets.embed import embed_minimal_html
 import pandas as pd
-import sys, os
-root_dir = os.path.join(os.path.dirname(__file__),'..')
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
+import os,sys
 import constants
 import config
 from config import args

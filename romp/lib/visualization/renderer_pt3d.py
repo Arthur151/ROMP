@@ -23,9 +23,7 @@ from pytorch3d.renderer import (
     
 )
 import numpy as np
-root_dir = os.path.join(os.path.dirname(__file__),'..')
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
+
 import config
 import constants
 from config import args

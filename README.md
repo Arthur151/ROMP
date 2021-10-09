@@ -7,31 +7,19 @@
 
 [![Google Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg)
 [![arXiv](https://img.shields.io/badge/arXiv-2008.12272-00ff00.svg)](https://arxiv.org/abs/2008.12272)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/centerhmr-a-bottom-up-single-shot-method-for/3d-human-pose-estimation-on-3dpw)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3dpw?p=centerhmr-a-bottom-up-single-shot-method-for)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/centerhmr-a-bottom-up-single-shot-method-for/3d-human-pose-estimation-on-3d-poses-in-the)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3d-poses-in-the?p=centerhmr-a-bottom-up-single-shot-method-for)
 
-ROMP is a concise one-stage network for multi-person 3D mesh recovery from a single image.
+ROMP is a concise one-stage network for multi-person 3D mesh recovery from a single image. It is accepted by ICCV 2021.
 
 - **Simple.** Concise one-stage framework for simultaneous person detection and 3D body mesh recovery.
 
-- **Fast.** ROMP can run over *30* FPS on a 1070Ti GPU.
+- **Fast.** ROMP can achieve real-time inference on a 1070Ti GPU.
 
 - **Strong.** ROMP achieves superior performance on multiple challenging multi-person/occlusion benchmarks.
 
 - **Easy to use.** We provide user friendly testing API and webcam demos. 
 
-Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to contact me for related questions or discussions! 
-
-<p float="center">
-  <img src="../assets/demo/animation/live_demo_guangboticao.gif" width="48%" />
-  <img src="../assets/demo/animation/live_demo_sit.gif" width="48%" />
-</p>
-
-<p float="center">
-  <img src="../assets/demo/animation/c1_results_compressed.gif" width="32%" />
-  <img src="../assets/demo/animation/c4_results_compressed.gif" width="32%" />
-  <img src="../assets/demo/animation/c0_results_compressed.gif" width="32%" />
-</p>
+Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to contact me for related questions or discussions! [arXiv paper](https://arxiv.org/abs/2008.12272).
 
 ## Table of contents
 * [Features](#features)
@@ -39,33 +27,30 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 * [Getting Started](#getting-started)
     * [Try on Google Colab](#try-on-google-colab)
     * [Installation](#installation)
-    * [Inference](#inference)
-        * [Processing images](#processing-images)
-        * [Processing videos](#processing-videos)
-        * [Webcam](#Webcam)
+ * [Inference](#inference)
+    * [Processing images](#processing-images)
+    * [Processing videos](#processing-videos)
+    * [Webcam](#Webcam)
     * [Export](#export)
         * [Export to Blender FBX](#export-to-blender-fbx)
         * [Blender Addons](#blender-addons)
-    * [Train](#train)
-    * [Evaluation](#evaluation)
-    * [Bugs report](#bugs-report)
+* [Train](#train)
+* [Evaluation](#evaluation)
+* [Bugs report](#bugs-report)
 * [Citation](#citation)
 * [Contributor](#contributor)
 * [Acknowledgement](#acknowledgement)
 
-> [**Monocular, One-stage, Regression of Multiple 3D People**](https://arxiv.org/abs/2008.12272),            
-> Yu Sun, Qian Bao, Wu Liu, Yili Fu, Michael J. Black, Tao Mei,        
-> *arXiv paper ([arXiv 2008.12272](https://arxiv.org/abs/2008.12272))*
-
 ## Features
  - Running the examples on [Google Colab](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg).  
- - Real-time online webcam demo for driving textured SMPL model with single-person motion. We also provide a wardrobe for changing clothes.  
+ - Real-time online multi-person webcam demo for driving textured SMPL model. We also provide a wardrobe for changing clothes.  
  - Batch processing images/videos via command line / jupyter notebook / calling ROMP as a python lib.  
  - Exporting the captured single-person motion to FBX file for Blender/Unity usage.  
  - Training and evaluation for re-implementing our results presented in paper.  
  - Convenient API for 2D / 3D visualization, parsed datasets.  
 
 ## News
+✨✨*2021/10/10: V1.1 released, including multi-person webcam, extracting , webcam temporal optimization, live blender character animation, interactive visualization.*  Let's try!  
 *2021/9/13: Low FPS / args parsing bugs are fixed. Support calling as a python lib.*   
 *2021/9/10: Training code release. API optimization.*    
 [Old logs](docs/updates.md)
@@ -74,21 +59,20 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 
 ### Try on Google Colab
 
-It allows you to run the project in the cloud, free of charge.  
+It allows you to run the project in the cloud, free of charge. 
 Let's give the prepared [Google Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg) a try.  
 
 ### Installation
 
 Please refer to [install.md](docs/installation.md) for installation.
 
-### Inference
+## Inference
 
 Currently, we support processing images, video or real-time webcam.    
 Pelease refer to [config_guide.md](docs/config_guide.md) for configurations.   
-
 ROMP can be called as a python lib inside the python code, jupyter notebook, or from command line / scripts, please refer to [Google Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg) for examples.
 
-#### Processing images
+### Processing images
 
 To re-implement the demo results, please run
 ```bash
@@ -100,7 +84,21 @@ python -m romp.predict.image --inputs=demo/images --output_dir=demo/image_result
 ```
 Please refer to [config_guide.md](docs/config_guide.md) for **saving the estimated mesh/Center maps/parameters dict**.
 
-Here, we show an example of calling ROMP as a python lib.
+<p float="center">
+  <img src="../assets/demo/animation/image_demo1-min.gif" width="32%" />
+  <img src="../assets/demo/animation/image_demo2-min.gif" width="32%" />
+  <img src="../assets/demo/animation/image_demo3-min.gif" width="32%" />
+</p>
+
+For interactive visualization, please run
+```bash
+python -m romp.predict.image --inputs=demo/images --output_dir=demo/image_results --show_mesh_stand_on_image  --interactive_vis
+```
+
+Here, we show an example of calling ROMP as a python lib to process images.
+<details>
+<summary>click here to show the code</summary>
+<pre><code>
 ```bash
 # set the absolute path to ROMP
 path_to_romp = '/path/to/ROMP'
@@ -113,19 +111,43 @@ ConfigContext.parsed_args = parse_args(["--configs_yml=configs/image.yml",'--inp
 from romp.predict.image import Image_processor
 processor = Image_processor(args_set=args())
 results_dict = processor.run(args().inputs) # you can change the args().inputs to other /path/to/images_folder
-````
+```
+</code></pre>
+</details>
 
-#### Processing videos
+
+### Processing videos
+
+<p float="center">
+  <img src="../assets/demo/animation/c1_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c4_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c0_results_compressed.gif" width="32%" />
+</p>
 
 ```bash
 cd ROMP
-# change the `inputs` in configs/video.yml to /path/to/your/video file or a folder containing video frames, then run 
+python -m romp.predict.video --inputs=demo/videos/sample_video.mp4 --output_dir=demo/sample_video_results --save_visualization_on_img --save_dict_results
+
+# or you can set all configurations in configs/video.yml, then run 
 sh scripts/video.sh
-# or run the command like
-python -u -m romp.predict.video --inputs=demo/videos/sample_video.mp4 --output_dir=demo/sample_video_results
 ```
 
-Here, we show an example of calling ROMP as a python lib.
+We notice that some users only want to extract the motion of **the formost person**, like this
+<p float="center">
+<img src="../assets/demo/animation/video_demo_nofp.gif" width="32%" />
+  <img src="../assets/demo/animation/video_demo_fp.gif" width="40%" />
+</p>
+To achieve this, please run
+```bash
+python -m romp.predict.video --inputs=demo/videos/demo_video_frames --output_dir=demo/demo_video_fp_results --show_largest_person_only --save_dict_results --show_mesh_stand_on_image 
+```
+
+All functions can be combined or work individually. Welcome to try them.
+
+Here, we show an example of calling ROMP as a python lib to process videos.
+<details>
+<summary>click here to show the code</summary>
+<pre><code>
 ```bash
 # set the absolute path to ROMP
 path_to_romp = '/path/to/ROMP'
@@ -138,31 +160,35 @@ ConfigContext.parsed_args = parse_args(["--configs_yml=configs/video.yml",'--inp
 from romp.predict.video import Video_processor
 processor = Video_processor(args_set=args())
 results_dict = processor.run(args().inputs) # you can change the args().inputs to other /path/to/video
-````
+```
+</code></pre>
+</details>
 
-#### Webcam
+### Webcam
+
+<p float="center">
+  <img src="../assets/demo/animation/live_demo_guangboticao.gif" width="32%" />
+  <img src="../assets/demo/animation/live_demo1-min.gif" width="32%" />
+  <img src="../assets/demo/animation/blender_character_driven-min.gif" width="32%" />
+</p>
+
 
 To do this you just need to run:
 ```bash
 cd ROMP
 sh scripts/webcam.sh
 ```
-Currently, limited by the visualization pipeline, the real-time webcam demo only visualize the results of the largest person in the frames.
+To drive a character in Blender, please refer to [expert.md](docs/export.md).
 
 ### Export
 
-<p float="center">
-  <img src="../assets/demo/animation/fbx_animation.gif" width="56%" />
-  <img src="https://github.com/vltmedia/QuickMocap-BlenderAddon/raw/master/images/QuickMocap_v0.3.0.png" width="18%" />
-</p>
-
-##### Export to Blender FBX
+#### Export to Blender FBX
 
 Please refer to [expert.md](docs/export.md) to export the results to fbx files for Blender usage. Currently, this function only support the single-person video cases. Therefore, please test it with `demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `demo/videos/sample_video2_results`.
 
-##### Blender Addons
-
-[VLT Media](https://github.com/vltmedia) creates a [QuickMocap-BlenderAddon](https://github.com/vltmedia/QuickMocap-BlenderAddon) to  read the .npz file created by ROMP. Clean & smooth the resulting keyframes.
+#### Blender Addons
+[Chuanhang Yan](https://github.com/yanch2116) : developing an [addon for driving character in Blender](https://github.com/yanch2116/Blender-addons-for-SMPL).  
+[VLT Media](https://github.com/vltmedia) creates a [QuickMocap-BlenderAddon](https://github.com/vltmedia/QuickMocap-BlenderAddon) to  read the .npz file created by ROMP. Clean & smooth the resulting keyframes.  
 
 ### Train
 
@@ -182,7 +208,7 @@ Please considering citing
 @InProceedings{ROMP,
 author = {Sun, Yu and Bao, Qian and Liu, Wu and Fu, Yili and Michael J., Black and Mei, Tao},
 title = {Monocular, One-stage, Regression of Multiple 3D People},
-booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+booktitle = {ICCV},
 month = {October},
 year = {2021}
 }
@@ -190,12 +216,13 @@ year = {2021}
 
 ## Contributor
 
-This repository is currently maintained by [Yu Sun](https://github.com/Arthur151). 
+This repository is currently maintained by [Yu Sun](https://github.com/Arthur151).  
 
-ROMP has also benefited from many developers, including 
- - [Marco Musy](https://github.com/marcomusy) : help in [the textured SMPL visualization](https://github.com/marcomusy/vedo/issues/371).
- - [Gavin Gray](https://github.com/gngdb) : adding support for an elegant context manager to run code in a notebook.
- - [VLT Media](https://github.com/vltmedia) : adding support for running on Windows & batch_videos.py.
+ROMP has also benefited from many developers, including   
+ - [Marco Musy](https://github.com/marcomusy) : help in [the textured SMPL visualization](https://github.com/marcomusy/vedo/issues/371).  
+ - [Gavin Gray](https://github.com/gngdb) : adding support for an elegant context manager to run code in a notebook.  
+ - [VLT Media](https://github.com/vltmedia) : adding support for running on Windows & batch_videos.py.  
+ - [Chuanhang Yan](https://github.com/yanch2116) : developing an [addon for driving character in Blender](https://github.com/yanch2116/Blender-addons-for-SMPL).  
 
 ## Acknowledgement
 

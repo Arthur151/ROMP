@@ -1,10 +1,6 @@
 import sys,os
 import torch
 import numpy as np
-#sys.path.append(os.path.abspath(__file__).replace('evaluation/eval_ds_utils.py',''))
-#import config
-#from config import args
-#import constants
 
 def cmup_evaluation_act_wise(results,imgpaths,action_names):
     actions = []

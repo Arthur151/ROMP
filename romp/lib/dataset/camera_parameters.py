@@ -1,10 +1,3 @@
-import sys, os
-root_dir = os.path.join(os.path.dirname(__file__),'..')
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
-from config import args
-
-
 h36m_cameras_intrinsic_params = [
     {
         'id': '54138969',
@@ -359,23 +352,3 @@ def project_to_2d_linear(X, camera_params):
 
     return f*XX + c
 
-'''
-
-print('Computing ground-truth 2D poses...')
-    dataset = Human36mDataset(output_filename + '.npz')
-    output_2d_poses = {}
-    for subject in dataset.subjects():
-        output_2d_poses[subject] = {}
-        for action in dataset[subject].keys():
-            anim = dataset[subject][action]
-
-            positions_2d = []
-            for cam in anim['cameras']:
-                pos_3d = world_to_camera(anim['positions'], R=cam['orientation'], t=cam['translation'])
-                pos_2d = wrap(project_to_2d, pos_3d, cam['intrinsic'], unsqueeze=True)
-                pos_2d_pixel_space = image_coordinates(pos_2d, w=cam['res_w'], h=cam['res_h'])
-                positions_2d.append(pos_2d_pixel_space.astype('float32'))
-            output_2d_poses[subject][action] = positions_2d
-
-
-'''

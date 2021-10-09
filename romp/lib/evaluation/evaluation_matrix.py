@@ -1,7 +1,7 @@
 import os,sys
 import torch
 import numpy as np
-sys.path.append(os.path.abspath(__file__).replace('evaluation/evaluation_matrix.py',''))
+
 import config
 from smplx import SMPL
 # Part of the codes are brought from https://github.com/mkocabas/VIBE/blob/master/lib/utils/eval_utils.py

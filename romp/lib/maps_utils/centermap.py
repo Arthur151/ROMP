@@ -1,7 +1,7 @@
 import torch
 import sys,os
 import numpy as np
-sys.path.append(os.path.abspath(__file__).replace('maps_utils/centermap.py',''))
+
 from config import args
 
 
@@ -14,6 +14,7 @@ class CenterMap(object):
         self.dims = 1
         self.sigma = 1
         self.conf_thresh= args().centermap_conf_thresh
+        print('Confidence:', self.conf_thresh)
         self.gk_group, self.pool_group = self.generate_kernels(args().kernel_sizes)
         if args().model_version>4:
             self.prepare_parsing()

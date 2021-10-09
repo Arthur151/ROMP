@@ -1,8 +1,10 @@
 from ..base import *
-from utils.demo_utils import convert_cam_to_3d_trans, save_meshes, get_video_bn, Time_counter
+from utils.cam_utils import convert_cam_to_3d_trans
+from utils.demo_utils import save_meshes, get_video_bn, Time_counter
 import platform
 from utils.util import save_result_dict_tonpz
 from dataset.internet import img_preprocess
+from torch.cuda.amp import autocast
 
 class Predictor(Base):
     def __init__(self, **kwargs):
@@ -15,7 +17,6 @@ class Predictor(Base):
         ds_org, imgpath_org = get_remove_keys(meta_data,keys=['data_set','imgpath'])
         meta_data['batch_ids'] = torch.arange(len(meta_data['image']))
         if self.model_precision=='fp16':
-            from torch.cuda.amp import autocast
             with autocast():
                 outputs = self.model(meta_data, **cfg)
         else:
@@ -46,7 +47,7 @@ class Predictor(Base):
     def reorganize_results(self, outputs, img_paths, reorganize_idx):
         results = {}
         cam_results = outputs['params']['cam'].detach().cpu().numpy().astype(np.float16)
-        smpl_pose_results = torch.cat([outputs['params']['global_orient'], outputs['params']['body_pose']],1).detach().cpu().numpy().astype(np.float16)
+        smpl_pose_results = outputs['params']['poses'].detach().cpu().numpy().astype(np.float16)
         smpl_shape_results = outputs['params']['betas'].detach().cpu().numpy().astype(np.float16)
         joints_54 = outputs['j3d'].detach().cpu().numpy().astype(np.float16)
         kp3d_smpl24_results = outputs['joints_smpl24'].detach().cpu().numpy().astype(np.float16)
@@ -64,7 +65,7 @@ class Predictor(Base):
             results[img_path] = [{} for idx in range(len(verts_vids))]
             for subject_idx, batch_idx in enumerate(verts_vids):
                 results[img_path][subject_idx]['cam'] = cam_results[batch_idx]
-                results[img_path][subject_idx]['pose'] = smpl_pose_results[batch_idx]
+                results[img_path][subject_idx]['poses'] = smpl_pose_results[batch_idx]
                 results[img_path][subject_idx]['betas'] = smpl_shape_results[batch_idx]
                 results[img_path][subject_idx]['j3d_all54'] = joints_54[batch_idx]
                 results[img_path][subject_idx]['j3d_smpl24'] = kp3d_smpl24_results[batch_idx]

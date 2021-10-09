@@ -523,28 +523,29 @@ def lbs(betas, pose, v_template, shapedirs, posedirs, J_regressor, parents,
     '''
 
     batch_size = max(betas.shape[0], pose.shape[0])
-
     # Add shape contribution
     v_shaped = v_template + blend_shapes(betas, shapedirs)
-
     # Get the joints
     # NxJx3 array
     J = vertices2joints(J_regressor, v_shaped)
+    dtype = pose.dtype
+    posedirs = posedirs.type(dtype)
 
     # 3. Add pose blend shapes
     # N x J x 3 x 3
     ident = torch.eye(3, dtype=dtype, device=J_regressor.device)
+    hand_pose = ident.view(1,1,3,3).repeat(batch_size,2,1,1)
     if pose2rot:
         rot_mats = batch_rodrigues(
-            pose.view(-1, 3), dtype=dtype).view([batch_size, -1, 3, 3])
-
-        pose_feature = (rot_mats[:, 1:, :, :] - ident).view([batch_size, -1])
+            pose[:,:-6].contiguous().view(-1, 3), dtype=dtype).view([batch_size, -1, 3, 3]).type(dtype)
+        rot_mats = torch.cat([rot_mats, hand_pose], 1).contiguous()
+        pose_feature = (rot_mats[:, 1:, :, :] - ident).view([batch_size, -1]).type(dtype)
         # (N x P) x (P, V * 3) -> N x V x 3
-        pose_offsets = torch.matmul(pose_feature, posedirs) \
+        pose_offsets = torch.matmul(pose_feature, posedirs.type(dtype)) \
             .view(batch_size, -1, 3)
     else:
-        pose_feature = pose[:, 1:].view(batch_size, -1, 3, 3) - ident
-        rot_mats = pose.view(batch_size, -1, 3, 3)
+        pose_feature = pose[:, 1:].view(batch_size, -1, 3, 3).type(dtype) - ident
+        rot_mats = pose.view(batch_size, -1, 3, 3).type(dtype)
 
         pose_offsets = torch.matmul(pose_feature.view(batch_size, -1),
                                     posedirs).view(batch_size, -1, 3)
@@ -565,7 +566,6 @@ def lbs(betas, pose, v_template, shapedirs, posedirs, J_regressor, parents,
                                dtype=dtype, device=J_regressor.device)
     v_posed_homo = torch.cat([v_posed, homogen_coord], dim=2)
     v_homo = torch.matmul(T, torch.unsqueeze(v_posed_homo, dim=-1))
-
     verts = v_homo[:, :, :3, 0]
 
     return verts, J_transformed
@@ -751,20 +751,21 @@ if __name__ == '__main__':
     import config
     from config import args
     device = torch.device('cuda')  # torch.device('cuda')
-    smpl_model_path = os.path.join(config.model_dir,'smpl_models','smpl')
 
-    SMPLPY = SMPL(smpl_model_path, J_reg_extra9_path=args().smpl_J_reg_extra_path, J_reg_h36m17_path=args().smpl_J_reg_h37m_path).to(device)
-    results = SMPLPY(torch.zeros(1,10).cuda(), torch.zeros(1,72).cuda())  # Do the thing.
+    SMPLPY = SMPL(args().smpl_model_path, J_reg_extra9_path=args().smpl_J_reg_extra_path, J_reg_h36m17_path=args().smpl_J_reg_h37m_path).to(device)
+    poses = torch.zeros(1,72).cuda()
+    poses[0,18*3+1] = -2.
+    results = SMPLPY(betas=torch.zeros(1,10).cuda(), poses=poses)  # Do the thing.
 
     visualization = True
     if visualization:
         from vedo import *
-        verts = results.vertices[0].cpu().numpy()
+        verts = results['verts'][0].cpu().numpy()
         faces = np.array(SMPLPY.faces)
         mesh = Mesh([verts, faces]).c('w').alpha(0.8)
-        joints_smpl24 = Points(results.joints_smpl24[0].cpu().numpy().tolist()).c('red')
-        joints_h36m17 = Points(results.joints_h36m17[0].cpu().numpy().tolist()).c('blue')
-        j3d = Points(results.joints[0].cpu().numpy().tolist()).c('green')
-        #show(mesh, joints_smpl24, viewup="z", axes=1)
+        # joints_smpl24 = Points(results['joints_smpl24'][0].cpu().numpy().tolist()).c('red')
+        # joints_h36m17 = Points(results['joints_h36m17'][0].cpu().numpy().tolist()).c('blue')
+        j3d = Points(results['j3d'][0].cpu().numpy().tolist()).c('green')
+        # show(mesh, joints_smpl24, viewup="z", axes=1)
         show(mesh, j3d, viewup="z", axes=1)
-        #show(mesh, joints_h36m17, viewup="z", axes=1)
+        # show(mesh, joints_h36m17, viewup="z", axes=1)

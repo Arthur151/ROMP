@@ -10,7 +10,7 @@ from PIL import Image
 import torchvision
 from torch.utils.data import Dataset, DataLoader
 import sys, os
-sys.path.append(os.path.abspath(__file__).replace('dataset/internet.py',''))
+
 from dataset.image_base import *
 import config
 from config import args

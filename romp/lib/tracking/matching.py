@@ -3,14 +3,10 @@ import numpy as np
 import scipy
 import lap
 from scipy.spatial.distance import cdist
-
 import sys, os
-root_dir = os.path.join(os.path.dirname(__file__),'..')
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
+import time
 #from cython_bbox import bbox_overlaps as bbox_ious
 from tracking.tracking_utils import kalman_filter
-import time
 
 def merge_matches(m1, m2, shape):
     O,P,Q = shape

@@ -20,3 +20,7 @@ sh scripts/V1_hrnet_3dpwft.sh
 sh scripts/V1_resnet_3dpwft.sh
 ```
 You can change the configurations (e.g. used GPUs, batch size) in the corresponding configs (.yml) in ROMP/configs.
+
+The training logs wiil be saved in ROMP/log. 
+
+The intermediate training/validation results will be visualized and saved in result_image_train/result_images.

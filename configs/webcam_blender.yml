@@ -1,0 +1,38 @@
+
+ARGS:
+ tab: 'webcam'
+ gpu: 0 
+
+ backbone: 'hrnet'
+ model_precision: 'fp32'
+ val_batch_size: 1
+ model_path: trained_models/ROMP_HRNet32_V1.pkl #  '../trained_models/ROMP_ResNet50_V1.pkl'
+ save_mesh: False
+ save_centermap: False
+ save_dict_results: False
+ smpl_mesh_root_align: False
+ save_visualization_on_img: False
+ centermap_conf_thresh: 0.25
+
+ make_tracking: True
+ temporal_optimization: True
+ smooth_coeff: 4.
+ show_largest_person_only: True
+ visulize_platform: 'blender' # 'integrated' # 
+ tracker: 'norfair'
+ tracking_target: 'centers' # 'keypoints' #
+ add_trans: True
+ FOV: 60
+ 
+ webcam: True
+ cam_id: 0
+ multiprocess: False
+ run_on_remote_server: False
+ server_ip: 'localhost'
+ server_port: 10086
+ 
+ # for picking up sepcific cloth from the wardrobe in model_data, please refer to romp/lib/constants.py
+ # 'ghostwhite'/'LightCyan' for using the single color texture.
+ mesh_cloth: '001' # 'random' #
+ character: 'smpl' # 'nvxia' # 
+ nvxia_model_path: 'model_data/characters/nvxia'

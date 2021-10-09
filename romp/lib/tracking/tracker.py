@@ -8,11 +8,8 @@ import time
 import torch
 import cv2
 import torch.nn.functional as F
-
 import sys, os
-root_dir = os.path.join(os.path.dirname(__file__),'..')
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
+
 from tracking.tracking_utils.utils import *
 from tracking.tracking_utils.log import logger
 from tracking.tracking_utils.kalman_filter import KalmanFilter

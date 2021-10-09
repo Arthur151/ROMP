@@ -40,8 +40,8 @@ from mathutils import Matrix, Vector, Quaternion, Euler
 
 # Globals
 # Add your UNIX paths here!
-male_model_path = '/home/yusun/Desktop/unity/SMPL_unity_v.1.0.0/smpl/Models/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
-female_model_path = '/home/yusun/Desktop/unity/SMPL_unity_v.1.0.0/smpl/Models/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
+male_model_path = '/home/yusun/Desktop/all_files/animation/SMPL_unity_v.1.0.0/smpl/Models/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
+female_model_path = '/home/yusun/Desktop/all_files/animation/SMPL_unity_v.1.0.0/smpl/Models/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
 # Handle fall back if files don't exist, also keeping the unix version before attempting the windows version.
 plt = platform.system()
 if plt == "Windows":
@@ -226,15 +226,24 @@ def process_poses(
     print('Processing: ' + input_path)
 
     poses, trans = [], []
-
-    data = np.load(input_path, allow_pickle=True)['results'][()]
     subject_ids = 0 #list(data.keys())
-    print('Exporting motion sequence of subject {}'.format(subject_id))
-    frame_nums = list(data.keys())
-    poses, trans = np.zeros((len(frame_nums), 72)), np.zeros((len(frame_nums), 3))
-    for inds, frame_id in enumerate(frame_nums):
-        poses[inds] = data[frame_id][subject_id]['pose']
-        trans[inds] = data[frame_id][subject_id]['trans']
+    data = np.load(input_path, allow_pickle=True)['results'][()]
+    if '_ts_results' in os.path.basename(input_path):
+        subject_ids = 1
+        print('Exporting motion sequence of subject {}'.format(subject_ids))
+        data = data[subject_ids]
+        frame_nums = list(data.keys())
+        poses, trans = np.zeros((len(frame_nums), 72)), np.zeros((len(frame_nums), 3))
+        for inds, frame_id in enumerate(frame_nums):
+            poses[inds] = data[frame_id]['poses']
+            trans[inds] = data[frame_id]['trans']
+    else:
+        print('Exporting motion sequence of subject {}'.format(subject_id))
+        frame_nums = list(data.keys())
+        poses, trans = np.zeros((len(frame_nums), 72)), np.zeros((len(frame_nums), 3))
+        for inds, frame_id in enumerate(frame_nums):
+            poses[inds] = data[frame_id][subject_id]['poses']
+            trans[inds] = data[frame_id][subject_id]['trans']
 
     if gender == 'female':
         model_path = female_model_path

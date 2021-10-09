@@ -9,7 +9,7 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2008.12272-00ff00.svg)](https://arxiv.org/abs/2008.12272)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/centerhmr-a-bottom-up-single-shot-method-for/3d-human-pose-estimation-on-3d-poses-in-the)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3d-poses-in-the?p=centerhmr-a-bottom-up-single-shot-method-for)
 
-ROMP is a concise one-stage network for multi-person 3D mesh recovery from a single image. It is accepted by ICCV 2021.
+ROMP, accepted by ICCV 2021, is a concise one-stage network for multi-person 3D mesh recovery from a single image.
 
 - **Simple.** Concise one-stage framework for simultaneous person detection and 3D body mesh recovery.
 
@@ -20,6 +20,10 @@ ROMP is a concise one-stage network for multi-person 3D mesh recovery from a sin
 - **Easy to use.** We provide user friendly testing API and webcam demos. 
 
 Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to contact me for related questions or discussions! [arXiv paper](https://arxiv.org/abs/2008.12272).
+
+<p float="center">
+  <img src="../assets/demo/animation/blender_character_driven-min.gif" width="66%" />
+</p>
 
 ## Table of contents
 * [Features](#features)
@@ -167,9 +171,8 @@ results_dict = processor.run(args().inputs) # you can change the args().inputs t
 ### Webcam
 
 <p float="center">
-  <img src="../assets/demo/animation/live_demo_guangboticao.gif" width="32%" />
-  <img src="../assets/demo/animation/live_demo1-min.gif" width="32%" />
-  <img src="../assets/demo/animation/blender_character_driven-min.gif" width="32%" />
+  <img src="../assets/demo/animation/live_demo_sit.gif" width="48%" />
+  <img src="../assets/demo/animation/live_demo1-min.gif" width="48%" />
 </p>
 
 

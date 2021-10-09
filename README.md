@@ -141,7 +141,8 @@ We notice that some users only want to extract the motion of **the formost perso
 <img src="../assets/demo/animation/video_demo_nofp.gif" width="32%" />
   <img src="../assets/demo/animation/video_demo_fp.gif" width="40%" />
 </p>
-To achieve this, please run
+To achieve this, please run  
+
 ```bash
 python -m romp.predict.video --inputs=demo/videos/demo_video_frames --output_dir=demo/demo_video_fp_results --show_largest_person_only --save_dict_results --show_mesh_stand_on_image 
 ```
@@ -206,7 +207,6 @@ Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks
 Please refer to [bug.md](docs/bugs.md) for solutions. Welcome to submit the issues for related bugs. I will solve them as soon as possible.
 
 ## Citation
-Please considering citing 
 ```bibtex
 @InProceedings{ROMP,
 author = {Sun, Yu and Bao, Qian and Liu, Wu and Fu, Yili and Michael J., Black and Mei, Tao},

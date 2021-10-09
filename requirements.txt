@@ -24,4 +24,5 @@ pycocotools
 plotly
 open3d
 addict
-loguru 
+loguru
+norfair

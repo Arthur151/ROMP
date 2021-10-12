@@ -2,7 +2,7 @@
 
 ### Directory structure
 
-1: You can download the parsed data from [google drive](https://drive.google.com/drive/folders/1Vm2Nqaz5Bon2Kblcg8DQguwa9ti1Tn6h?usp=sharing).  **Make sure you have signed the license agreement with the dataset publisher.**
+1: You can download the parsed data from [google drive](https://drive.google.com/drive/folders/1_g4AbXumhufs7YPdTAK3kFMnTQJYs3w3?usp=sharing).  **Make sure you have signed the license agreement with the dataset publisher.**
 Please follow the directory structure to organize them.
 ```
 |-- dataset

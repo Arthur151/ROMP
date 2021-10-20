@@ -16,12 +16,6 @@ class CenterMap(object):
         self.conf_thresh= args().centermap_conf_thresh
         print('Confidence:', self.conf_thresh)
         self.gk_group, self.pool_group = self.generate_kernels(args().kernel_sizes)
-        if args().model_version>4:
-            self.prepare_parsing()
-        
-    def prepare_parsing(self):
-        self.coordmap_3d = get_3Dcoord_maps(size=self.size)
-        self.maxpool3d = torch.nn.MaxPool3d(5, 1, (5-1)//2)
 
     def generate_kernels(self, kernel_size_list):
         gk_group, pool_group = {}, {}

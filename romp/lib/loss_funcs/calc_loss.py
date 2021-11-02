@@ -110,8 +110,8 @@ class Loss(nn.Module):
                 smpl_shape_diff = meta_data['params'][smpl_shape_masks,-10:].to(device).contiguous() - outputs['params']['betas'][smpl_shape_masks,:10].contiguous()
                 params_loss_dict['Shape'] += torch.norm(smpl_shape_diff, p=2, dim=-1).mean() / 20.
 
-            # Don't ask to force the first 2-dim body scale/fat value to be 0. Let it learn from body age/type.
-            params_loss_dict['Shape'] += (outputs['params']['betas'][~smpl_shape_masks,1:10]**2).mean() / 10.
+            if (~smpl_shape_masks).sum()>1:
+                params_loss_dict['Shape'] += (outputs['params']['betas'][~smpl_shape_masks,1:10]**2).mean() / 10.
 
             gmm_prior_loss = self.gmm_prior(outputs['params']['body_pose'], outputs['params']['betas']).mean()/100.
             angle_prior_loss = angle_prior(outputs['params']['body_pose']).mean()/5.

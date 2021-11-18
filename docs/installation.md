@@ -40,7 +40,8 @@ ROMP
 
 Please notice that our training code only support CUDA >= 10.2 + Pytorch >= 1.9
 
-1.Please install the Pytorch 1.9 from [the official website](https://pytorch.org/). 
+1.Please install the Pytorch 1.9 from [the official website](https://pytorch.org/). Alternatively, install using conda:
+`conda install -n env_name pytorch==1.9.0 torchvision torchaudio cudatoolkit=10.2 -c pytorch`
 
 2.Installation of the Pytorch3d follow [this website](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md):
 

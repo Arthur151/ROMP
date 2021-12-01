@@ -38,17 +38,16 @@ ROMP
 
 #### Set up environments
 
-`
-[Pytorch 1.9.0](https://pytorch.org/)
-[Pytorch3d](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md)
-`
+[Pytorch 1.9.0](https://pytorch.org/)  
+[Pytorch3d](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md)  
 
-We recommand to install via conda:
-`
-conda create -n ROMP python==3.8.8
-conda activate ROMP
-conda install -n ROMP pytorch==1.9.0 torchvision cudatoolkit=10.2 -c pytorch
-pip install pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py38_cu102_pyt190/download.html
-cd ROMP
-pip install -r requirements.txt
-`
+
+We recommand to install via conda:  
+```
+conda create -n ROMP python==3.8.8  
+conda activate ROMP  
+conda install -n ROMP pytorch==1.9.0 torchvision cudatoolkit=10.2 -c pytorch  
+pip install pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py38_cu102_pyt190/download.html  
+cd ROMP  
+pip install -r requirements.txt  
+```

@@ -35,4 +35,3 @@ ARGS:
  # 'ghostwhite'/'LightCyan' for using the single color texture.
  mesh_cloth: '001' # 'random' #
  character: 'smpl' # 'nvxia' # 
- nvxia_model_path: 'model_data/characters/nvxia'

@@ -12,6 +12,11 @@ class Predictor(Base):
         self._build_model_()
         self._prepare_modules_()
         self.demo_cfg = {'mode':'parsing', 'calc_loss': False}
+        if self.character == 'nvxia':
+            assert os.path.exists(os.path.join('model_data','characters','nvxia')), \
+                'Current released version does not support other characters, like Nvxia.'
+            from romp.lib.models.nvxia import create_nvxia_model
+            self.character_model = create_nvxia_model(self.nvxia_model_path)
 
     def net_forward(self, meta_data, cfg=None):
         ds_org, imgpath_org = get_remove_keys(meta_data,keys=['data_set','imgpath'])

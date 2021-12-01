@@ -40,23 +40,23 @@ from mathutils import Matrix, Vector, Quaternion, Euler
 
 # Globals
 # Add your UNIX paths here!
-male_model_path = '/home/yusun/Desktop/all_files/animation/SMPL_unity_v.1.0.0/smpl/Models/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
-female_model_path = '/home/yusun/Desktop/all_files/animation/SMPL_unity_v.1.0.0/smpl/Models/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
+male_model_path = '/home/yusun/ROMP/model_data/SMPL_unity_v.1.0.0/smpl/Models/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
+female_model_path = '/home/yusun/ROMP/model_data/SMPL_unity_v.1.0.0/smpl/Models/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
 # Handle fall back if files don't exist, also keeping the unix version before attempting the windows version.
 plt = platform.system()
 if plt == "Windows":
     # Add your Windows paths here!
     male_model_path = "C:/temp/mocap/smpl/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx"
     female_model_path = "C:/temp/mocap/smpl/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx"
-    
+
 '''
-python romp/lib/utils/convert_fbx.py --input=demo/videos/dance_tracking_result.npz --output=demo/videos/dance.fbx --gender=female
+python romp/exports/convert_fbx.py --input=demo/juntiquan_results/juntiquan_frames_ts_results.npz --output=demo/videos/jtq.fbx --gender=male
 '''
 
 fps_source = 24
 fps_target = 24
 
-gender = 'female' #female
+gender = 'male' #female
 
 start_origin = 1
 person_id = 0
@@ -229,7 +229,7 @@ def process_poses(
     subject_ids = 0 #list(data.keys())
     data = np.load(input_path, allow_pickle=True)['results'][()]
     if '_ts_results' in os.path.basename(input_path):
-        subject_ids = 1
+        subject_ids = 0
         print('Exporting motion sequence of subject {}'.format(subject_ids))
         data = data[subject_ids]
         frame_nums = list(data.keys())
@@ -368,9 +368,9 @@ if __name__ == '__main__':
         if bpy.app.background:
 
             parser = argparse.ArgumentParser(description='Create keyframed animated skinned SMPL mesh from VIBE output')
-            parser.add_argument('--input', dest='input_path', type=str, default='../demo/videos/sample_video2_results.npz',
+            parser.add_argument('--input', dest='input_path', type=str, default='demo/juntiquan_results/juntiquan_frames_ts_results.npz', #'../demo/videos/sample_video2_results.npz',
                                 help='Input file or directory')
-            parser.add_argument('--output', dest='output_path', type=str, default='../demo/videos/sample_video2.fbx',
+            parser.add_argument('--output', dest='output_path', type=str, default='demo/videos/jtq.fbx', #'../demo/videos/sample_video2.fbx',
                                 help='Output file or directory')
             parser.add_argument('--fps_source', type=int, default=fps_source,
                                 help='Source framerate')
@@ -388,6 +388,9 @@ if __name__ == '__main__':
 
             input_path = args.input_path
             output_path = args.output_path
+            
+            print('Input path: ' + input_path)
+            print('Output path: ' + output_path)
 
             if not os.path.exists(input_path):
                 print('ERROR: Invalid input path')
@@ -414,8 +417,7 @@ if __name__ == '__main__':
         if not output_path.startswith(os.path.sep):
             output_path = os.path.join(cwd, output_path)
 
-        print('Input path: ' + input_path)
-        print('Output path: ' + output_path)
+        
 
         if not (output_path.endswith('.fbx') or output_path.endswith('.glb')):
             print('ERROR: Invalid output format (must be .fbx or .glb)')

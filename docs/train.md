@@ -24,3 +24,7 @@ You can change the configurations (e.g. used GPUs, batch size) in the correspond
 The training logs wiil be saved in ROMP/log. 
 
 The intermediate training/validation results will be visualized and saved in result_image_train/result_images.
+
+## Training guidance
+
+To properly train ROMP, here we provide a guidance.

@@ -19,16 +19,32 @@ def convert_cam_to_stand_on_image_trans(cam, enlarge_scale):
     # The x-axis is supposed to be adapted to the proper scale
     stand_on_image_trans[0] = trans_3d[0] * 0.3
     stand_on_image_trans[1] = 0.42 #0.5 - trans_3d[1] * 0.2
+    #stand_on_image_trans[1] = 0.56
     #stand_on_image_trans[2] = trans_3d[1] - trans_3d[2]/3 + 2.6
     stand_on_image_trans[2] = trans_3d[1] * 0.4 #- trans_3d[2]/3 
     stand_on_image_trans *= enlarge_scale
     return stand_on_image_trans
 
+def parse_nvxia_uvmap(uvs, face):
+    verts_num = np.max(face) + 1
+    uvs_verts = np.zeros((verts_num, 2))
+    for uv, f in zip(uvs, face):
+        uvs_verts[f] = uv[:,:2]
+    #uvs_verts[:,1] = 1-uvs_verts[:,1]
+    return uvs_verts
+
+
 class Vedo_visualizer(object):
     def __init__(self):
-        self.smpl_faces = pickle.load(open(os.path.join(args().smpl_model_path,'SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')['f']
+        if args().character == 'smpl':
+            self.faces = pickle.load(open(os.path.join(args().smpl_model_path,'SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')['f']
+        elif args().character == 'nvxia':
+            params_dict = np.load(os.path.join(args().nvxia_model_path, 'nvxia.npz'), allow_pickle=True)
+            self.faces = np.array([np.array(face) for face in params_dict['polygons']])
+            self.texture_file = cv2.imread(os.path.join(args().nvxia_model_path, 'Kachujin_diffuse.png'))[:,:,::-1]
+            self.uvs = parse_nvxia_uvmap(params_dict['uvmap'],self.faces)
         self.scene_bg_color = [240,255,255]
-        self.default_camera={'pos':{'far':(0,800,1000), 'close':(0,200,700)}[args().soi_camera]} 
+        self.default_camera={'pos':{'far':(0,800,1000), 'close':(0,200,800)}[args().soi_camera]} 
         self.light = Light([0,800,1000], c='white')
         vedo.settings.screeshotLargeImage = True
         vedo.settings.screeshotScale = 2
@@ -65,9 +81,13 @@ class Vedo_visualizer(object):
         
         visulize_list = []
         for inds, vert in enumerate(vertices_vis):
-            mesh = Mesh([vert, self.smpl_faces]).c([255,255,255]).smooth(niter=20).lighting('default')
-            if mesh_colors is not None:
-                mesh.c(mesh_colors[inds].astype(np.uint8))
+            mesh = Mesh([vert, self.faces])
+            if args().character == 'smpl':
+                mesh = mesh.c([255,255,255]).smooth(niter=20)
+                if mesh_colors is not None:
+                    mesh.c(mesh_colors[inds].astype(np.uint8))
+            elif args().character == 'nvxia':
+                mesh.texture(self.texture_file,tcoords=self.uvs).smooth(niter=20)#.lighting('glossy')
             visulize_list.append(mesh)
         plt += visulize_list
         plt += self.light

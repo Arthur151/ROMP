@@ -1,16 +1,8 @@
-demo/videos
-demo/animation
-demo/*_results
-trained_models
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*.log
-*.mp4
-*.npz
-*.fbx
-*.zip
-.vscode
+src/
+trained_models/
+models/
+demo/videos/
+demo/animation/
 model_data/
-active_configs
-romp/lib/models/nvxia.py
+romp/
+demo/*_results/

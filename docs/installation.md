@@ -1,14 +1,14 @@
 ## Installation
 
-We have tested the code on Ubuntu 18.04 and Centos 7. 
+We have tested the code on Ubuntu 18.04/20.04 and Centos 7. 
 
 ### Download models
 
 ##### Release:
 
 Directly download the full-packed released package from Github:
-1. [ROMP v1.1](https://github.com/Arthur151/ROMP/releases/tag/v1.1) with all functions.
-2. [ROMP v1.0](https://github.com/Arthur151/ROMP/releases/download/v1.0/ROMP_v1.0.zip) with the basic functions to process images/videos/webcam.
+1. [ROMP v1.1](https://github.com/Arthur151/ROMP/releases/tag/v1.1) with all features.
+2. [ROMP v1.0](https://github.com/Arthur151/ROMP/releases/download/v1.0/ROMP_v1.0.zip) with some basic features to process images/videos/webcam.
 
 ##### Up-to-date:
 
@@ -38,22 +38,17 @@ ROMP
 
 #### Set up environments
 
-Please notice that our training code only support CUDA >= 10.2 + Pytorch >= 1.9
+`
+[Pytorch 1.9.0](https://pytorch.org/)
+[Pytorch3d](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md)
+`
 
-1.Please install the Pytorch 1.9 from [the official website](https://pytorch.org/). Alternatively, install using conda:
-`conda install -n env_name pytorch==1.9.0 torchvision torchaudio cudatoolkit=10.2 -c pytorch`
-
-2.Installation of the Pytorch3d follow [this website](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md):
-
-```bash
-# For Python3.8 + CUDA 10.2+pytorch 1.9.0, install via
+We recommand to install via conda:
+`
+conda create -n ROMP python==3.8.8
+conda activate ROMP
+conda install -n ROMP pytorch==1.9.0 torchvision cudatoolkit=10.2 -c pytorch
 pip install pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py38_cu102_pyt190/download.html
-# For Python3.7 + CUDA 10.2+pytorch 1.9.0, install via
-pip install pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py37_cu102_pyt190/download.html
-```
-
-Install packages:
-```bash
-cd ROMP/src
+cd ROMP
 pip install -r requirements.txt
-```
+`

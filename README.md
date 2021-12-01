@@ -99,6 +99,8 @@ For interactive visualization, please run
 python -m romp.predict.image --inputs=demo/images --output_dir=demo/image_results --show_mesh_stand_on_image  --interactive_vis
 ```
 
+**Caution**: To use `show_mesh_stand_on_image` and `interactive_vis`, you must run ROMP on a computer with visual desktop to support the rendering. Most remote servers without visual desktop is not supported. Please use `save_visualization_on_img` instead.
+
 Here, we show an example of calling ROMP as a python lib to process images.
 <details>
 <summary>click here to show the code</summary>
@@ -196,7 +198,7 @@ Please refer to [expert.md](docs/export.md) to export the results to fbx files f
 
 ### Train
 
-Please prepare the training datasets following [dataset.md](docs/dataset.md), and then refer to [train.md](docs/train.md) for training.
+Please prepare the training datasets following [dataset.md](docs/dataset.md), and then refer to [train.md](docs/train.md) for training. 
 
 ### Evaluation
 

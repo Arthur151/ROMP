@@ -51,7 +51,8 @@ class Image_processor(Predictor):
                     cv2.imwrite(save_name, cv2.cvtColor(mesh_rendering_orgimg, cv2.COLOR_RGB2BGR))
 
             if self.show_mesh_stand_on_image:
-                stand_on_imgs = visualizer.plot_multi_meshes_batch(outputs['verts'], outputs['params']['cam'], outputs['meta_data'], outputs['reorganize_idx'].cpu().numpy(), interactive_show=self.interactive_vis)
+                stand_on_imgs = visualizer.plot_multi_meshes_batch(outputs['verts'], outputs['params']['cam'], outputs['meta_data'], \
+                    outputs['reorganize_idx'].cpu().numpy(), interactive_show=self.interactive_vis)
                 stand_on_imgs_frames += stand_on_imgs
 
             if self.save_mesh:

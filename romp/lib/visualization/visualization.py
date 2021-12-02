@@ -15,9 +15,11 @@ import constants
 import config
 from config import args
 import utils.projection as proj
+if args().renderer == 'pyrender':
+    from .renderer_pyrd import get_renderer
+elif args().renderer == 'pytorch3d':
+    from .renderer_pt3d import get_renderer
 from utils.train_utils import process_idx, determine_rendering_order
-from .renderer_pt3d import get_renderer
-from pytorch3d.renderer import look_at_view_transform, get_world_to_view_transform
 from .web_vis import write_to_html, convert_3dpose_to_line_figs, convert_image_list
 from collections import OrderedDict
 
@@ -31,10 +33,8 @@ class Visualizer(object):
         self.resolution = resolution
         self.smpl_face = torch.from_numpy(pickle.load(open(os.path.join(args().smpl_model_path,'SMPL_NEUTRAL.pkl'),'rb'), \
             encoding='latin1')['f'].astype(np.int32)).unsqueeze(0)
-        if with_renderer:
-            self.perps_proj = args().perspective_proj
-            T = None if self.perps_proj else torch.Tensor([[0.,0.,100]])                
-            self.renderer = get_renderer(resolution=self.resolution, perps=self.perps_proj, T=T)
+        if with_renderer:              
+            self.renderer = get_renderer(resolution=self.resolution, perps=True)
         self.result_img_dir = result_img_dir
         self.heatmap_kpnum = 17
         self.vis_size = resolution
@@ -47,30 +47,27 @@ class Visualizer(object):
 
 
     def visualize_renderer_verts_list(self, verts_list, faces_list=None, images=None, cam_params=None,\
-                                            colors=torch.Tensor([.9, .9, .8]), trans=None, thresh=0.):
+                                            colors=np.array([[.9, .9, .8]]), trans=None, thresh=0.):
         verts_list = [verts.contiguous() for verts in verts_list]
         if faces_list is None:
             faces_list = [self.smpl_face.repeat(len(verts), 1, 1).to(verts.device) for verts in verts_list]
         
-        renderer = self.renderer
         rendered_imgs = []
         for ind, (verts, faces) in enumerate(zip(verts_list, faces_list)):
             if trans is not None:
                 verts += trans[ind].unsqueeze(1)
             
-            color = colors[ind] if isinstance(colors, list) else colors
+            color = colors[ind] if isinstance(colors, list) else colors.repeat(len(verts),0)
 
-            if self.perps_proj:
-                rendered_img = renderer(verts, faces, colors=color, merge_meshes=True, cam_params=cam_params)
-            else:
-                verts[:,:,2] -= 1.
-                rendered_img = renderer(verts, faces, colors=color, merge_meshes=False, cam_params=cam_params)
-                rendered_img = determine_rendering_order(rendered_img)
+            rendered_img = self.renderer(verts, faces, colors=color, focal_length=args().focal_length, cam_params=cam_params)
             rendered_imgs.append(rendered_img)
-        rendered_imgs = torch.cat(rendered_imgs, 0).cpu().numpy()
+        if len(rendered_imgs)>0:
+            if isinstance(rendered_imgs[0],torch.Tensor):
+                rendered_imgs = torch.cat(rendered_imgs, 0).cpu().numpy()
+        rendered_imgs = np.array(rendered_imgs)
         if rendered_imgs.shape[-1]==4:
             transparent = rendered_imgs[:,:, :, -1]
-            rendered_imgs = rendered_imgs[:,:,:,:-1] * 255
+            rendered_imgs = rendered_imgs[:,:,:,:-1]
         
         visible_weight = 0.9
         if images is not None:
@@ -100,8 +97,9 @@ class Visualizer(object):
                     plot_dict['org_img'] = {'figs':org_imgs, 'type':'image'}
 
             if vis_name == 'mesh' and outputs['detection_flag']:
-                per_img_verts_list = [outputs['verts_camed'][inds].detach() for inds in per_img_inds]
-                rendered_imgs = self.visualize_renderer_verts_list(per_img_verts_list, images=org_imgs.copy())
+                per_img_verts_list = [outputs['verts'][inds].detach() for inds in per_img_inds]
+                mesh_trans = [outputs['cam_trans'][inds].detach() for inds in per_img_inds]
+                rendered_imgs = self.visualize_renderer_verts_list(per_img_verts_list, images=org_imgs.copy(), trans=mesh_trans)
                 
                 if 'put_org' in vis_cfg['settings']:
                     offsets = meta_data['offsets'].cpu().numpy().astype(np.int)[img_inds_org]
@@ -155,7 +153,6 @@ class Visualizer(object):
                 if save2html:
                     kp_imgs = convert_image_list(kp_imgs)
                 plot_dict['pj2d'] = {'figs':kp_imgs, 'type':'image'}
-
             
             if vis_name == 'hp_aes' and outputs['detection_flag']:
                 heatmaps_AEmaps = []

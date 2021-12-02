@@ -17,12 +17,13 @@ ARGS:
  show_largest_person_only: False
  show_mesh_stand_on_image: False
  soi_camera: 'far' # 'close' # 'far'
+ renderer: 'pyrender' # 'pyrender' 'pytorch3d' 
 
  inputs: 'demo/videos/sample_video.mp4' # None
  output_dir: 'demo/sample_video_results/'
  save_mesh: False
  save_centermap: False
  save_dict_results: True
- save_visualization_on_img: False
+ save_visualization_on_img: True
  fps_save: 24
  mesh_cloth: 'ghostwhite'  #'LightCyan'

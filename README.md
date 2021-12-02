@@ -1,7 +1,5 @@
 <h1 align="center"> 
-  <p float="center">
   <img src="../assets/demo/ROMP_logo.png" width="20%" />
-  </p> 
 </h1>
 <h2 align="center"> Monocular, One-stage, Regression of Multiple 3D People </h2>
 
@@ -54,6 +52,7 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
  - Convenient API for 2D / 3D visualization, parsed datasets.  
 
 ## News
+*2021/12/2: Add optional renderers (pyrender or pytorch3D). Fix some bugs reported in issues.*  
 ✨✨*2021/10/10: V1.1 released, including multi-person webcam, extracting , webcam temporal optimization, live blender character animation, interactive visualization.*  Let's try!  
 *2021/9/13: Low FPS / args parsing bugs are fixed. Support calling as a python lib.*   
 *2021/9/10: Training code release. API optimization.*    
@@ -238,6 +237,6 @@ Here are some great resources we benefit:
 - SMPL models and layer is borrowed from MPII [SMPL-X model](https://github.com/vchoutas/smplx).
 - Some functions are borrowed from [HMR-pytorch](https://github.com/MandyMo/pytorch_HMR) and [SPIN](https://github.com/nkolot/SPIN).
 - The evaluation code and GT annotations of 3DPW dataset is brought from [3dpw-eval](https://github.com/aymenmir1/3dpw-eval) and [VIBE](https://github.com/mkocabas/VIBE).
-- 3D mesh visualization is supported by [vedo](https://github.com/marcomusy/vedo), [EasyMocap](https://github.com/zju3dv/EasyMocap), [minimal-hand](https://github.com/CalciferZh/minimal-hand) and [Open3D]( https://github.com/intel-isl/Open3D).
+- 3D mesh visualization is supported by [vedo](https://github.com/marcomusy/vedo), [EasyMocap](https://github.com/zju3dv/EasyMocap), [minimal-hand](https://github.com/CalciferZh/minimal-hand), [Open3D](https://github.com/intel-isl/Open3D), and [Pyrender](https://github.com/mmatl/pyrender).
 
 Please consider citing their papers.

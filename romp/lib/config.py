@@ -47,6 +47,7 @@ def parse_args(input_args=None):
     parser.add_argument('--save_visualization_on_img',action='store_true',help = 'whether to rendering the mesh back to image, which is time consuming')
     parser.add_argument('--fps_save', type = int, default = 24, help = 'the fps of the save video')
     parser.add_argument('--character', type = str, default = 'smpl', help = 'character: smpl / nvxia')
+    parser.add_argument('--renderer', type = str, default = 'pytorch3d', help = 'character: pytorch3d / pyrender')
     parser.add_argument('-f', type = str, default = None, help = 'do nothing, just to deal with the invalid input args from jupyter notebook') 
 
     mode_group = parser.add_argument_group(title='mode options')
@@ -57,6 +58,7 @@ def parse_args(input_args=None):
     mode_group.add_argument('--new_training',type = bool,default = False, help='learning centermap only in first few iterations for stable training.')
     mode_group.add_argument('--perspective_proj',type = bool,default = False,help = 'whether to use perspective projection, else use orthentic projection.')
     mode_group.add_argument('--FOV',type = float,default = 60, help = 'The camera field of view (eular angle) used for visualization')
+    mode_group.add_argument('--focal_length',type=float, default = 443.4, help = 'Default focal length, adopted from JTA dataset')
 
     train_group = parser.add_argument_group(title='training options')
     # basic training settings

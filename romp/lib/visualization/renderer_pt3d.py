@@ -53,8 +53,12 @@ class Renderer(nn.Module):
         if T is None:
             T = torch.Tensor([[0., 0., 0.]])
 
-        self.cameras = FoVOrthographicCameras(R=R, T=T, znear=0., zfar=100.0, max_y=1.0, min_y=-1.0, max_x=1.0, min_x=-1.0, device=self.device)
-        self.lights = DirectionalLights(direction=torch.Tensor([[0., 1., 0.]]), device=self.device)
+        if self.perps:
+            self.cameras = FoVPerspectiveCameras(R=R, T=T, fov=args().FOV, device=self.device)
+            self.lights = PointLights(ambient_color=((0.56, 0.56, 0.56),),location=torch.Tensor([[0., 0., 0.]]), device=self.device)
+        else:
+            self.cameras = FoVOrthographicCameras(R=R, T=T, znear=0., zfar=100.0, max_y=1.0, min_y=-1.0, max_x=1.0, min_x=-1.0, device=self.device)
+            self.lights = DirectionalLights(direction=torch.Tensor([[0., 1., 0.]]), device=self.device)
 
         # Define the settings for rasterization and shading. Here we set the output image to be of size
         # 512x512. As we are rendering images for visualization purposes only we will set faces_per_pixel=1
@@ -76,25 +80,27 @@ class Renderer(nn.Module):
                 cameras=self.cameras,
                 lights=self.lights))
 
-    def __call__(self, verts, faces, colors=torch.Tensor(colors['neutral']), merge_meshes=True, cam_params=None):
+    def __call__(self, verts, faces, colors=torch.Tensor(colors['neutral']), merge_meshes=True, cam_params=None,**kwargs):
         assert len(verts.shape) == 3, print('The input verts of visualizer is bounded to be 3-dims (Nx6890 x3) tensor')
         verts, faces = verts.to(self.device), faces.to(self.device)
         verts_rgb = torch.ones_like(verts)
-        if len(colors.shape) == 1:
-            verts_rgb[:, :] = colors
-        elif len(colors.shape) == 2:
-            verts_rgb[:, :] = colors.unsqueeze(1)
+        verts_rgb[:, :] = torch.from_numpy(colors).cuda().unsqueeze(1)
         textures = TexturesVertex(verts_features=verts_rgb)
         verts[:,:,:2] *= -1
         meshes = Meshes(verts, faces, textures)
         if merge_meshes:
             meshes = join_meshes_as_scene(meshes)
         if cam_params is not None:
-            R, T, xyz_ranges = cam_params
-            new_cam = FoVOrthographicCameras(R=R, T=T, **xyz_ranges, device=self.device)
+            if self.perps:
+                R, T, fov = cam_params
+                new_cam = FoVPerspectiveCameras(R=R, T=T, fov=fov, device=self.device)
+            else:
+                R, T, xyz_ranges = cam_params
+                new_cam = FoVOrthographicCameras(R=R, T=T, **xyz_ranges, device=self.device)
             images = self.renderer(meshes,cameras=new_cam)
         else:
             images = self.renderer(meshes)
+        images[:,:,:-1] *= 255
 
         return images
 

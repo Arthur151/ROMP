@@ -148,7 +148,9 @@ class ResultParser(nn.Module):
             
             batch_ids, flat_inds = torch.zeros(1).long().to(outputs['center_map'].device), (torch.ones(1)*self.map_size**2/2.).to(outputs['center_map'].device).long()
             person_ids = batch_ids.clone()
-        outputs['detection_flag'] = torch.Tensor([True for _ in range(len(batch_ids))]).cuda()
+            outputs['detection_flag'] = torch.Tensor([False for _ in range(len(batch_ids))]).cuda()
+        else:
+            outputs['detection_flag'] = torch.Tensor([True for _ in range(len(batch_ids))]).cuda()
 
         if 'params_pred' not in outputs and 'params_maps' in outputs:
             outputs['params_pred'] = self.parameter_sampling(outputs['params_maps'], batch_ids, flat_inds, use_transform=True)

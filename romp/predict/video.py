@@ -146,10 +146,11 @@ class Video_processor(Image_processor):
                 results_dict, img_names = self.visualizer.visulize_result(outputs, outputs['meta_data'], \
                     show_items=show_items_list, vis_cfg={'settings':['put_org']}, save2html=False)
 
-                for img_name, mesh_rendering_orgimg in zip(img_names, results_dict['mesh_rendering_orgimgs']['figs']):
-                    save_name = os.path.join(self.output_dir, os.path.basename(img_name))
-                    cv2.imwrite(save_name, cv2.cvtColor(mesh_rendering_orgimg, cv2.COLOR_RGB2BGR))
-                    save_frame_list.append(save_name)
+                if 'mesh_rendering_orgimgs' in results_dict:
+                    for img_name, mesh_rendering_orgimg in zip(img_names, results_dict['mesh_rendering_orgimgs']['figs']):
+                        save_name = os.path.join(self.output_dir, os.path.basename(img_name))
+                        cv2.imwrite(save_name, cv2.cvtColor(mesh_rendering_orgimg, cv2.COLOR_RGB2BGR))
+                        save_frame_list.append(save_name)
                 del results_dict
 
             if self.save_mesh:

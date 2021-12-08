@@ -8,6 +8,7 @@ if root_dir not in sys.path:
 import constants
 from config import args
 
+INVALID_TRANS=np.ones(3)*-1
 def convert_kp2d_from_input_to_orgimg(kp2ds, offsets):
     offsets = offsets.float().to(kp2ds.device)
     img_pad_size, crop_trbl, pad_trbl = offsets[:,:2], offsets[:,2:6], offsets[:,6:10]

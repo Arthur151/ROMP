@@ -6,3 +6,5 @@
 *2020/11/26: Optimization for person-person occlusion.* Small changes for video support.   
 *2020/9/11: Real-time webcam demo using local/remote server.* 
 *2020/9/4: Google Colab demo.* Saving a npy file per imag. 
+*2021/9/13: Low FPS / args parsing bugs are fixed. Support calling as a python lib.*   
+*2021/9/10: Training code release. API optimization.*    

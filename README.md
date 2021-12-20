@@ -52,10 +52,9 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
  - Convenient API for 2D / 3D visualization, parsed datasets.  
 
 ## News
+*2021/12/20: Upgrade the Pytorch to 1.10.0, Pytorch3D to 0.6.1.*  
 *2021/12/2: Add optional renderers (pyrender or pytorch3D). Fix some bugs reported in issues.*  
 ✨✨*2021/10/10: V1.1 released, including multi-person webcam, extracting , webcam temporal optimization, live blender character animation, interactive visualization.*  Let's try!  
-*2021/9/13: Low FPS / args parsing bugs are fixed. Support calling as a python lib.*   
-*2021/9/10: Training code release. API optimization.*    
 [Old logs](docs/updates.md)
 
 ## Getting started

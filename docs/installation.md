@@ -38,16 +38,26 @@ ROMP
 
 #### Set up environments
 
-[Pytorch 1.9.0](https://pytorch.org/)  
-[Pytorch3d](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md)  
-
+[Pytorch 1.10.0](https://pytorch.org/)  
+[Pytorch3d 0.6.1](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md)  
 
 We recommand to install via conda:  
 ```
 conda create -n ROMP python==3.8.8  
 conda activate ROMP  
-conda install -n ROMP pytorch==1.9.0 torchvision cudatoolkit=10.2 -c pytorch  
-pip install pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py38_cu102_pyt190/download.html  
+conda install -n ROMP pytorch==1.10.0 torchvision==0.11.1 cudatoolkit=10.2 -c pytorch  
+pip install https://github.com/Arthur151/ROMP/releases/download/v1.1/pytorch3d-0.6.1-cp38-cp38-linux_x86_64.whl
+cd ROMP  
+pip install -r requirements.txt  
+```
+
+To directly install via pip, you need to install CUDA 10.2 first (For Ubuntu, just run`sudo apt-get install cuda-10-2`) and then install via:
+```
+pip install pytorch==1.10.0 torchvision==0.11.1
+# if you have Python3.8, please install pytorch3d via
+pip install https://github.com/Arthur151/ROMP/releases/download/v1.1/pytorch3d-0.6.1-cp38-cp38-linux_x86_64.whl
+# if you have Python3.7, please install pytorch3d via
+pip install https://github.com/Arthur151/ROMP/releases/download/v1.1/pytorch3d-0.6.1-cp38-cp38-linux_x86_64.whl
 cd ROMP  
 pip install -r requirements.txt  
 ```

@@ -52,6 +52,16 @@ python ROMP/romp/lib/dataset/preprocess/h36m_extract_frames.py h36m_extract_fram
 python h36m_extract_frames.py archives images
 ```
 
+Finally, pleaset set the dataset root path:  
+If you put all datasets in one folder, then you just need to change [this config](https://github.com/Arthur151/ROMP/blob/db299277b519de0970604789b4490d9f10318764/romp/lib/config.py#L151) to the path of your dataset folder, like:
+```
+dataset_group.add_argument('--dataset_rootdir',type=str, default='/path/to/your/dataset/folder', help= 'root dir of all datasets')
+```
+If you put different dataset at different path, then you have to set them separately. For instance, to set the path of Human3.6M dataset, please change [this line](https://github.com/Arthur151/ROMP/blob/db299277b519de0970604789b4490d9f10318764/romp/lib/dataset/h36m.py#L10) to the path where you put Human3.6M, like
+```
+self.data_folder = /path/to/your/h36m/
+```
+
 ### Test the data loading
 
 We can test the data loading of a datasets, like lsp via 

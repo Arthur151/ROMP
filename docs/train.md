@@ -74,18 +74,18 @@ We recommend setting the sampling rate of a data set to less than 0.2 for better
 
 It is convenient to fine-tune ROMP with you own datasets. You just have to load the images / annoations follow the template and then register the dataset.
 
-Step 1) Please create dataloader to load the images / annoations follow the template.
+Step 1) Please create dataloader to load the images / annoations follow the template.  
 We recommend to use [MPI-INF-3DHP](https://github.com/Arthur151/ROMP/blob/master/romp/lib/dataset/mpi_inf_3dhp_test.py) as template for 3D pose dataset.  
 We recommend to use [Crowdpose](https://github.com/Arthur151/ROMP/blob/master/romp/lib/dataset/crowdpose.py) as template for 2D pose dataset.  
 
 Firstly, please copy the template file to create a new dataloader for your own dataset, like romp/lib/datasets/mydataset.py.  
 Replace the class name (like MPI_INF_3DHP_TEST in mpi_inf_3dhp_test.py) to your own dataset name (like MyDataset).
 
-Secondly, please re-write the `pack_data` function in the class to pack the annotations into a .npz file in convenience of data loading. 
+Secondly, please re-write the `pack_data` function in the class to pack the annotations into a .npz file in convenience of data loading.  
 The format is a dictionary with image name as key. The annotations for each image are sub-dictionaries / list as value.  
 Meanwile, please set the `self.data_folder` to the path of your dataset.
 
-Thirdly, please re-write the function `get_image_info` to load the image / annotations. 
+Thirdly, please re-write the function `get_image_info` to load the image / annotations.  
 Please properly set the information in `img_info` dict. For the missed annotations, please just set `None`. 
 Especailly, please properly set the `vmask_2d` and `vmask_3d`.  
 Each bool value in `vmask_3d` means whether we have corresponding annotation.   

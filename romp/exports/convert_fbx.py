@@ -42,6 +42,7 @@ from mathutils import Matrix, Vector, Quaternion, Euler
 # Add your UNIX paths here!
 male_model_path = '/home/yusun/ROMP/model_data/SMPL_unity_v.1.0.0/smpl/Models/SMPL_m_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
 female_model_path = '/home/yusun/ROMP/model_data/SMPL_unity_v.1.0.0/smpl/Models/SMPL_f_unityDoubleBlends_lbs_10_scale5_207_v1.0.0.fbx'
+character_model_path = None
 # Handle fall back if files don't exist, also keeping the unix version before attempting the windows version.
 plt = platform.system()
 if plt == "Windows":
@@ -238,12 +239,12 @@ def process_poses(
             poses[inds] = data[frame_id]['poses']
             trans[inds] = data[frame_id]['trans']
     else:
-        print('Exporting motion sequence of subject {}'.format(subject_id))
+        print('Exporting motion sequence of subject {}'.format(subject_ids))
         frame_nums = list(data.keys())
         poses, trans = np.zeros((len(frame_nums), 72)), np.zeros((len(frame_nums), 3))
         for inds, frame_id in enumerate(frame_nums):
-            poses[inds] = data[frame_id][subject_id]['poses']
-            trans[inds] = data[frame_id][subject_id]['trans']
+            poses[inds] = data[frame_id][subject_ids]['poses']
+            trans[inds] = data[frame_id][subject_ids]['trans']
 
     if gender == 'female':
         model_path = female_model_path

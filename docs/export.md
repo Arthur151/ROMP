@@ -32,8 +32,13 @@ You can also choose the gender of animated model via setting `gender=male` or `g
 
 2. Install the Blender:
 
-I have built the Blender 2.91 on Ubuntu 18.04 LTS following [this instructions](https://github.com/TylerGubala/blenderpy) via:
+Generally, Blender 2.91 can be installed following [this instructions](https://github.com/TylerGubala/blenderpy) via:  
 ```pip install bpy && bpy_post_install```
+
+With python 3.7, you can easily install via  
+```
+pip install https://github.com/TylerGubala/blenderpy/releases/download/v2.91a0/bpy-2.91a0-cp37-cp37m-manylinux2014_x86_64.whl && bpy_post_install
+```
 
 3. Run the code:
 

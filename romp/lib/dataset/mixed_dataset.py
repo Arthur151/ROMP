@@ -37,6 +37,8 @@ class MixedDataset(torch.utils.data.Dataset):
 
         self.lengths, self.partition, self.ID_num_list, self.ID_num = [], [], [], 0
         sample_prob_dict = args().sample_prob_dict
+        assert sum(sample_prob_dict.values())==1, \
+            'The sum of sampling rates is supposed to be 1, please properly set the sample_prob_dict in config.yml'
         for ds_idx, ds_name in enumerate(datasets_used):
             self.lengths.append(len(self.datasets[ds_idx]))
             self.partition.append(sample_prob_dict[ds_name])
@@ -62,15 +64,17 @@ class MixedDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         p = float(index)/float(self.total_length)
-        for inds in range(len(self.partition)):
-            if p <= self.partition[inds]:
-                pre_prob = self.partition[inds-1] if inds>0 else 0
-                sample_prob = (p-pre_prob)/(self.partition[inds]-pre_prob)
-                omit_internal = self.lengths[inds]//((self.partition[inds]-pre_prob)*self.total_length)
-                index_sample = int(min(self.lengths[inds]* sample_prob + random.randint(0,omit_internal), self.lengths[inds]-1))
-                annots = self.datasets[inds][index_sample]
-                annots['subject_ids'] += self.ID_num_list[inds]
-                return annots
+        dataset_id = len(self.partition)-(self.partition>=p).sum()
+
+        upper_bound = self.partition[dataset_id]
+        lower_bound = self.partition[dataset_id-1] if dataset_id>0 else 0
+        sample_prob = (p-lower_bound)/(upper_bound-lower_bound)
+
+        omit_internal = self.lengths[dataset_id]//((upper_bound-lower_bound)*self.total_length)
+        index_sample = int(min(self.lengths[dataset_id]* sample_prob + random.randint(0,omit_internal), self.lengths[dataset_id]-1))
+        annots = self.datasets[dataset_id][index_sample]
+        annots['subject_ids'] += self.ID_num_list[dataset_id]
+        return annots
 
     def __len__(self):
         return self.total_length

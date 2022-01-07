@@ -6,3 +6,4 @@ demo/animation/
 model_data/
 romp/
 demo/*_results/
+active_configs/*

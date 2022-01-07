@@ -227,8 +227,12 @@ class Image_base(Dataset):
     def prepare_image(self, image, image_wbg, augments=None):
         color_jitter, syn_occlusion = augments
         image = self.aug_image(image, color_jitter, syn_occlusion)
-        dst_image = cv2.resize(image, tuple(self.input_shape), interpolation = cv2.INTER_CUBIC)
-        org_image = cv2.resize(image_wbg, (self.vis_size, self.vis_size), interpolation=cv2.INTER_CUBIC)
+        try:
+            dst_image = cv2.resize(image, tuple(self.input_shape), interpolation = cv2.INTER_CUBIC)
+            org_image = cv2.resize(image_wbg, (self.vis_size, self.vis_size), interpolation=cv2.INTER_CUBIC)
+        except:
+            dst_image = np.zeros((self.input_shape[0], self.input_shape[1], 3))
+            org_image = np.zeros((self.vis_size, self.vis_size, 3))
         return image, dst_image, org_image
 
     def process_kp3ds(self, kp3ds, used_person_inds, augments=None, valid_mask_kp3ds=None):

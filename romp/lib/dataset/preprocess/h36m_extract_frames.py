@@ -12,18 +12,10 @@ cam_dict = {'54138969': 0, '55011271': 1, '58860488': 2, '60457274': 3}
 
 def extract_imgs(subject_id, src_folder, out_folder):
     video_files = glob.glob(os.path.join(src_folder, subject_id,  'Videos', '*.mp4'))
-    for video_file_origin in video_files:
-        if "_ALL" in video_file_origin:
+    for video_file in video_files:
+        if "_ALL" in video_file:
             continue
-        print("video_file_origin", video_file_origin)
-        video_file = video_file_origin.replace(' ', '\ ')
-        print("video_file_pose", video_file)
-        if len(video_file) != len(video_file_origin):
-            mark = " "
-            print("A")
-        else:
-            mark = ""
-            print("B")
+        print("video_file", video_file)
         video_name = os.path.basename(video_file)
         action_name, cam_str, _ = video_name.split('.')
         cam_id = cam_dict[cam_str]
@@ -42,8 +34,8 @@ def extract_imgs(subject_id, src_folder, out_folder):
             if frame_dex == 0:
                 continue
             if ret:
-                cv2.imwrite(target_name + mark + '_' + str(dex) + '.jpg', frame)
-                print("target_name ", target_name + mark + '_' + str(dex) + '.jpg')
+                cv2.imwrite(target_name + '_' + str(dex) + '.jpg', frame)
+                print("target_name ", target_name + '_' + str(dex) + '.jpg')
                 dex = dex + 1
                 if dex > 20:
                     break

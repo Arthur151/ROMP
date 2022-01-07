@@ -200,7 +200,7 @@ def get_image_cut_box(leftTop, rightBottom, ExpandsRatio, Center = None):
     cx = offset[0]
     cy = offset[1]
 
-    r = max(cx, cy)
+    r = max(cx, cy, 1)
 
     cx = r
     cy = r

@@ -28,8 +28,11 @@ def vertices_kp3d_projection(outputs, meta_data=None, presp=args().model_version
     pj3d = batch_orth_proj(j3ds, params_dict['cam'], mode='2d')
     predicts_j3ds = j3ds[:,:24].contiguous().detach().cpu().numpy()
     predicts_pj2ds = (pj3d[:,:,:2][:,:24].detach().cpu().numpy()+1)*256
-    cam_trans = estimate_translation(predicts_j3ds, predicts_pj2ds, \
+    try:
+        cam_trans = estimate_translation(predicts_j3ds, predicts_pj2ds, \
                                 focal_length=args().focal_length, img_size=np.array([512,512])).to(vertices.device)
+    except:
+        cam_trans = convert_cam_to_3d_trans(params_dict['cam'])
     projected_outputs = {'verts_camed': verts_camed, 'pj2d': pj3d[:,:,:2], 'cam_trans':cam_trans}
 
     if meta_data is not None:

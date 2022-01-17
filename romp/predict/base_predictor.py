@@ -52,6 +52,7 @@ class Predictor(Base):
     def reorganize_results(self, outputs, img_paths, reorganize_idx):
         results = {}
         cam_results = outputs['params']['cam'].detach().cpu().numpy().astype(np.float16)
+        trans_results = outputs['params']['cam_trans'].detach().cpu().numpy().astype(np.float16)
         smpl_pose_results = outputs['params']['poses'].detach().cpu().numpy().astype(np.float16)
         smpl_shape_results = outputs['params']['betas'].detach().cpu().numpy().astype(np.float16)
         joints_54 = outputs['j3d'].detach().cpu().numpy().astype(np.float16)
@@ -70,6 +71,7 @@ class Predictor(Base):
             results[img_path] = [{} for idx in range(len(verts_vids))]
             for subject_idx, batch_idx in enumerate(verts_vids):
                 results[img_path][subject_idx]['cam'] = cam_results[batch_idx]
+                results[img_path][subject_idx]['cam_trans'] = trans_results[batch_idx]
                 results[img_path][subject_idx]['poses'] = smpl_pose_results[batch_idx]
                 results[img_path][subject_idx]['betas'] = smpl_shape_results[batch_idx]
                 results[img_path][subject_idx]['j3d_all54'] = joints_54[batch_idx]
@@ -79,7 +81,8 @@ class Predictor(Base):
                 results[img_path][subject_idx]['verts'] = verts_results[batch_idx]
                 results[img_path][subject_idx]['pj2d'] = pj2d_results[batch_idx]
                 results[img_path][subject_idx]['pj2d_org'] = pj2d_org_results[batch_idx]
-                results[img_path][subject_idx]['trans'] = convert_cam_to_3d_trans(cam_results[batch_idx])
+                # wrong trans, please use cam_trans instead.
+                #results[img_path][subject_idx]['trans'] = convert_cam_to_3d_trans(cam_results[batch_idx])
                 results[img_path][subject_idx]['center_conf'] = center_confs[batch_idx]
         return results
 

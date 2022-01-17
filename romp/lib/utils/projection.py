@@ -28,11 +28,8 @@ def vertices_kp3d_projection(outputs, meta_data=None, presp=args().model_version
     pj3d = batch_orth_proj(j3ds, params_dict['cam'], mode='2d')
     predicts_j3ds = j3ds[:,:24].contiguous().detach().cpu().numpy()
     predicts_pj2ds = (pj3d[:,:,:2][:,:24].detach().cpu().numpy()+1)*256
-    try:
-        cam_trans = estimate_translation(predicts_j3ds, predicts_pj2ds, \
+    cam_trans = estimate_translation(predicts_j3ds, predicts_pj2ds, \
                                 focal_length=args().focal_length, img_size=np.array([512,512])).to(vertices.device)
-    except:
-        cam_trans = convert_cam_to_3d_trans(params_dict['cam'])
     projected_outputs = {'verts_camed': verts_camed, 'pj2d': pj3d[:,:,:2], 'cam_trans':cam_trans}
 
     if meta_data is not None:
@@ -54,6 +51,50 @@ def estimate_translation_cv2(joints_3d, joints_2d, focal_length=600, img_size=np
     else:
         tra_pred = tvec[:,0]            
         return tra_pred
+
+def estimate_translation_np(joints_3d, joints_2d, joints_conf, focal_length=600, img_size=np.array([512.,512.]), proj_mat=None):
+    """Find camera translation that brings 3D joints joints_3d closest to 2D the corresponding joints_2d.
+    Input:
+        joints_3d: (25, 3) 3D joint locations
+        joints: (25, 3) 2D joint locations and confidence
+    Returns:
+        (3,) camera translation vector
+    """
+
+    num_joints = joints_3d.shape[0]
+    if proj_mat is None:
+        # focal length
+        f = np.array([focal_length,focal_length])
+        # optical center
+        center = img_size/2.
+    else:
+        f = np.array([proj_mat[0,0],proj_mat[1,1]])
+        center = proj_mat[:2,2]
+
+    # transformations
+    Z = np.reshape(np.tile(joints_3d[:,2],(2,1)).T,-1)
+    XY = np.reshape(joints_3d[:,0:2],-1)
+    O = np.tile(center,num_joints)
+    F = np.tile(f,num_joints)
+    weight2 = np.reshape(np.tile(np.sqrt(joints_conf),(2,1)).T,-1)
+
+    # least squares
+    Q = np.array([F*np.tile(np.array([1,0]),num_joints), F*np.tile(np.array([0,1]),num_joints), O-np.reshape(joints_2d,-1)]).T
+    c = (np.reshape(joints_2d,-1)-O)*Z - F*XY
+
+    # weighted least squares
+    W = np.diagflat(weight2)
+    Q = np.dot(W,Q)
+    c = np.dot(W,c)
+
+    # square matrix
+    A = np.dot(Q.T,Q)
+    b = np.dot(Q.T,c)
+
+    # solution
+    trans = np.linalg.solve(A, b)
+
+    return trans
 
 def estimate_translation(joints_3d, joints_2d, pts_mnum=4,focal_length=600, proj_mats=None, cam_dists=None,img_size=np.array([512.,512.])):
     """Find camera translation that brings 3D joints joints_3d closest to 2D the corresponding joints_2d.
@@ -93,8 +134,12 @@ def estimate_translation(joints_3d, joints_2d, pts_mnum=4,focal_length=600, proj
             imgsize = img_size[i]
         else:
             raise NotImplementedError
-        trans[i] = estimate_translation_cv2(S_i[valid_mask], joints_i[valid_mask], 
+        try:
+            trans[i] = estimate_translation_cv2(S_i[valid_mask], joints_i[valid_mask], 
                 focal_length=focal_length, img_size=imgsize, proj_mat=proj_mats[i], cam_dist=cam_dists[i])
+        except:
+            trans[i] = estimate_translation_np(S_i[valid_mask], joints_i[valid_mask], valid_mask[valid_mask].astype(np.float32), 
+                focal_length=focal_length, img_size=imgsize, proj_mat=proj_mats[i])
 
     return torch.from_numpy(trans).float()
 

@@ -52,7 +52,7 @@ class Predictor(Base):
     def reorganize_results(self, outputs, img_paths, reorganize_idx):
         results = {}
         cam_results = outputs['params']['cam'].detach().cpu().numpy().astype(np.float16)
-        trans_results = outputs['params']['cam_trans'].detach().cpu().numpy().astype(np.float16)
+        trans_results = outputs['cam_trans'].detach().cpu().numpy().astype(np.float16)
         smpl_pose_results = outputs['params']['poses'].detach().cpu().numpy().astype(np.float16)
         smpl_shape_results = outputs['params']['betas'].detach().cpu().numpy().astype(np.float16)
         joints_54 = outputs['j3d'].detach().cpu().numpy().astype(np.float16)

@@ -37,8 +37,9 @@ class MixedDataset(torch.utils.data.Dataset):
 
         self.lengths, self.partition, self.ID_num_list, self.ID_num = [], [], [], 0
         sample_prob_dict = args().sample_prob_dict
-        assert sum(sample_prob_dict.values())==1, \
-            'The sum of sampling rates is supposed to be 1, please properly set the sample_prob_dict in config.yml'
+        if not 1.0001>sum(sample_prob_dict.values())>0.999:
+            print('CAUTION: The sum of sampling rates is supposed to be 1, while currently we have {}, \n please properly set the sample_prob_dict {} in config.yml'\
+                .format(sum(sample_prob_dict.values()), sample_prob_dict.values()))
         for ds_idx, ds_name in enumerate(datasets_used):
             self.lengths.append(len(self.datasets[ds_idx]))
             self.partition.append(sample_prob_dict[ds_name])

@@ -30,6 +30,7 @@ Please follow the directory structure to organize them.
 |   |   |-- eft_annots.npz
 |   |-- lsp
 |   |   |-- hr-lspet
+|   |   |   |-- eft_annots.npz
 |   |-- crowdpose
 |   |   |-- images
 |   |   |-- annots_train.npz

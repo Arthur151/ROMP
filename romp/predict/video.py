@@ -41,7 +41,8 @@ class Video_processor(Image_processor):
         video_basename = os.path.basename(video_basename)
         
         os.makedirs(self.output_dir, exist_ok=True)
-        self.visualizer.result_img_dir = self.output_dir 
+        if self.save_visualization_on_img:
+            self.visualizer.result_img_dir = self.output_dir 
         counter = Time_counter(thresh=1)
 
         internet_loader = self._create_single_data_loader(dataset='internet', train_flag=False, shuffle=False, file_list=frame_list)

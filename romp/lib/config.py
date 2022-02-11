@@ -10,19 +10,12 @@ import platform
 
 currentfile = os.path.abspath(__file__)
 code_dir = currentfile.replace('config.py','')
-project_dir = currentfile.replace('/romp/lib/config.py','')
-source_dir = currentfile.replace('/lib/config.py','')
-root_dir = project_dir.replace(project_dir.split('/')[-1],'')
+project_dir = currentfile.replace(os.sep + 'romp' + os.sep + 'lib' + os.sep + 'config.py','')
+source_dir = currentfile.replace(os.sep + 'lib' + os.sep + 'config.py','')
+root_dir = project_dir.replace(project_dir.split(os.sep)[-1],'')
 
 time_stamp = time.strftime('%Y-%m-%d_%H:%M:%S',time.localtime(int(round(time.time()*1000))/1000))
-yaml_timestamp = os.path.abspath(os.path.join( project_dir, "active_configs/active_context_{}.yaml".format(time_stamp).replace(":","_")))
-
-plt = platform.system()
-if plt == "Windows":
-    project_dir = currentfile.replace('\\romp\\lib\\config.py','')
-    source_dir = currentfile.replace('\\lib\\config.py','')
-    root_dir = project_dir.replace(project_dir.split('\\')[-1],'')
-    yaml_timestamp = os.path.abspath(os.path.join( source_dir + "active_configs\\active_context_{}.yaml".format(time_stamp.replace(":","_"))))
+yaml_timestamp = os.path.abspath(os.path.join(project_dir, 'active_configs' + os.sep + "active_context_{}.yaml".format(time_stamp).replace(":","_")))
 
 model_dir = os.path.join(project_dir,'model_data')
 trained_model_dir = os.path.join(project_dir,'trained_models')

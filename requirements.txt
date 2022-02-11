@@ -31,3 +31,5 @@ norfair
 h5py
 imageio-ffmpeg
 pyrender
+joblib
+pandas

@@ -10,13 +10,14 @@ chumpy
 trimesh
 shyaml
 PyYAML==5.4.1
+numpy==1.21.5
 numpy-quaternion
 pygame
 keyboard
 transforms3d
 bvhtoolbox
 vedo
-imgaug
+imgaug==0.4.0
 lap
 tensorboard
 smplx

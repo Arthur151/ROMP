@@ -4,6 +4,9 @@ The configure yml files are under ROMP/configs.
 
 ### Basic settings
 
+#### renderer (str)
+Please choose the renderer ('pyrender' or 'pytorch3d') for visualizing the estimated mesh on input image. 'pyrender' can be only used on desktop. To train ROMP or run it on server without visualization hardware, please install 'pytorch3d' and set renderer to 'pytorch3d'.
+
 #### GPUS (str)
 GPU device number. 
 To run the code on GPUs, please set it to the GPU device number, such as `GPUS: 0` or `GPUS: 0,1,2,3`.  To run the code on CPU, please set it to `GPUS: -1`.

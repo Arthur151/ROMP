@@ -9,7 +9,7 @@ munkres
 chumpy
 trimesh
 shyaml
-PyYAML>=5.1.2
+PyYAML==5.4.1
 numpy-quaternion
 pygame
 keyboard

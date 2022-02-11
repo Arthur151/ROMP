@@ -336,7 +336,7 @@ class Plotter3dPoses:
         ], dtype=np.float32)  # transposed
 
 def test_visualizer():
-    visualizer = Visualizer(resolution=(512,512), input_size=args().input_size, result_img_dir=args().result_img_dir, with_renderer=True)
+    visualizer = Visualizer(resolution=(512,512), input_size=args().input_size, result_img_dir=args().result_img_dir, renderer_type='pytorch3d')
 
 if __name__ == '__main__':
     test_visualizer()

@@ -36,8 +36,6 @@ class Predictor(Base):
         self.demo_dir = os.path.join(config.project_dir, 'demo')
 
     def __initialize__(self):
-        if self.save_visualization_on_img:
-            self.visualizer = Visualizer(resolution=(512,512), with_renderer=True)
         if self.save_mesh:
             self.smpl_faces = pickle.load(open(os.path.join(args().smpl_model_path, 'SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')['f']
         print('Initialization finished!')

@@ -112,12 +112,12 @@ class CenterMap(object):
 
         topk_scores, topk_inds = torch.topk(center_map_nms.reshape(b, c, -1), K)
         topk_inds = topk_inds % (h * w)
-        topk_ys = (topk_inds // w).int().float()
+        topk_ys = torch.div(topk_inds, w, rounding_mode='floor').int().float()
         topk_xs = (topk_inds % w).int().float()
         # get all topk in in a batch
         topk_score, index = torch.topk(topk_scores.reshape(b, -1), K)
         # div by K because index is grouped by K(C x K shape)
-        topk_clses = (index // K).int()
+        topk_clses = torch.div(index, K, rounding_mode='floor').int()
         topk_inds = gather_feature(topk_inds.view(b, -1, 1), index).reshape(b, K)
         topk_ys = gather_feature(topk_ys.reshape(b, -1, 1), index).reshape(b, K)
         topk_xs = gather_feature(topk_xs.reshape(b, -1, 1), index).reshape(b, K)

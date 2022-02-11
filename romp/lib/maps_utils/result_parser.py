@@ -155,7 +155,7 @@ class ResultParser(nn.Module):
         if 'params_pred' not in outputs and 'params_maps' in outputs:
             outputs['params_pred'] = self.parameter_sampling(outputs['params_maps'], batch_ids, flat_inds, use_transform=True)
         if 'centers_pred' not in outputs:
-            outputs['centers_pred'] = torch.stack([flat_inds%args().centermap_size, flat_inds//args().centermap_size],1)
+            outputs['centers_pred'] = torch.stack([flat_inds%args().centermap_size, torch.div(flat_inds, args().centermap_size, rounding_mode='floor')], 1)
             outputs['centers_conf'] = self.parameter_sampling(outputs['center_map'], batch_ids, flat_inds, use_transform=True)
         
         outputs['reorganize_idx'] = meta_data['batch_ids'][batch_ids]

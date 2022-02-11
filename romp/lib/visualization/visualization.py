@@ -15,10 +15,6 @@ import constants
 import config
 from config import args
 import utils.projection as proj
-if args().renderer == 'pyrender':
-    from .renderer_pyrd import get_renderer
-elif args().renderer == 'pytorch3d':
-    from .renderer_pt3d import get_renderer
 from utils.train_utils import process_idx, determine_rendering_order
 from .web_vis import write_to_html, convert_3dpose_to_line_figs, convert_image_list
 from collections import OrderedDict
@@ -29,12 +25,19 @@ import pickle
 default_cfg = {'save_dir':None, 'vids':None, 'settings':[]} # 'put_org'
 
 class Visualizer(object):
-    def __init__(self, resolution=(512,512), result_img_dir = None, with_renderer=False):
+    def __init__(self, resolution=(512,512), result_img_dir = None, renderer_type=None):
         self.resolution = resolution
         self.smpl_face = torch.from_numpy(pickle.load(open(os.path.join(args().smpl_model_path,'SMPL_NEUTRAL.pkl'),'rb'), \
             encoding='latin1')['f'].astype(np.int32)).unsqueeze(0)
-        if with_renderer:              
-            self.renderer = get_renderer(resolution=self.resolution, perps=True)
+        if renderer_type is not None: 
+            if renderer_type == 'pyrender':
+                from .renderer_pyrd import get_renderer
+                self.renderer = get_renderer(resolution=self.resolution, perps=True)
+            elif renderer_type == 'pytorch3d':
+                from .renderer_pt3d import get_renderer
+                self.renderer = get_renderer(resolution=self.resolution, perps=True)
+            else:
+                raise NotImplementedError
         self.result_img_dir = result_img_dir
         self.heatmap_kpnum = 17
         self.vis_size = resolution

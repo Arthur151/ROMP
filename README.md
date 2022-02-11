@@ -15,7 +15,7 @@ ROMP, accepted by ICCV 2021, is a concise one-stage network for multi-person 3D 
 
 - **Strong.** ROMP achieves superior performance on multiple challenging multi-person/occlusion benchmarks.
 
-- **Easy to use.** We provide user friendly testing API and webcam demos. 
+- **Easy to use.** We provide user friendly testing API and webcam demos to run on Linux / Windows. 
 
 Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to contact me for related questions or discussions! [arXiv paper](https://arxiv.org/abs/2008.12272).
 
@@ -52,6 +52,7 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
  - Convenient API for 2D / 3D visualization, parsed datasets.  
 
 ## News
+*2022/02/11: Support running on Windows.*  
 *2021/12/23: Add [Training guidance](https://github.com/Arthur151/ROMP/blob/master/docs/train.md#training-guidance).*   
 *2021/12/20: Upgrade the Pytorch to 1.10.0, Pytorch3D to 0.6.1.*  
 *2021/12/2: Add optional renderers (pyrender or pytorch3D). Fix some bugs reported in issues.*  
@@ -80,10 +81,13 @@ ROMP can be called as a python lib inside the python code, jupyter notebook, or 
 To re-implement the demo results, please run
 ```bash
 cd ROMP
+# on Linux
+python -m romp.predict.image --inputs=demo/images --output_dir=demo/image_results
 # change the `inputs` in configs/image.yml to /path/to/your/image folder, then run 
 sh scripts/image.sh
-# or run the command like
-python -m romp.predict.image --inputs=demo/images --output_dir=demo/image_results
+
+# on Windows
+python -m romp.predict.image --inputs=demo\images --output_dir=demo\image_results
 ```
 Please refer to [config_guide.md](docs/config_guide.md) for **saving the estimated mesh/Center maps/parameters dict**.
 
@@ -95,10 +99,13 @@ Please refer to [config_guide.md](docs/config_guide.md) for **saving the estimat
 
 For interactive visualization, please run
 ```bash
+# on Linux
 python -m romp.predict.image --inputs=demo/images --output_dir=demo/image_results --show_mesh_stand_on_image  --interactive_vis
+# on Windows
+python -m romp.predict.image --inputs=demo\images --output_dir=demo\image_results --show_mesh_stand_on_image  --interactive_vis
 ```
 
-**Caution**: To use `show_mesh_stand_on_image` and `interactive_vis`, you must run ROMP on a computer with visual desktop to support the rendering. Most remote servers without visual desktop is not supported. Please use `save_visualization_on_img` instead.
+**Caution**: To use `show_mesh_stand_on_image` and `interactive_vis`, you must run ROMP on a computer with visual desktop to support the rendering. Most remote servers without visual desktop is not supported. 
 
 Here, we show an example of calling ROMP as a python lib to process images.
 <details>
@@ -131,10 +138,13 @@ results_dict = processor.run(args().inputs) # you can change the args().inputs t
 
 ```bash
 cd ROMP
-python -m romp.predict.video --inputs=demo/videos/sample_video.mp4 --output_dir=demo/sample_video_results --save_visualization_on_img --save_dict_results
-
+# on Linux
+python -m romp.predict.video --inputs=demo/videos/sample_video.mp4 --output_dir=demo/sample_video_results --save_dict_results
 # or you can set all configurations in configs/video.yml, then run 
 sh scripts/video.sh
+
+# on Windows
+python -m romp.predict.video --inputs=demo\videos\sample_video.mp4 --output_dir=demo\sample_video_results --save_dict_results
 ```
 
 We notice that some users only want to extract the motion of **the formost person**, like this
@@ -145,6 +155,7 @@ We notice that some users only want to extract the motion of **the formost perso
 To achieve this, please run  
 
 ```bash
+# on Linux
 python -m romp.predict.video --inputs=demo/videos/demo_video_frames --output_dir=demo/demo_video_fp_results --show_largest_person_only --save_dict_results --show_mesh_stand_on_image 
 ```
 
@@ -161,7 +172,7 @@ import os,sys
 sys.path.append(path_to_romp)
 # set the detailed configurations
 from romp.lib.config import ConfigContext, parse_args, args
-ConfigContext.parsed_args = parse_args(["--configs_yml=configs/video.yml",'--inputs=/path/to/video', '--output_dir=/path/to/save/video_results', '--save_visualization_on_img',False]) # Be caution that setting the bool configs needs two elements, ['--config', True/False]
+ConfigContext.parsed_args = parse_args(["--configs_yml=configs/video.yml",'--inputs=/path/to/video', '--output_dir=/path/to/save/video_results']) # Be caution that setting the bool configs needs two elements, ['--config', True/False]
 # import the ROMP image processor
 from romp.predict.video import Video_processor
 processor = Video_processor(args_set=args())
@@ -181,7 +192,11 @@ results_dict = processor.run(args().inputs) # you can change the args().inputs t
 To do this you just need to run:
 ```bash
 cd ROMP
+# on Linux
 sh scripts/webcam.sh
+
+# on Windows
+python -u -m romp.predict.webcam --configs_yml='configs\webcam.yml'
 ```
 To drive a character in Blender, please refer to [expert.md](docs/export.md).
 
@@ -225,7 +240,7 @@ This repository is currently maintained by [Yu Sun](https://github.com/Arthur151
 ROMP has also benefited from many developers, including   
  - [Marco Musy](https://github.com/marcomusy) : help in [the textured SMPL visualization](https://github.com/marcomusy/vedo/issues/371).  
  - [Gavin Gray](https://github.com/gngdb) : adding support for an elegant context manager to run code in a notebook.  
- - [VLT Media](https://github.com/vltmedia) : adding support for running on Windows & batch_videos.py.  
+ - [VLT Media](https://github.com/vltmedia) and [Vivien Richter](https://github.com/vivi90) : adding support for running on Windows & batch_videos.py.  
  - [Chuanhang Yan](https://github.com/yanch2116) : developing an [addon for driving character in Blender](https://github.com/yanch2116/Blender-addons-for-SMPL).  
 
 ## Acknowledgement

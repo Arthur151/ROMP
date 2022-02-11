@@ -1,6 +1,6 @@
 ## Installation
 
-We have tested the code on Ubuntu 18.04/20.04 and Centos 7. 
+We have tested the code on Ubuntu 18.04/20.04, Centos 7 and Windows. 
 
 ### Download models
 
@@ -52,7 +52,7 @@ Option 1) to install conda env with python 3.9, please run
 conda create -n ROMP python=3.9
 conda activate ROMP  
 conda install -n ROMP pytorch==1.10.0 torchvision==0.11.1 cudatoolkit=10.2 -c pytorch  
-
+```
 Option 2) to install conda env with python 3.8, please run
 ```
 conda create -n ROMP python==3.8.8  

@@ -35,7 +35,7 @@ You can also choose the gender of animated model via setting `gender=male` or `g
 Generally, Blender 2.91 can be installed following [this instructions](https://github.com/TylerGubala/blenderpy) via:  
 ```pip install bpy && bpy_post_install```
 
-With python 3.7, you can easily install via  
+If you use python 3.7, bpy can be easily installed via  
 ```
 pip install https://github.com/TylerGubala/blenderpy/releases/download/v2.91a0/bpy-2.91a0-cp37-cp37m-manylinux2014_x86_64.whl && bpy_post_install
 ```
@@ -44,7 +44,10 @@ pip install https://github.com/TylerGubala/blenderpy/releases/download/v2.91a0/b
 
 ```
 cd ROMP/
+# on Linux
 python export/convert_fbx.py --input=demo/videos/sample_video2_results/sample_video2_results.npz --output=demo/videos/sample_video2.fbx --gender=female
+# on Windows
+python export\convert_fbx.py --input=demo\videos\sample_video2_results\sample_video2_results.npz --output=demo\videos\sample_video2.fbx --gender=female
 ```
 
 4.Open the fbx animation in Blender:

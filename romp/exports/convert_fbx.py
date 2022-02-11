@@ -237,14 +237,14 @@ def process_poses(
         poses, trans = np.zeros((len(frame_nums), 72)), np.zeros((len(frame_nums), 3))
         for inds, frame_id in enumerate(frame_nums):
             poses[inds] = data[frame_id]['poses']
-            trans[inds] = data[frame_id]['trans']
+            trans[inds] = data[frame_id]['cam_trans']
     else:
         print('Exporting motion sequence of subject {}'.format(subject_ids))
         frame_nums = list(data.keys())
         poses, trans = np.zeros((len(frame_nums), 72)), np.zeros((len(frame_nums), 3))
         for inds, frame_id in enumerate(frame_nums):
             poses[inds] = data[frame_id][subject_ids]['poses']
-            trans[inds] = data[frame_id][subject_ids]['trans']
+            trans[inds] = data[frame_id][subject_ids]['cam_trans']
 
     if gender == 'female':
         model_path = female_model_path

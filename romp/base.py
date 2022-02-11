@@ -32,7 +32,7 @@ class Base(object):
         hparams_dict = self.load_config_dict(vars(args() if args_set is None else args_set))
         self._init_log(hparams_dict)
         self._init_params()
-        self.visualizer = Visualizer(resolution=(512,512), result_img_dir=self.result_img_dir, with_renderer=True)
+        self.visualizer = Visualizer(resolution=(512,512), result_img_dir=self.result_img_dir, renderer_type=args().renderer)
 
     def _build_model_(self):
         logging.info('start building model.')

@@ -44,7 +44,7 @@ def parse_args(input_args=None):
     parser.add_argument('--make_tracking',action='store_true',help = 'whether to make tracking')
     parser.add_argument('--temporal_optimization',action='store_true',help = 'whether to optimize the temporal smoothness')
     parser.add_argument('--save_dict_results',action='store_true',help = 'whether to save the predictions to a dict (.npz)')
-    parser.add_argument('--save_visualization_on_img',action='store_true',help = 'whether to rendering the mesh back to image, which is time consuming')
+    parser.add_argument('--save_visualization_on_img',action='store_false',help = 'whether to rendering the mesh back to image, which is time consuming')
     parser.add_argument('--fps_save', type = int, default = 24, help = 'the fps of the save video')
     parser.add_argument('--character', type = str, default = 'smpl', help = 'character: smpl / nvxia')
     parser.add_argument('--renderer', type = str, default = 'pytorch3d', help = 'character: pytorch3d / pyrender')

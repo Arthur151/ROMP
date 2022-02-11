@@ -33,8 +33,8 @@ class Base(object):
         self._init_log(hparams_dict)
         self._init_params()
         if self.save_visualization_on_img:
-            print('Loading {} renderer as visualizer'.format(args().renderer))
-            self.visualizer = Visualizer(resolution=(512,512), result_img_dir=self.result_img_dir, renderer_type=args().renderer)
+            print('Loading {} renderer as visualizer'.format(self.renderer))
+            self.visualizer = Visualizer(resolution=(512,512), result_img_dir=self.result_img_dir, renderer_type=self.renderer)
 
     def _build_model_(self):
         logging.info('start building model.')

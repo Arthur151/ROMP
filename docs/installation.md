@@ -41,10 +41,6 @@ ROMP
  * [Pytorch](https://pytorch.org/)  
  * [Pytorch3d](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md) (optional)
 
-**Windows warning:** To install on Windows, please insall in cmd instead of Powershell, in convenience of activating the conda env.
-To build some package wheels, 'Visual Studio Build Tools' and 'Visual C++ build tools workload' are required.
-To install them with the Chocolatey package manager, please [install the Chocolatey](https://docs.chocolatey.org/en-us/choco/setup#more-install-options) first and then run `choco install visualstudio2019buildtools visualstudio2019-workload-vctools`.
-
 1. Please decide whether you want to install the Pytorch via [pip](https://pip.pypa.io/en/stable) or [conda](https://docs.conda.io/en/latest/miniconda.html) env and Python 3.9, 3.8 or 3.7.  We recommend installing via conda so that ROMP env is clean and will not affect other repo.  
 
 Option 1) to install conda env with python 3.9, please run
@@ -84,8 +80,12 @@ pip install https://github.com/Arthur151/ROMP/releases/download/v1.1/pytorch3d-0
 ```
 On Mac or Windows, please follow [the official instruction](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md) to install.
 
-2. Please install the python libs via
+2. Please install the python dependency.
 ```
 cd ROMP  
 pip install -r requirements.txt  
 ```
+**To deal with bugs when installing on Windows** To build some package wheels, 'Visual Studio Build Tools' and 'Visual C++ build tools workload' are required.
+To install them with the Chocolatey on Windows, please install in cmd as administrator instead of Powershell, meanwhile, please ensure your network can access to google.
+Please [install the Chocolatey](https://docs.chocolatey.org/en-us/choco/setup#more-install-options) first and then run `choco install visualstudio2019buildtools visualstudio2019-workload-vctools`.
+

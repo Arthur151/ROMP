@@ -41,6 +41,9 @@ ROMP
 [Pytorch 1.10.0](https://pytorch.org/)  
 [Pytorch3d 0.6.1](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md)  
 
+**Windows only:** To build some package wheels, 'Visual Studio Build Tools' and 'Visual C++ build tools workload' are required.
+You may install them with the [Chocolatey](https://chocolatey.org) package manager: `choco install visualstudio2019buildtools visualstudio2019-workload-vctools`.
+
 Firstly, please decide whether you want to install via conda env with python 3.7 or python 3.8 or pip.  
 We recommend installing via conda so that ROMP env is clean and will not affect other repo.  
 

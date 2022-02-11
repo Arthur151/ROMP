@@ -38,25 +38,29 @@ ROMP
 
 #### Set up environments
 
-[Pytorch 1.10.0](https://pytorch.org/)  
-[Pytorch3d 0.6.1](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md)  
+ * [Pytorch](https://pytorch.org/)  
+ * [Pytorch3d](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md) (optional)
 
 **Windows only:** To build some package wheels, 'Visual Studio Build Tools' and 'Visual C++ build tools workload' are required.
 You may install them with the [Chocolatey](https://chocolatey.org) package manager: `choco install visualstudio2019buildtools visualstudio2019-workload-vctools`.
 
-Firstly, please decide whether you want to install via conda env with python 3.7 or python 3.8 or pip.  
+Firstly, please decide whether you want to install via [pip](https://pip.pypa.io/en/stable) or [conda](https://docs.conda.io/en/latest/miniconda.html) env and Python 3.9, 3.8 or 3.7.  
+
 We recommend installing via conda so that ROMP env is clean and will not affect other repo.  
 
-Option 1) to install conda env with python 3.7, please run
+Option 1) to install conda env with python 3.9, please run
+1. ```
+   conda create -n ROMP python=3.9
+   conda activate ROMP
+   conda install -n ROMP pytorch=1.10 torchvision=0.11 cudatoolkit=11.3 -c pytorch  
+   ```
+   
+2. *Optional:* Install 'pytorch3d'
 
-```
-conda create -n ROMP python==3.7.6  
-conda activate ROMP  
-conda install -n ROMP pytorch==1.10.0 torchvision==0.11.1 cudatoolkit=10.2 -c pytorch  
-pip install https://github.com/Arthur151/ROMP/releases/download/v1.1/pytorch3d-0.6.1-cp37-cp37m-linux_x86_64.whl
-cd ROMP  
-pip install -r requirements.txt  
-```
+3. ```
+   cd ROMP  
+   pip install -r requirements.txt  
+   ```
 
 Option 2) to install conda env with python 3.8, please run
 ```
@@ -68,7 +72,17 @@ cd ROMP
 pip install -r requirements.txt  
 ```
 
-Option 3) To directly install via pip, you need to install CUDA 10.2 first (For Ubuntu, run`sudo apt-get install cuda-10-2`) and then install via:
+Option 3) to install conda env with python 3.7, please run
+```
+conda create -n ROMP python==3.7.6  
+conda activate ROMP  
+conda install -n ROMP pytorch==1.10.0 torchvision==0.11.1 cudatoolkit=10.2 -c pytorch  
+pip install https://github.com/Arthur151/ROMP/releases/download/v1.1/pytorch3d-0.6.1-cp37-cp37m-linux_x86_64.whl
+cd ROMP  
+pip install -r requirements.txt  
+```
+
+Option 4) To directly install via pip, you need to install CUDA 10.2 first (For Ubuntu, run`sudo apt-get install cuda-10-2`) and then install via:
 ```
 pip install pytorch==1.10.0 torchvision==0.11.1
 # if you use Python3.8, please install pytorch3d via

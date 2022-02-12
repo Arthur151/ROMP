@@ -10,13 +10,12 @@ Please decide whether to fetch the release (Option 1) or the up-to-date (Option 
 
 ##### (Option 1) Release:
 
-Directly download the full-packed released package from Github:
-(1) [ROMP v1.1](https://github.com/Arthur151/ROMP/releases/tag/v1.1) with all features.
-(2) [ROMP v1.0](https://github.com/Arthur151/ROMP/releases/download/v1.0/ROMP_v1.0.zip) with some basic features to process images/videos/webcam.
+Directly download the full-packed released package from Github:  
+(1) [ROMP v1.1](https://github.com/Arthur151/ROMP/releases/tag/v1.1) with all features.  
+(2) [ROMP v1.0](https://github.com/Arthur151/ROMP/releases/download/v1.0/ROMP_v1.0.zip) with some basic features to process images/videos/webcam.  
 
 ##### (Option 2) Up-to-date:
 
-Clone the repo:
 ```bash
 git clone -b master --single-branch https://github.com/Arthur151/ROMP
 ```
@@ -24,12 +23,12 @@ git clone -b master --single-branch https://github.com/Arthur151/ROMP
 #### 2. Fetching data
 
 Please download the essential data (model_data.zip, demo_data.zip) and pre-trained model (trained_models) from :   
-(Option 1) Github release: [model_data.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/model_data.zip), [demo_data.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/demo_videos.zip), [trained_models_try.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/trained_models_try.zip) or [trained_models.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/trained_models.zip)
-(Option 2) [Google drive](https://drive.google.com/drive/folders/1YdsHh62KGuQMowRjKM9Vzj_7pflb51BB?usp=sharing). 
+(Option 1) Github release: [model_data.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/model_data.zip), [demo_data.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/demo_videos.zip), [trained_models_try.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/trained_models_try.zip) or [trained_models.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/trained_models.zip)  
+(Option 2) [Google drive](https://drive.google.com/drive/folders/1YdsHh62KGuQMowRjKM9Vzj_7pflb51BB?usp=sharing).   
 
-Please note that trained_models_try.zip is enough for processing image/video/webcam, trained_models.zip is for re-implementing all results in our paper.
+Please note that trained_models_try.zip is enough for processing image/video/webcam, trained_models.zip is just to re-implemente all results in our paper.
 
-The layout would be
+After the first step, the layout of ROMP folder should be
 ```bash
 ROMP
   - configs
@@ -44,12 +43,10 @@ ROMP
 
 ### Second step: seting up environments
 
- * [Pytorch](https://pytorch.org/)  
- * [Pytorch3d](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md) (optional)
-
 #### 1. Install [Pytorch](https://pytorch.org/).
-Please decide whether you want to install the Pytorch via [pip](https://pip.pypa.io/en/stable) or [conda](https://docs.conda.io/en/latest/miniconda.html) env. We support to install with Python 3.9, 3.8 or 3.7. 
-We recommend installing via conda so that ROMP env is clean and will not affect other repo.  
+Please choose one of the following 4 options to install Pytorch via [conda](https://docs.conda.io/en/latest/miniconda.html) or [pip](https://pip.pypa.io/en/stable). 
+Here, we support to install with Python 3.9, 3.8 or 3.7. 
+We recommend installing via conda (Option 1-3) so that ROMP env is clean and will not affect other repo.  
 
 ##### Option 1) to install conda env with python 3.9, please run
 ```
@@ -76,8 +73,8 @@ conda install -n ROMP pytorch==1.10.0 torchvision==0.11.1 cudatoolkit=10.2 -c py
 pip install torch==1.10.0+cu102 torchvision==0.11.1+cu102 -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
-#### 2. (Optional) Install Pytorch3D for rendering, otherwise please refer to [this instruction](https://github.com/Arthur151/ROMP/blob/master/docs/config_guide.md#renderer-str) to use pyrender via seting `renderer: pyrender`.
-Please note that 'pyrender' can be only used on desktop. To train ROMP or run it on server without visualization hardware, please install 'pytorch3d' and set `renderer: pytorch3d` in configs.
+#### 2. (Optional) Install [Pytorch3d](https://github.com/facebookresearch/pytorch3d/blob/master/INSTALL.md) for rendering, otherwise please refer to [this instruction](https://github.com/Arthur151/ROMP/blob/master/docs/config_guide.md#renderer-str) to use pyrender via seting `renderer: pyrender`.
+Please note that 'pyrender' can be only used on desktop. To train ROMP or run it on server without visualization hardware, please install 'pytorch3d' and set `renderer: pytorch3d` in configs.  
 On Linux, please install via
 ```
 # if you use Python3.9 (Option 1 or Option 4 with python3.9), please install pytorch3d via

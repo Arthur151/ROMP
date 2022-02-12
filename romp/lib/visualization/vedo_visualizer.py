@@ -21,7 +21,7 @@ def convert_cam_to_stand_on_image_trans(cam, enlarge_scale):
     stand_on_image_trans[1] = 0.42 #0.5 - trans_3d[1] * 0.2
     #stand_on_image_trans[1] = 0.56
     #stand_on_image_trans[2] = trans_3d[1] - trans_3d[2]/3 + 2.6
-    stand_on_image_trans[2] = trans_3d[1] * 0.4 #- trans_3d[2]/3 
+    stand_on_image_trans[2] = trans_3d[1] * 0.4 #- trans_3d[2]/3  0.4
     stand_on_image_trans *= enlarge_scale
     return stand_on_image_trans
 
@@ -45,24 +45,36 @@ class Vedo_visualizer(object):
             self.uvs = parse_nvxia_uvmap(params_dict['uvmap'],self.faces)
         self.scene_bg_color = [240,255,255]
         self.default_camera={'pos':{'far':(0,800,1000), 'close':(0,200,800)}[args().soi_camera]} 
-        self.light = Light([0,800,1000], c='white')
+        # Light([0,800,1000], c='white')
+        self.lights = [Light([0,800,1000], intensity=0.6, c='white'), Light([0,-800,1000], intensity=0.6, c='white'), Light([0,800,-1000], intensity=0.6, c='white'), Light([0,-800,-1000], intensity=0.6, c='white')]
         vedo.settings.screeshotLargeImage = True
         vedo.settings.screeshotScale = 2
 
-    def plot_multi_meshes_batch(self, vertices, cam_params, meta_data, reorganize_idx, save_img=True, interactive_show=False):
-        result_imgs = []
+    def plot_multi_meshes_batch(self, vertices, cam_params, meta_data, reorganize_idx, save_img=True, interactive_show=False, rotate_frames=[]):
+        result_save_names = []
         for inds, img_id in enumerate(np.unique(reorganize_idx)):
             single_img_verts_inds = np.array(np.where(reorganize_idx==img_id)[0])
-            save_name = os.path.join(args().output_dir, '3D_meshes-'+os.path.basename(meta_data['imgpath'][single_img_verts_inds[0]]+'.jpg'))
-            result_img = self.plot_multi_meshes(vertices[single_img_verts_inds].detach().cpu().numpy(), \
+            
+            plt = self.plot_multi_meshes(vertices[single_img_verts_inds].detach().cpu().numpy(), \
                 cam_params[single_img_verts_inds].detach().cpu().numpy(), meta_data['image'][single_img_verts_inds[0]].cpu().numpy().astype(np.uint8),\
-                save_name=save_name, interactive_show=interactive_show)
-            result_imgs.append(save_name)
-            if save_img:
-                cv2.imwrite(save_name, result_img[:,:,::-1])
-        return result_imgs
+                interactive_show=interactive_show)
 
-    def plot_multi_meshes(self, vertices, cam_params, img, mesh_colors=None, save_name=None, interactive_show=False):
+            if img_id in rotate_frames:
+                result_imgs, rot_angles = self.render_rotating(plt)
+                save_names = [os.path.join(args().output_dir, '3D_meshes-'+os.path.basename(meta_data['imgpath'][single_img_verts_inds[0]]+'_{:03d}.jpg'.format(ra))) for ra in rot_angles]
+            else:
+                result_imgs = self.render_one_time(plt, self.default_camera)
+                save_names = [os.path.join(args().output_dir, '3D_meshes-'+os.path.basename(meta_data['imgpath'][single_img_verts_inds[0]]+'.jpg'))]
+
+            plt.close()
+            result_save_names += save_names
+            if save_img:
+                for save_name, result_img in zip(save_names, result_imgs):
+                    cv2.imwrite(save_name, result_img[:,:,::-1])
+            
+        return result_save_names
+
+    def plot_multi_meshes(self, vertices, cam_params, img, mesh_colors=None, interactive_show=False, rotate_cam=False):
         plt = Plotter(bg=[240,255,255], axes=0, offscreen=not interactive_show)
         h,w = img.shape[:2]
         pic = Picture(img)
@@ -70,7 +82,7 @@ class Vedo_visualizer(object):
         plt += pic
         vertices_vis = []
 
-        enlarge_scale = max(h,w)/2.6
+        enlarge_scale = max(h,w)/1.5#/2.6
         for inds, (vert, cam) in enumerate(zip(vertices, cam_params)):
             trans_3d = convert_cam_to_stand_on_image_trans(cam, enlarge_scale)
             vert[:,1:] *= -1
@@ -90,8 +102,36 @@ class Vedo_visualizer(object):
                 mesh.texture(self.texture_file,tcoords=self.uvs).smooth(niter=20)#.lighting('glossy')
             visulize_list.append(mesh)
         plt += visulize_list
-        plt += self.light
-        image_result = plt.show(camera=self.default_camera) #elevation=10,azimuth=0,,bg=self.bg_path 
+        for light in self.lights:
+            plt += light
+        return plt
+
+    def render_rotating(self, plt, internal=5):
+        result_imgs = []
+        pause_num = args().fps_save
+        pause = np.zeros(pause_num).astype(np.int32)
+        roates = np.ones(90//5) * 5
+        go_up = np.ones(90//5) * 1
+        go_down = np.ones(90//5) * -1
+        top2front = np.ones(pause_num) * -((90-30)/pause_num)
+        azimuth_angles = np.concatenate([pause, roates, roates, roates, roates])
+        elevation_angles = np.concatenate([pause, go_up, go_down, go_up, go_down])
+        #rot_angles = np.concatenate([pause, roates, pause, roates, pause, roates, pause, roates, pause])
+        plt.camera.Elevation(30)
+        for rid, azimuth_angle in enumerate(azimuth_angles):
+            # if rid==pause_num:
+            #     plt.camera.Elevation(30)
+            #     plt.camera.Azimuth(0)
+            plt.show(azimuth=azimuth_angle, elevation=elevation_angles[rid])
+            result_img = plt.topicture(scale=2)
+            rows, cols, _ = result_img._data.GetDimensions()
+            vtkimage = result_img._data.GetPointData().GetScalars()
+            image_result = vtk_to_numpy(vtkimage).reshape((rows, cols, 3))
+            result_imgs.append(image_result[::-1])
+        return result_imgs, np.arange(len(azimuth_angles))
+
+    def render_one_time(self, plt, camera_pose):
+        image_result = plt.show(camera=camera_pose) #elevation=10,azimuth=0,,bg=self.bg_path 
         result_img = plt.topicture(scale=2)
         rows, cols, _ = result_img._data.GetDimensions()
         vtkimage = result_img._data.GetPointData().GetScalars()
@@ -99,8 +139,8 @@ class Vedo_visualizer(object):
         image_result = image_result[::-1]
         #result_img.write(save_name)
         #screenshot(save_name) #returnNumpy=True
-        plt.close()
-        return image_result
+        
+        return [image_result]
 
 # class vedo_visualizer(object):
 #     def __init__(self):  

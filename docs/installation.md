@@ -93,7 +93,7 @@ On Mac or Windows, please follow [the official instruction](https://github.com/f
 cd ROMP  
 pip install -r requirements.txt  
 ```
-**To deal with bugs when installing on Windows** To build some package wheels, 'Visual Studio Build Tools' and 'Visual C++ build tools workload' are required.
+**To deal with bugs when installing on Windows.** To build some package wheels, 'Visual Studio Build Tools' and 'Visual C++ build tools workload' are required.
 To install them with the Chocolatey on Windows, please install in cmd as administrator instead of Powershell, meanwhile, please ensure your network can access to google.
 Please [install the Chocolatey](https://docs.chocolatey.org/en-us/choco/setup#more-install-options) first and then run `choco install visualstudio2019buildtools visualstudio2019-workload-vctools`.
 

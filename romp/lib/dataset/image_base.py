@@ -407,12 +407,11 @@ def detect_occluded_person(person_centers, full_kp2ds, thresh=2*64/512.):
         for inds, (person_center, kp2d) in enumerate(zip(person_centers, full_kp2ds)):
             dist = np.sqrt(((person_centers-person_center)**2).sum(-1))
             if (dist>0).sum()>0:
+                # Comparing the visible keypoint number to justify whether the person is occluded by the others
                 if (dist[dist>0]<thresh).sum()>0:
-                    # Comparing the visible keypoint number to justify whether the person is occluded by the others
-                    if (full_kp2ds[inds,:,0]>0).sum() >= (kp2d[:,0]>0).sum():
-                        closet_idx = np.where(dist==np.min(dist[dist>0]))[0][0]
-                        if occluded_by_who[closet_idx]<0:
-                            occluded_by_who[inds] = closet_idx
+                    closet_idx = np.where(dist==np.min(dist[dist>0]))[0][0]
+                    if occluded_by_who[closet_idx]<0:
+                        occluded_by_who[inds] = closet_idx
 
     return occluded_by_who.astype(np.int)
 

@@ -41,54 +41,6 @@ ModelOutput = namedtuple('ModelOutput',
                          ['vertices', 'joints','joints_h36m17', 'joints_smpl24'])
 ModelOutput.__new__.__defaults__ = (None,) * len(ModelOutput._fields)
 
-
-def create(model_path, model_type='smpl',
-           **kwargs):
-    ''' Method for creating a model from a path and a model type
-
-        Parameters
-        ----------
-        model_path: str
-            Either the path to the model you wish to load or a folder,
-            where each subfolder contains the differents types, i.e.:
-            model_path:
-            |
-            |-- smpl
-                |-- SMPL_FEMALE
-                |-- SMPL_NEUTRAL
-                |-- SMPL_MALE
-            |-- smplh
-                |-- SMPLH_FEMALE
-                |-- SMPLH_MALE
-            |-- smplx
-                |-- SMPLX_FEMALE
-                |-- SMPLX_NEUTRAL
-                |-- SMPLX_MALE
-        model_type: str, optional
-            When model_path is a folder, then this parameter specifies  the
-            type of model to be loaded
-        **kwargs: dict
-            Keyword arguments
-
-        Returns
-        -------
-            body_model: nn.Module
-                The PyTorch module that implements the corresponding body model
-        Raises
-        ------
-            ValueError: In case the model type is not one of SMPL, SMPLH or
-            SMPLX
-    '''
-
-    # If it's a folder, assume
-    if osp.isdir(model_path):
-        model_path = os.path.join(model_path, model_type)
-
-    if model_type.lower() == 'smpl':
-        return SMPL(model_path, **kwargs)
-    else:
-        raise ValueError('Unknown model type {}, exiting!'.format(model_type))
-
 class VertexJointSelector(nn.Module):
 
     def __init__(self, vertex_ids=None,

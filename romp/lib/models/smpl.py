@@ -568,7 +568,7 @@ def lbs(betas, pose, v_template, shapedirs, posedirs, J_regressor, parents,
     v_homo = torch.matmul(T, torch.unsqueeze(v_posed_homo, dim=-1))
     verts = v_homo[:, :, :3, 0]
 
-    return verts, J_transformed
+    return verts.float(), J_transformed.float()
 
 def to_tensor(array, dtype=torch.float32):
     if 'torch.tensor' not in str(type(array)):

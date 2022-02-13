@@ -468,7 +468,7 @@ def print_data_shape(data):
 def test_dataset(dataset,with_3d=False,with_smpl=False):
     print('configs_yml:', args().configs_yml)
     print('model_version:',args().model_version)
-    from models import smpl_model
+    from models.smpl import SMPL
     from visualization.visualization import Visualizer, draw_skeleton_multiperson
     test_projection_part = True if args().model_version in [4,5,6,7] else False
     print('test_projection_part:',test_projection_part)
@@ -487,7 +487,7 @@ def test_dataset(dataset,with_3d=False,with_smpl=False):
     from visualization.visualization import make_heatmaps
     from utils.cam_utils import denormalize_cam_params_to_trans
     if with_smpl:
-        smpl = smpl_model.create(args().smpl_model_path, J_reg_extra9_path=args().smpl_J_reg_extra_path, J_reg_h36m17_path=args().smpl_J_reg_h37m_path, \
+        smpl = SMPL(args().smpl_model_path, J_reg_extra9_path=args().smpl_J_reg_extra_path, J_reg_h36m17_path=args().smpl_J_reg_h37m_path, \
             batch_size=1,model_type='smpl', gender='neutral', use_face_contour=False, ext='npz',flat_hand_mean=True, use_pca=False)
     img_size = 512
     bones, cm = constants.All54_connMat, constants.cm_All54

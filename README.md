@@ -242,7 +242,7 @@ ROMP has also benefited from many developers, including
  - [Gavin Gray](https://github.com/gngdb) : adding support for an elegant context manager to run code in a notebook.  
  - [VLT Media](https://github.com/vltmedia) and [Vivien Richter](https://github.com/vivi90) : adding support for running on Windows & batch_videos.py.  
  - [Chuanhang Yan](https://github.com/yanch2116) : developing an [addon for driving character in Blender](https://github.com/yanch2116/Blender-addons-for-SMPL).  
- - [ZhengdiYu](https://github.com/ZhengdiYu) : helpful discussion on implementation details.
+ - [ZhengdiYu](https://github.com/ZhengdiYu) : helpful discussion on optimizing the implementation details.
 
 ## Acknowledgement
 

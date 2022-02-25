@@ -485,7 +485,6 @@ def test_dataset(dataset,with_3d=False,with_smpl=False):
     visualizer = Visualizer(resolution = (512,512,3), result_img_dir=save_dir,with_renderer=True)
 
     from visualization.visualization import make_heatmaps
-    from utils.cam_utils import denormalize_cam_params_to_trans
     if with_smpl:
         smpl = SMPL(args().smpl_model_path, J_reg_extra9_path=args().smpl_J_reg_extra_path, J_reg_h36m17_path=args().smpl_J_reg_h37m_path, \
             batch_size=1,model_type='smpl', gender='neutral', use_face_contour=False, ext='npz',flat_hand_mean=True, use_pca=False)

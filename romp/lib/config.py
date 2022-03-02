@@ -33,6 +33,7 @@ def parse_args(input_args=None):
     parser.add_argument('--interactive_vis',action='store_true',help = 'whether to show the results in an interactive mode')
     parser.add_argument('--show_largest_person_only',action='store_true',help = 'whether to only show the results of the largest person in the image')
     parser.add_argument('--show_mesh_stand_on_image',action='store_true',help = 'whether to show the estimated meshes standing on the image')
+    parser.add_argument('--surrounding_camera',action='store_true',help = 'whether to surround the camera around the origin')
     parser.add_argument('--soi_camera', type = str, default = 'far', help = 'camera mode of show_mesh_stand_on_image: far / close')
     parser.add_argument('--make_tracking',action='store_true',help = 'whether to make tracking')
     parser.add_argument('--temporal_optimization',action='store_true',help = 'whether to optimize the temporal smoothness')

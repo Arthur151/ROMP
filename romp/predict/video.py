@@ -136,8 +136,9 @@ class Video_processor(Image_processor):
                         poses.append(result['poses'])
                 pose = np.array(poses)
                 verts = self.character_model(pose)['verts'] if self.character == 'nvxia' else outputs['verts']
+                rotate_frames = [0] if self.surrounding_camera else []
                 stand_on_imgs = visualizer.plot_multi_meshes_batch(verts, outputs['params']['cam'], outputs['meta_data'], \
-                    outputs['reorganize_idx'].cpu().numpy(), interactive_show=self.interactive_vis)
+                    outputs['reorganize_idx'].cpu().numpy(), interactive_show=self.interactive_vis, rotate_frames=rotate_frames)
                 stand_on_imgs_frames += stand_on_imgs
 
             if self.save_visualization_on_img:
@@ -172,12 +173,12 @@ class Video_processor(Image_processor):
             print('Saving parameter results to {}'.format(save_dict_path))
             np.savez(save_dict_path, results=subjects_motion_sequences)
 
-        if len(save_frame_list)>0:
+        if len(save_frame_list)>0 and self.save_visualization_on_img:
             video_save_name = os.path.join(self.output_dir, video_basename+'_results.mp4')
             print('Writing results to {}'.format(video_save_name))
             frames2video(sorted(save_frame_list), video_save_name, fps=self.fps_save)
 
-        if self.show_mesh_stand_on_image:
+        if self.show_mesh_stand_on_image and self.save_visualization_on_img:
             video_save_name = os.path.join(self.output_dir, video_basename+'_soi_results.mp4')
             print('Writing results to {}'.format(video_save_name))
             frames2video(stand_on_imgs_frames, video_save_name, fps=self.fps_save)

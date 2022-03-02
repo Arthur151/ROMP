@@ -13,12 +13,12 @@ from config import args
 from utils.temporal_optimization import OneEuroFilter
 from utils.cam_utils import convert_cam_to_3d_trans
 
-def convert_cam_to_stand_on_image_trans(cam, enlarge_scale):
+def convert_cam_to_stand_on_image_trans(cam, enlarge_scale=3):
     trans_3d = convert_cam_to_3d_trans(cam)
     stand_on_image_trans = np.zeros(3)
     # The x-axis is supposed to be adapted to the proper scale
     stand_on_image_trans[0] = trans_3d[0] * 0.3
-    stand_on_image_trans[1] = 0.42 #0.5 - trans_3d[1] * 0.2
+    stand_on_image_trans[1] = 0.6 #0.46 #0.5 - trans_3d[1] * 0.2
     #stand_on_image_trans[1] = 0.56
     #stand_on_image_trans[2] = trans_3d[1] - trans_3d[2]/3 + 2.6
     stand_on_image_trans[2] = trans_3d[1] * 0.4 #- trans_3d[2]/3  0.4
@@ -78,15 +78,18 @@ class Vedo_visualizer(object):
         plt = Plotter(bg=[240,255,255], axes=0, offscreen=not interactive_show)
         h,w = img.shape[:2]
         pic = Picture(img)
+        
         pic.rotateX(-90).z(h//2).x(-w//2)
+        verts_enlarge_scale = max(h,w)/5
+        cam_enlarge_scale = max(h,w)/3
+
         plt += pic
         vertices_vis = []
 
-        enlarge_scale = max(h,w)/1.5#/2.6
         for inds, (vert, cam) in enumerate(zip(vertices, cam_params)):
-            trans_3d = convert_cam_to_stand_on_image_trans(cam, enlarge_scale)
+            trans_3d = convert_cam_to_stand_on_image_trans(cam, cam_enlarge_scale)#enlarge_scale
             vert[:,1:] *= -1
-            vert = vert * enlarge_scale / 2.
+            vert = vert * verts_enlarge_scale
             vert += trans_3d[None]
             vertices_vis.append(vert)
         vertices_vis = np.stack(vertices_vis, 0)
@@ -110,14 +113,15 @@ class Vedo_visualizer(object):
         result_imgs = []
         pause_num = args().fps_save
         pause = np.zeros(pause_num).astype(np.int32)
-        roates = np.ones(90//5) * 5
-        go_up = np.ones(90//5) * 1
-        go_down = np.ones(90//5) * -1
-        top2front = np.ones(pause_num) * -((90-30)/pause_num)
+        change_time = 90//internal
+        roates = np.ones(change_time) * internal
+        go_up = np.sin(np.arange(change_time).astype(np.float32)/change_time) * 1
+        go_down = np.sin(np.arange(change_time).astype(np.float32)/change_time - 1) * 1
+        #top2front = np.ones(pause_num) * -((90-30)/pause_num)
         azimuth_angles = np.concatenate([pause, roates, roates, roates, roates])
         elevation_angles = np.concatenate([pause, go_up, go_down, go_up, go_down])
         #rot_angles = np.concatenate([pause, roates, pause, roates, pause, roates, pause, roates, pause])
-        plt.camera.Elevation(30)
+        plt.camera.Elevation(20)
         for rid, azimuth_angle in enumerate(azimuth_angles):
             # if rid==pause_num:
             #     plt.camera.Elevation(30)

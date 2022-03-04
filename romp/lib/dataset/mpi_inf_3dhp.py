@@ -66,6 +66,7 @@ class MPI_INF_3DHP(Image_base):
 
         imgpath = os.path.join(self.image_folder,img_name)
         while not os.path.exists(imgpath):
+            print(imgpath,'not exist!')
             img_name = self.file_paths[np.random.randint(len(self))]
             imgpath = os.path.join(self.image_folder,img_name)
         image = cv2.imread(imgpath)[:,:,::-1]

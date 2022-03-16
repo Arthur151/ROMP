@@ -1,0 +1,6 @@
+include LICENSE
+include README.md
+global-include *.pyx
+global-include *.pxd
+global-include *.cpp
+global-include *.h

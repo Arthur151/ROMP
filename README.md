@@ -52,6 +52,7 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
  - Convenient API for 2D / 3D visualization, parsed datasets.  
 
 ## News
+*2022/03/16: Simple version of ROMP, let's pip install simple-romp. See the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for details*  
 *2022/02/11: Support running on Windows.*  
 *2021/12/23: Add [Training guidance](https://github.com/Arthur151/ROMP/blob/master/docs/train.md#training-guidance).*   
 *2021/12/20: Upgrade the Pytorch to 1.10.0, Pytorch3D to 0.6.1.*  

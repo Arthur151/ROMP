@@ -83,6 +83,8 @@ def convert_proejection_from_input_to_orgimg(kps, offsets):
     img_pad_size = max(h,w)
     kps[:, :, 0] = (kps[:,:,0] + 1) * img_pad_size / 2 - left
     kps[:, :, 1] = (kps[:,:,1] + 1) * img_pad_size / 2 - top
+    if kps.shape[-1] == 3:
+        kps[:, :, 2] = (kps[:,:,2] + 1) * img_pad_size / 2
     return kps
 
 def convert_cam_to_3d_trans(cams, weight=2.):

@@ -24,24 +24,26 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 </p>
 
 ## Table of contents
-* [Features](#features)
-* [News](#news)
-* [Getting Started](#getting-started)
-    * [Try on Google Colab](#try-on-google-colab)
-    * [Installation](#installation)
- * [Inference](#inference)
-    * [Processing images](#processing-images)
-    * [Processing videos](#processing-videos)
-    * [Webcam](#Webcam)
-    * [Export](#export)
-        * [Export to Blender FBX](#export-to-blender-fbx)
-        * [Blender Addons](#blender-addons)
-* [Train](#train)
-* [Evaluation](#evaluation)
-* [Bugs report](#bugs-report)
-* [Citation](#citation)
-* [Contributor](#contributor)
-* [Acknowledgement](#acknowledgement)
+- [Table of contents](#table-of-contents)
+- [Features](#features)
+- [News](#news)
+- [Getting started](#getting-started)
+  - [Fast try](#fast-try)
+  - [Try on Google Colab](#try-on-google-colab)
+  - [Installation](#installation)
+- [Inference](#inference)
+  - [Processing images](#processing-images)
+  - [Processing videos](#processing-videos)
+  - [Webcam](#webcam)
+  - [Export](#export)
+    - [Export to Blender FBX](#export-to-blender-fbx)
+    - [Blender Addons](#blender-addons)
+  - [Train](#train)
+  - [Evaluation](#evaluation)
+  - [Bugs report](#bugs-report)
+- [Citation](#citation)
+- [Contributor](#contributor)
+- [Acknowledgement](#acknowledgement)
 
 ## Features
  - Running the examples on [Google Colab](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg).  
@@ -61,6 +63,13 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 [Old logs](docs/updates.md)
 
 ## Getting started
+
+### Fast try
+
+```
+pip install simple-romp
+```
+For details, please refer to the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md).
 
 ### Try on Google Colab
 
@@ -243,6 +252,7 @@ ROMP has also benefited from many developers, including
  - [Gavin Gray](https://github.com/gngdb) : adding support for an elegant context manager to run code in a notebook.  
  - [VLT Media](https://github.com/vltmedia) and [Vivien Richter](https://github.com/vivi90) : adding support for running on Windows & batch_videos.py.  
  - [Chuanhang Yan](https://github.com/yanch2116) : developing an [addon for driving character in Blender](https://github.com/yanch2116/Blender-addons-for-SMPL).  
+ - [Tian Jin](https://github.com/jinfagang): help in simplified smpl and fast rendering ([realrender](https://pypi.org/project/realrender/)).
  - [ZhengdiYu](https://github.com/ZhengdiYu) : helpful discussion on optimizing the implementation details.
 
 ## Acknowledgement

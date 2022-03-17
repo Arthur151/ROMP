@@ -3,14 +3,12 @@ import cv2
 import numpy as np
 import os, sys
 import os.path as osp
-from os.path import expanduser
 import torch
 from torch import nn
 import argparse
 
-from .pre_processing import img_preprocess
 from .post_parser import SMPL_parser, body_mesh_projection2image 
-from .utils import create_OneEuroFilter, euclidean_distance, \
+from .utils import img_preprocess, create_OneEuroFilter, euclidean_distance, \
     time_cost, download_model, determine_device, save_results, \
     wait_func, collect_frame_path, progress_bar, get_tracked_ids
 from .visualization import render_human_mesh
@@ -27,8 +25,8 @@ def romp_settings():
     parser.add_argument('--calc_smpl', action='store_true', help = 'Whether to calculate the smpl mesh from estimated SMPL parameters')
     parser.add_argument('--render_mesh', action='store_true', help = 'Whether to render the estimated 3D mesh mesh to image')
     parser.add_argument('--show', action='store_true', help = 'Whether to show the rendered results')
-    parser.add_argument('--smpl_path', type=str, default=osp.join(expanduser("~"),'.romp','smpl_packed_info.npz'), help = 'The path of smpl model file')
-    parser.add_argument('--model_path', type=str, default=osp.join(expanduser("~"),'.romp','ROMP.pkl'), help = 'The path of ROMP checkpoint')
+    parser.add_argument('--smpl_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','smpl_packed_info.npz'), help = 'The path of smpl model file')
+    parser.add_argument('--model_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','ROMP.pkl'), help = 'The path of ROMP checkpoint')
     args = parser.parse_args()
 
     if not torch.cuda.is_available():

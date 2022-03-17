@@ -1,21 +1,12 @@
 import setuptools
 from distutils.core import setup, Extension
-try:
-    from Cython.Build import cythonize
-    from Cython.Distutils import build_ext
-    import numpy
-except ImportError:
-    # create closure for deferred import
-    def cythonize (*args, ** kwargs ):
-        from Cython.Build import cythonize
-        from Cython.Distutils import build_ext
-        return cythonize(*args, ** kwargs)
-
+from Cython.Build import cythonize
+import numpy
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-requireds = ["numpy","opencv-python","cython","torch"]
+requireds = ["opencv-python","torch"]
 
 setuptools.setup(
     name='simple_romp',
@@ -26,7 +17,7 @@ setuptools.setup(
         # Setuptools 18.0 properly handles Cython extensions.
         'setuptools>=18.0',
         'cython',
-        'numpy',
+        'numpy>=1.21',
     ],
     install_requires=requireds,
     description="ROMP: Monocular, One-stage, Regression of Multiple 3D People, ICCV21",

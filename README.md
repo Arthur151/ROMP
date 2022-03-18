@@ -15,7 +15,7 @@ ROMP, accepted by ICCV 2021, is a concise one-stage network for multi-person 3D 
 
 - **Strong.** ROMP achieves superior performance on multiple challenging multi-person/occlusion benchmarks.
 
-- **Easy to use.** We provide user friendly testing API and webcam demos to run on Linux / Windows. 
+- **Easy to use.** We provide user cross-platform API and webcam demos to run on Linux / Windows / Mac. 
 
 Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to contact me for related questions or discussions! [arXiv paper](https://arxiv.org/abs/2008.12272).
 
@@ -46,20 +46,10 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 - [Acknowledgement](#acknowledgement)
 
 ## Features
- - Running the examples on [Google Colab](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg).  
- - Real-time online multi-person webcam demo for driving textured SMPL model. We also provide a wardrobe for changing clothes.  
- - Batch processing images/videos via command line / jupyter notebook / calling ROMP as a python lib.  
- - Exporting the captured single-person motion to FBX file for Blender/Unity usage.  
- - Training and evaluation for re-implementing our results presented in paper.  
- - Convenient API for 2D / 3D visualization, parsed datasets.  
+[features](docs/features.md)
 
 ## News
-*2022/03/16: Simple version of ROMP, let's pip install simple-romp. See the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for details*  
-*2022/02/11: Support running on Windows.*  
-*2021/12/23: Add [Training guidance](https://github.com/Arthur151/ROMP/blob/master/docs/train.md#training-guidance).*   
-*2021/12/20: Upgrade the Pytorch to 1.10.0, Pytorch3D to 0.6.1.*  
-*2021/12/2: Add optional renderers (pyrender or pytorch3D). Fix some bugs reported in issues.*  
-✨✨*2021/10/10: V1.1 released, including multi-person webcam, extracting , webcam temporal optimization, live blender character animation, interactive visualization.*  Let's try!  
+*2022/03/18: Simple version of ROMP for all platform. Let's pip install simple-romp. See the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for details*  
 [Old logs](docs/updates.md)
 
 ## Getting started
@@ -117,27 +107,6 @@ python -m romp.predict.image --inputs=demo\images --output_dir=demo\image_result
 
 **Caution**: To use `show_mesh_stand_on_image` and `interactive_vis`, you must run ROMP on a computer with visual desktop to support the rendering. Most remote servers without visual desktop is not supported. 
 
-Here, we show an example of calling ROMP as a python lib to process images.
-<details>
-<summary>click here to show the code</summary>
-<pre><code>
-```bash
-# set the absolute path to ROMP
-path_to_romp = '/path/to/ROMP'
-import os,sys
-sys.path.append(path_to_romp)
-# set the detailed configurations
-from romp.lib.config import ConfigContext, parse_args, args
-ConfigContext.parsed_args = parse_args(["--configs_yml=configs/image.yml",'--inputs=/path/to/images_folder', '--output_dir=/path/to/save/image_results', '--save_centermap', False]) # Be caution that setting the bool configs needs two elements, ['--config', True/False]
-# import the ROMP image processor
-from romp.predict.image import Image_processor
-processor = Image_processor(args_set=args())
-results_dict = processor.run(args().inputs) # you can change the args().inputs to other /path/to/images_folder
-```
-</code></pre>
-</details>
-
-
 ### Processing videos
 
 <p float="center">
@@ -170,26 +139,6 @@ python -m romp.predict.video --inputs=demo/videos/demo_video_frames --output_dir
 ```
 
 All functions can be combined or work individually. Welcome to try them.
-
-Here, we show an example of calling ROMP as a python lib to process videos.
-<details>
-<summary>click here to show the code</summary>
-<pre><code>
-```bash
-# set the absolute path to ROMP
-path_to_romp = '/path/to/ROMP'
-import os,sys
-sys.path.append(path_to_romp)
-# set the detailed configurations
-from romp.lib.config import ConfigContext, parse_args, args
-ConfigContext.parsed_args = parse_args(["--configs_yml=configs/video.yml",'--inputs=/path/to/video', '--output_dir=/path/to/save/video_results']) # Be caution that setting the bool configs needs two elements, ['--config', True/False]
-# import the ROMP image processor
-from romp.predict.video import Video_processor
-processor = Video_processor(args_set=args())
-results_dict = processor.run(args().inputs) # you can change the args().inputs to other /path/to/video
-```
-</code></pre>
-</details>
 
 ### Webcam
 

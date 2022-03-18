@@ -10,7 +10,7 @@ requireds = ["opencv-python","torch"]
 
 setuptools.setup(
     name='simple_romp',
-    version='0.0.1',
+    version='0.0.3',
     author="Yu Sun",
     author_email="yusun@stu.hit.edu.cn",
     setup_requires=[
@@ -18,6 +18,8 @@ setuptools.setup(
         'setuptools>=18.0',
         'cython',
         'numpy>=1.21',
+        'typing-extensions>=4.1',
+        'black'
     ],
     install_requires=requireds,
     description="ROMP: Monocular, One-stage, Regression of Multiple 3D People, ICCV21",
@@ -26,13 +28,13 @@ setuptools.setup(
     url="https://github.com/Arthur151/ROMP",
     packages=[
         'romp',
-        'sim3drender',
-        'sim3drender.lib',
+        'romp_visualizer',
+        'romp_visualizer.sim3drender',
+        'romp_visualizer.sim3drender.lib',
     ],
-    # cmdclass={'build_ext': build_ext},
-    ext_modules=cythonize([Extension("sim3drender.Sim3DR_Cython",
-                           sources=["sim3drender/lib/rasterize.pyx",
-                                    "sim3drender/lib/rasterize_kernel.cpp"],
+    ext_modules=cythonize([Extension("Sim3DR_Cython",
+                           sources=["romp_visualizer/sim3drender/lib/rasterize.pyx",
+                                    "romp_visualizer/sim3drender/lib/rasterize_kernel.cpp"],
                            language='c++',
                            include_dirs=[numpy.get_include()],
                            extra_compile_args=["-std=c++11"])]),

@@ -7,14 +7,14 @@ Please refer to https://github.com/Arthur151/ROMP for more details
 ## Installation
 
 ```
-pip install setuptools numpy cython
+pip install --upgrade setuptools numpy cython black
+```
+
+```
 pip install simple_romp
 ```
-
-Or install from source:
-
+or download the package and install it from source:
 ```
-pip install setuptools numpy cython
 python setup.py install
 ```
 
@@ -23,24 +23,36 @@ python setup.py install
 Webcam demo:
 ```
 romp --mode=webcam --show
-# to smooth the results, the smaller the smooth_coeff, the smoother:
-romp --mode=webcam --show --temporal_optimize --smooth_coeff=3.
-# to show largest person only:
-romp --mode=webcam --show --temporal_optimize --smooth_coeff=3. --show_largest 
 ```
+For Mac Users, please use the original terminal instead of other terminal app (e.g. iTerm2) to avoid the bug `zsh: abort`.
 
 Processing a single image:
 ```
-romp --mode=image --show --input=/path/to/image.jpg --save_path=/path/to/output/folder/
+romp --mode=image --calc_smpl --render_mesh --input=/path/to/image.jpg --save_path=/path/to/results.jpg
 ```
 
-Processing a video / a folder of images:
+Processing a folder of images:
 ```
-romp --mode=video --show --input=/path/to/video.mp4 --save_path=/path/to/output/folder/
-romp --mode=video --show --input=/path/to/video_frames/ --save_path=/path/to/output/folder/
-# to smooth the results, the smaller the smooth_coeff, the smoother:
-romp --mode=video --show --input=/path/to/video_frames/ --save_path=/path/to/output/folder/ --temporal_optimize --smooth_coeff=3.
+romp --mode=video --calc_smpl --render_mesh  --input=/path/to/image/folder/ --save_path=/path/to/output/folder/
 ```
+
+Processing a video:
+```
+romp --mode=video --calc_smpl --render_mesh  --input=/path/to/video.mp4 --save_path=/path/to/output/folder/results.mp4 --save_video
+```
+
+Optional functions:
+```
+# show the results during processing image / video, add:
+--show
+
+# to smooth the results in webcam / video processing, add: (the smaller the smooth_coeff, the smoother) 
+--temporal_optimize --smooth_coeff=3.
+
+# to show the largest person only (remove the small subjects in background), add:
+--show_largest 
+```
+More options, see `romp -h`
 
 ## Copyright
 

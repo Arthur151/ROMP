@@ -4,8 +4,44 @@ from __future__ import print_function
 
 import torch
 import torch.nn as nn
-from .utils import get_coord_maps, BHWC_to_BCHW
-from .post_parser import CenterMap, pack_params_dict
+
+def get_coord_maps(size=128):
+    xx_ones = torch.ones([1, size], dtype=torch.int32)
+    xx_ones = xx_ones.unsqueeze(-1)
+
+    xx_range = torch.arange(size, dtype=torch.int32).unsqueeze(0)
+    xx_range = xx_range.unsqueeze(1)
+
+    xx_channel = torch.matmul(xx_ones, xx_range)
+    xx_channel = xx_channel.unsqueeze(-1)
+
+    yy_ones = torch.ones([1, size], dtype=torch.int32)
+    yy_ones = yy_ones.unsqueeze(1)
+
+    yy_range = torch.arange(size, dtype=torch.int32).unsqueeze(0)
+    yy_range = yy_range.unsqueeze(-1)
+
+    yy_channel = torch.matmul(yy_range, yy_ones)
+    yy_channel = yy_channel.unsqueeze(-1)
+
+    xx_channel = xx_channel.permute(0, 3, 1, 2)
+    yy_channel = yy_channel.permute(0, 3, 1, 2)
+
+    xx_channel = xx_channel.float() / (size - 1)
+    yy_channel = yy_channel.float() / (size - 1)
+
+    xx_channel = xx_channel * 2 - 1
+    yy_channel = yy_channel * 2 - 1
+
+    out = torch.cat([xx_channel, yy_channel], dim=1)
+    return out
+
+def BHWC_to_BCHW(x):
+    """
+    :param x: torch tensor, B x H x W x C
+    :return:  torch tensor, B x C x H x W
+    """
+    return x.unsqueeze(1).transpose(1, -1).squeeze(-1)
 
 
 BN_MOMENTUM = 0.1
@@ -387,23 +423,6 @@ class ROMPv1(nn.Module):
         print('Using ROMP v1')
         self.backbone = HigherResolutionNet()
         self._build_head()
-        self._build_parser()
-    
-    def _build_parser(self):
-        self.centermap_parser = CenterMap(conf_thresh=0.25)
-
-    @torch.no_grad()
-    def head_forward(self,x):
-        x = torch.cat((x, self.coordmaps.to(x.device).repeat(x.shape[0],1,1,1)), 1)
-
-        params_maps = self.final_layers[1](x)
-        center_maps = self.final_layers[2](x)
-        cam_maps = self.final_layers[3](x)
-        # to make sure that scale is always a positive value
-        cam_maps[:, 0] = torch.pow(1.1,cam_maps[:, 0])
-        params_maps = torch.cat([cam_maps, params_maps], 1)
-        output = {'params_maps':params_maps.float(), 'center_map':center_maps.float()} #, 'kp_ae_maps':kp_heatmap_ae.float()
-        return output
 
     def _build_head(self):
         self.outmap_size = 64
@@ -448,38 +467,36 @@ class ROMPv1(nn.Module):
 
         return nn.Sequential(*head_layers)
     
-    def parsing_outputs(self, outputs):
-        center_preds_info = self.centermap_parser.parse_centermap(outputs['center_map'])
-        batch_ids, flat_inds, cyxs, top_score = center_preds_info
-        if len(batch_ids)==0:
-            print('None person detected')
-            return None
-
-        params_pred = self.parameter_sampling(outputs['params_maps'], batch_ids, flat_inds, use_transform=True)
-        outputs['params'] = pack_params_dict(params_pred)
-        outputs['centers_pred'] = torch.stack([flat_inds%64, torch.div(flat_inds, 64, rounding_mode='floor')],1) * 512 / 64
-        outputs['centers_conf'] = self.parameter_sampling(outputs['center_map'], batch_ids, flat_inds, use_transform=True)
-        return outputs
-    
-    def parameter_sampling(self, maps, batch_ids, flat_inds, use_transform=True):
-        if use_transform:
-            batch, channel = maps.shape[:2]
-            maps = maps.view(batch, channel, -1).permute((0, 2, 1)).contiguous()
-        results = maps[batch_ids,flat_inds].contiguous()
-        return results
-
     @torch.no_grad()
-    def forward(self, input_image):
-        outputs = self.head_forward(self.backbone(input_image))
-        parsed_results = self.parsing_outputs(outputs)
+    def forward(self, image):
+        x = self.backbone(image)
+        x = torch.cat((x, self.coordmaps.to(x.device).repeat(x.shape[0],1,1,1)), 1)
 
-        return parsed_results
+        params_maps = self.final_layers[1](x)
+        center_maps = self.final_layers[2](x)
+        cam_maps = self.final_layers[3](x)
+        # to make sure that scale is always a positive value
+        cam_maps[:, 0] = torch.pow(1.1,cam_maps[:, 0])
+        params_maps = torch.cat([cam_maps, params_maps], 1)
+        return center_maps, params_maps 
 
-if __name__ == '__main__':
+
+def export_model_to_onnx_static(model, save_file, bs=1):
+    image = torch.rand(1,512,512,3).cuda()
+    torch.onnx.export(model, (image),
+                      save_file, 
+                      input_names=['image'],
+                      output_names=['center_maps', 'params_maps'],
+                      export_params=True,
+                      opset_version=12,
+                      do_constant_folding=True)
+    print('ROMP onnx saved into: ', save_file)
+
+def test_model():
     model = ROMPv1().cuda()
     state_dict = torch.load('/home/yusun/ROMP/trained_models/ROMP.pkl')
     model.load_state_dict(state_dict) #, strict=False
-    outputs = model.parsing_forward({'image':torch.rand(1,512,512,3).cuda()})
+    outputs = model(torch.rand(1,512,512,3).cuda())
     for key, value in outputs.items():
         if isinstance(value,tuple):
             print(key, value)
@@ -487,3 +504,10 @@ if __name__ == '__main__':
             print(key, value)
         else:
             print(key, value.shape)
+
+if __name__ == '__main__':
+    model = ROMPv1().cuda()
+    state_dict = torch.load('/home/yusun/ROMP/trained_models/ROMP.pkl')
+    model.load_state_dict(state_dict)
+    save_file = '/home/yusun/ROMP/trained_models/ROMP.onnx'
+    export_model_to_onnx_static(model, save_file, bs=1)

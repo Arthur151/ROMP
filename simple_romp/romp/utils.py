@@ -1,4 +1,6 @@
 from __future__ import print_function
+
+from black import out
 import torch
 from torch.nn import functional as F
 import numpy as np
@@ -29,16 +31,112 @@ def img_preprocess(image, input_size=512):
     input_image = torch.from_numpy(cv2.resize(pad_image, (input_size,input_size), interpolation=cv2.INTER_CUBIC))[None].float()
     return input_image, image_pad_info
 
-def save_results(outputs, input_path, save_dir, mode):
-    if outputs is None:
-        return
-    os.makedirs(save_dir, exist_ok=True)
-    if mode=='image':
-        save_path = osp.join(save_dir, osp.splitext(osp.basename(input_path))[0])
-        if 'rendered_image' in outputs:
-            cv2.imwrite(save_path+'.png', outputs['rendered_image'])
-            del outputs['rendered_image']
-        np.savez(save_path+'.npz', results=outputs)
+class ResultSaver:
+    def __init__(self, mode='image', save_path=None):
+        self.is_dir = len(osp.splitext(save_path)[1]) == 0
+        self.mode = mode
+        self.save_path = save_path
+        self.save_dir = save_path if self.is_dir else osp.dirname(save_path)
+        if self.mode in ['image', 'video']:
+            os.makedirs(self.save_dir, exist_ok=True)
+        if self.mode == 'video':
+            self.frame_save_paths = []
+    
+    def __call__(self, outputs, input_path, img_ext='.jpg'):
+        if self.mode == 'video' or self.is_dir:
+            save_name = osp.basename(input_path)
+            save_path = osp.join(self.save_dir, osp.splitext(save_name)[0])+img_ext
+        elif self.mode == 'image':
+            save_path = self.save_path
+
+        rendered_image = None
+        if outputs is not None:
+            if 'rendered_image' in outputs:
+                rendered_image = outputs.pop('rendered_image')
+            np.savez(osp.splitext(save_path)[0]+'.npz', results=outputs)
+        if rendered_image is None:
+            rendered_image = cv2.imread(input_path)
+        
+        cv2.imwrite(save_path, rendered_image)    
+        if self.mode == 'video':
+            self.frame_save_paths.append(save_path)
+    
+    def save_video(self, save_path, frame_rate=24):
+        if len(self.frame_save_paths)== 0:
+            return 
+        height, width = cv2.imread(self.frame_save_paths[0]).shape[:2]
+        writer = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), frame_rate, (width, height))
+        for frame_path in self.frame_save_paths:
+            writer.write(cv2.imread(frame_path))
+        writer.release()
+
+class WebcamVideoStream(object):
+    def __init__(self, src=0):
+        # initialize the video camera stream and read the first frame
+        # from the stream
+        self.stream = cv2.VideoCapture(src)
+        (self.grabbed, self.frame) = self.stream.read()
+        # initialize the variable used to indicate if the thread should
+        # be stopped
+        self.stopped = False
+    
+    def start(self):
+        # start the thread to read frames from the video stream
+        Thread(target=self.update, args=()).start()
+        return self
+    def update(self):
+        # keep looping infinitely until the thread is stopped
+        while True:
+            # if the thread indicator variable is set, stop the thread
+            if self.stopped:
+                return
+            # otherwise, read the next frame from the stream
+            (self.grabbed, self.frame) = self.stream.read()
+    def read(self):
+        # return the frame most recently read
+        return self.frame
+    def stop(self):
+        # indicate that the thread should be stopped
+        self.stopped = True
+
+def video2frame(video_path, frame_save_dir=None):
+    cap = cv2.VideoCapture(video_path)
+    for frame_id in range(int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
+        success_flag, frame = cap.read()
+        if success_flag:
+            save_path = os.path.join(frame_save_dir, '{:08d}.jpg'.format(frame_id))
+            cv2.imwrite(save_path, frame)
+
+def collect_frame_path(video_path, save_path):
+    assert osp.exists(video_path), video_path + 'not exist!'
+
+    is_dir = len(osp.splitext(save_path)[1]) == 0
+    if is_dir:
+        save_dir = save_path
+        save_name = osp.splitext(osp.basename(video_path))[0] + '.mp4'
+    else:
+        save_dir = osp.dirname(save_path)
+        save_name = osp.splitext(osp.basename(save_path))[0] + '.mp4'
+    video_save_path = osp.join(save_dir, save_name)
+
+    if osp.isfile(video_path):
+        video_name, video_ext = osp.splitext(osp.basename(video_path))
+        
+        frame_save_dir = osp.join(save_dir, video_name+'_frames')
+        print(f'Extracting the frames of input {video_path} to {frame_save_dir}')
+        os.makedirs(frame_save_dir, exist_ok=True)
+        try:
+            video2frame(video_path, frame_save_dir)
+        except:
+            raise Exception(f"Failed in extracting the frames of {video_path} to {frame_save_dir}! \
+                Please check the video. If you want to do this by yourself, please extracte frames to {frame_save_dir} and take it as input to ROMP. \
+                For example, the first frame name is supposed to be {osp.join(frame_save_dir, '00000000.jpg')}")
+    else:
+        frame_save_dir = video_path
+
+    assert osp.isdir(frame_save_dir), frame_save_dir + 'is supposed to be a folder containing video frames.'
+    frame_paths = [osp.join(frame_save_dir, frame_name) for frame_name in sorted(os.listdir(frame_save_dir))]
+    return frame_paths, video_save_path
 
 #-----------------------------------------------------------------------------------------#
 #                         tracking & temporal optimization utils                                    
@@ -279,50 +377,6 @@ SMPL_EXTRA_30 = {
     }
 
 SMPL_ALL_54 = {**SMPL_24, **SMPL_EXTRA_30}
-
-
-#-----------------------------------------------------------------------------------------#
-#                                Model inference utils                                    
-#-----------------------------------------------------------------------------------------#
-
-def get_coord_maps(size=128):
-    xx_ones = torch.ones([1, size], dtype=torch.int32)
-    xx_ones = xx_ones.unsqueeze(-1)
-
-    xx_range = torch.arange(size, dtype=torch.int32).unsqueeze(0)
-    xx_range = xx_range.unsqueeze(1)
-
-    xx_channel = torch.matmul(xx_ones, xx_range)
-    xx_channel = xx_channel.unsqueeze(-1)
-
-    yy_ones = torch.ones([1, size], dtype=torch.int32)
-    yy_ones = yy_ones.unsqueeze(1)
-
-    yy_range = torch.arange(size, dtype=torch.int32).unsqueeze(0)
-    yy_range = yy_range.unsqueeze(-1)
-
-    yy_channel = torch.matmul(yy_range, yy_ones)
-    yy_channel = yy_channel.unsqueeze(-1)
-
-    xx_channel = xx_channel.permute(0, 3, 1, 2)
-    yy_channel = yy_channel.permute(0, 3, 1, 2)
-
-    xx_channel = xx_channel.float() / (size - 1)
-    yy_channel = yy_channel.float() / (size - 1)
-
-    xx_channel = xx_channel * 2 - 1
-    yy_channel = yy_channel * 2 - 1
-
-    out = torch.cat([xx_channel, yy_channel], dim=1)
-    return out
-
-def BHWC_to_BCHW(x):
-    """
-    :param x: torch tensor, B x H x W x C
-    :return:  torch tensor, B x C x H x W
-    """
-    return x.unsqueeze(1).transpose(1, -1).squeeze(-1)
-
 
 #-----------------------------------------------------------------------------------------#
 #               3D vector to 6D rotation representation conversion utils                                    
@@ -610,41 +664,11 @@ def download_model(remote_url, local_path, name):
             print('Installing wget to download model data.')
             os.system('pip install wget')
             import wget
+        print('Downloading the {} model from {} and put it to {} \n Please download it by youself if this is too slow...'.format(name, remote_url, local_path))
         wget.download(remote_url, local_path)
     except Exception as error:
         print(error)
         print('Failure in downloading the {} model, please download it by youself from {}, and put it to {}'.format(name, remote_url, local_path))
-
-class WebcamVideoStream(object):
-    def __init__(self, src=0):
-        # initialize the video camera stream and read the first frame
-        # from the stream
-        self.stream = cv2.VideoCapture(src)
-        (self.grabbed, self.frame) = self.stream.read()
-        # initialize the variable used to indicate if the thread should
-        # be stopped
-        self.stopped = False
-    
-    def start(self):
-        # start the thread to read frames from the video stream
-        Thread(target=self.update, args=()).start()
-        return self
-    def update(self):
-        # keep looping infinitely until the thread is stopped
-        while True:
-            #if cv2.waitKey(1)==27:
-            #    self.stop()
-            # if the thread indicator variable is set, stop the thread
-            if self.stopped:
-                return
-            # otherwise, read the next frame from the stream
-            (self.grabbed, self.frame) = self.stream.read()
-    def read(self):
-        # return the frame most recently read
-        return self.frame
-    def stop(self):
-        # indicate that the thread should be stopped
-        self.stopped = True
 
 def wait_func(mode):
     if mode == 'image':
@@ -654,35 +678,6 @@ def wait_func(mode):
                 break 
     elif mode == 'webcam' or mode == 'video':
         cv2.waitKey(1)
-
-def video2frame(video_path, frame_save_dir=None):
-    cap = cv2.VideoCapture(video_path)
-    for frame_id in range(int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
-        success_flag, frame = cap.read()
-        if success_flag:
-            save_path = os.path.join(frame_save_dir, '{:08d}.jpg'.format(frame_id))
-            cv2.imwrite(save_path, frame)
-
-def collect_frame_path(video_path, save_path):
-    assert osp.exists(video_path), video_path + 'not exist!'
-    if osp.isfile(video_path):
-        video_name, video_ext = osp.splitext(osp.basename(video_path))
-        frame_save_dir = osp.join(save_path, video_name+'_frames')
-        print(f'Extracting the frames of input {video_path} to {frame_save_dir}')
-        os.makedirs(frame_save_dir, exist_ok=True)
-        try:
-            video2frame(video_path, frame_save_dir)
-            video_path = frame_save_dir
-        except:
-            raise Exception(f"Failed in extracting the frames of {video_path} to {frame_save_dir}! \
-                Please check the video. If you want to do this by yourself, please extracte frames to {frame_save_dir} and take it as input to ROMP. \
-                For example, the first frame name is supposed to be {osp.join(frame_save_dir, '00000000.jpg')}")
-
-    assert osp.isdir(video_path), video_path + 'is supposed to be a folder containing video frames.'
-    print('Collecting video frames in ', video_path)
-    frame_paths = [osp.join(video_path, frame_name) for frame_name in sorted(os.listdir(video_path))]
-    return frame_paths
-
 
 class ProgressBar(object):
     DEFAULT = 'Progress: %(bar)s %(percent)3d%%'

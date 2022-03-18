@@ -12,16 +12,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 #from .utils import time_cost
 
-def to_tensor(array, dtype=torch.float32):
-    return torch.tensor(array, dtype=dtype)
 
 class VertexJointSelector(nn.Module):
 
     def __init__(self, extra_joints_idxs, J_regressor_extra9, J_regressor_h36m17, dtype=torch.float32):
         super(VertexJointSelector, self).__init__()
-        self.register_buffer('extra_joints_idxs', to_tensor(extra_joints_idxs, dtype=torch.long))
-        self.register_buffer('J_regressor_extra9', to_tensor(J_regressor_extra9, dtype=dtype))
-        self.register_buffer('J_regressor_h36m17', to_tensor(J_regressor_h36m17, dtype=dtype))
+        self.register_buffer('extra_joints_idxs', extra_joints_idxs)
+        self.register_buffer('J_regressor_extra9', J_regressor_extra9)
+        self.register_buffer('J_regressor_h36m17', J_regressor_h36m17)
 
     def forward(self, vertices, joints):
         extra_joints21 = torch.index_select(vertices, 1, self.extra_joints_idxs)
@@ -37,24 +35,28 @@ class VertexJointSelector(nn.Module):
         return joints54 #{'joints54':joints54, 'joints_h36m17':joints_h36m17}
 
 class SMPL(nn.Module):
-    def __init__(self, model_path, dtype=torch.float32):
+    def __init__(self, model_path, model_type='smpl', dtype=torch.float32):
         super(SMPL, self).__init__()
         self.dtype = dtype
-        model_info = np.load(model_path, allow_pickle=True)['annots'][()]
+        model_info = torch.load(model_path)
 
         self.vertex_joint_selector = VertexJointSelector(model_info['extra_joints_index'], \
             model_info['J_regressor_extra9'], model_info['J_regressor_h36m17'], dtype=self.dtype)
-        self.register_buffer('faces_tensor', to_tensor(model_info['f'], dtype=torch.long))
+        self.register_buffer('faces_tensor', model_info['f'])
         # The vertices of the template model
-        self.register_buffer('v_template', to_tensor(model_info['v_template'], dtype=dtype))
+        self.register_buffer('v_template', model_info['v_template'])
         # The shape components, take the top 10 PCA componence.
-        self.register_buffer('shapedirs', to_tensor(model_info['shapedirs'], dtype=dtype))
-        self.register_buffer('J_regressor', to_tensor(model_info['J_regressor'], dtype=dtype))
+        if model_type == 'smpl':
+            self.register_buffer('shapedirs', model_info['shapedirs'])
+        elif model_type == 'smpla':
+            self.register_buffer('shapedirs', model_info['smpla_shapedirs'])
+            
+        self.register_buffer('J_regressor', model_info['J_regressor'])
         # Pose blend shape basis: 6890 x 3 x 207, reshaped to 6890*3 x 207, then transpose to 207 x 6890*3
-        self.register_buffer('posedirs', to_tensor(model_info['posedirs'], dtype=dtype))
+        self.register_buffer('posedirs', model_info['posedirs'])
         # indices of parents for each joints
-        self.register_buffer('parents', to_tensor(model_info['kintree_table']).long())
-        self.register_buffer('lbs_weights',to_tensor(model_info['weights'], dtype=dtype))
+        self.register_buffer('parents', model_info['kintree_table'])
+        self.register_buffer('lbs_weights',model_info['weights'])
 
     #@time_cost('SMPL')
     def forward(self, betas=None, poses=None):
@@ -358,7 +360,7 @@ def test_onnx(dtype=np.float32, batch_size=1):
     print(cost_time[:10])
 
 def prepare_smpl_model(dtype):
-    model_path = '/home/yusun/ROMP_fast/fast_demo/smpl_packed_info.npz'
+    model_path = '/home/yusun/CenterMesh/model_data/parameters/smpl_packed_info.pth'
     smpl_model = SMPL(model_path, dtype=dtype).eval() #.cuda()
     return smpl_model
 

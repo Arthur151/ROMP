@@ -31,12 +31,12 @@ class CenterMap(object):
 
         topk_scores, topk_inds = torch.topk(center_map_nms.reshape(b, c, -1), K)
         topk_inds = topk_inds % (h * w)
-        topk_ys = torch.div(topk_inds.long(), w).float()
+        topk_ys = (topk_inds.long() // w).float()
         topk_xs = (topk_inds % w).int().float()
         # get all topk in in a batch
         topk_score, index = torch.topk(topk_scores.reshape(b, -1), K)
         # div by K because index is grouped by K(C x K shape)
-        topk_clses = torch.div(index.long(), K)
+        topk_clses = index.long() // K
         topk_inds = gather_feature(topk_inds.view(b, -1, 1), index).reshape(b, K)
         topk_ys = gather_feature(topk_ys.reshape(b, -1, 1), index).reshape(b, K)
         topk_xs = gather_feature(topk_xs.reshape(b, -1, 1), index).reshape(b, K)
@@ -115,3 +115,26 @@ class SMPL_parser(nn.Module):
         outputs.update({'verts': verts, 'joints': joints, 'smpl_face':face})
         
         return outputs
+
+
+def parameter_sampling(maps, batch_ids, flat_inds, use_transform=True):
+    if use_transform:
+        batch, channel = maps.shape[:2]
+        maps = maps.view(batch, channel, -1).permute((0, 2, 1)).contiguous()
+    results = maps[batch_ids,flat_inds].contiguous()
+    return results
+
+def parsing_outputs(center_maps, params_maps, centermap_parser):
+    center_preds_info = centermap_parser.parse_centermap(center_maps)
+    batch_ids, flat_inds, cyxs, top_score = center_preds_info
+    if len(batch_ids)==0:
+        print('None person detected')
+        return None
+
+    parsed_results = {}
+    params_pred = parameter_sampling(params_maps, batch_ids, flat_inds, use_transform=True)
+    parsed_results['params'] = pack_params_dict(params_pred)
+    parsed_results['centers_pred'] = torch.stack([flat_inds%64, flat_inds//64],1) * 512 // 64
+    parsed_results['centers_conf'] = parameter_sampling(center_maps, batch_ids, flat_inds, use_transform=True)
+    return parsed_results
+

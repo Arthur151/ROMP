@@ -49,6 +49,7 @@ Contact: [yusun@stu.hit.edu.cn](mailto:yusun@stu.hit.edu.cn). Feel free to conta
 [features](docs/features.md)
 
 ## News
+*2022/03/27:[Relative Human dataset](https://github.com/Arthur151/Relative_Human) has been released.*  
 *2022/03/18: Simple version of ROMP for all platform. Let's pip install simple-romp. See the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for details*  
 [Old logs](docs/updates.md)
 

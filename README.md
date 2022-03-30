@@ -56,9 +56,7 @@ It allows you to run the project in the cloud, free of charge. [Google Colab dem
 ## How to use it
 
 ### Inference
-
 Please refer to the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md).
-
 
 ### Export
 

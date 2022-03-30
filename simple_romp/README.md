@@ -19,12 +19,22 @@ python setup.py install
 ```
 
 ## Usage
+<p float="center">
+<img src="../assets/demo/animation/video_demo_nofp.gif" width="32%" />
+  <img src="../assets/demo/animation/video_demo_fp.gif" width="40%" />
+</p>
 
 Webcam demo:
 ```
 romp --mode=webcam --show
 ```
 For Mac Users, please use the original terminal instead of other terminal app (e.g. iTerm2) to avoid the bug `zsh: abort`.
+
+<p float="center">
+  <img src="../assets/demo/animation/image_demo1-min.gif" width="32%" />
+  <img src="../assets/demo/animation/image_demo2-min.gif" width="32%" />
+  <img src="../assets/demo/animation/image_demo3-min.gif" width="32%" />
+</p>
 
 Processing a single image:
 ```
@@ -35,6 +45,12 @@ Processing a folder of images:
 ```
 romp --mode=video --calc_smpl --render_mesh  --input=/path/to/image/folder/ --save_path=/path/to/output/folder/
 ```
+<p float="center">
+  <img src="../assets/demo/animation/c1_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c4_results_compressed.gif" width="32%" />
+  <img src="../assets/demo/animation/c0_results_compressed.gif" width="32%" />
+</p>
+
 
 Processing a video:
 ```

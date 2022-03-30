@@ -1,3 +1,11 @@
+## Export
+
+Currently, this function only support the single-person video cases. Therefore, please test it with `demo/videos/sample_video2_results/sample_video2.mp4`, whose results would be saved to `demo/videos/sample_video2_results`.
+
+#### Blender Addons
+[Chuanhang Yan](https://github.com/yanch2116) : developing an [addon for driving character in Blender](https://github.com/yanch2116/Blender-addons-for-SMPL).  
+[VLT Media](https://github.com/vltmedia) creates a [QuickMocap-BlenderAddon](https://github.com/vltmedia/QuickMocap-BlenderAddon) to  read the .npz file created by ROMP. Clean & smooth the resulting keyframes.  
+
 ### Blender character animation
 
 1. Download the [BlenderAddon](https://github.com/yanch2116/LiveMocap-BlenderAddon) and install the [Blender](https://www.blender.org/).

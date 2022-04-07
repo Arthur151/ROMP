@@ -70,6 +70,13 @@ Optional functions:
 ```
 More options, see `romp -h`
 
+### Tools
+To convert the trained ROMP model '.pkl' (like ROMP.pkl) to simple-romp '.pth' model, please run
+```
+cd /path/to/ROMP/simple_romp/
+python tools/convert_checkpoints.py ROMP.pkl ROMP.pth
+```
+
 ## Copyright
 
 Codes released under MIT license. All rights reserved by Yu Sun.

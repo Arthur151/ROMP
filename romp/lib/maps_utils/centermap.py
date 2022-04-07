@@ -139,7 +139,7 @@ def _calc_radius_(bboxes_hw_norm):
     radius_list = []
     for bbox_norm in bboxes_hw_norm:
         # bbox_hw is the bbox_height/image_height
-        bbox_hw_oncm = (bbox_norm+1)/2*args().centermap_size
+        bbox_hw_oncm = bbox_norm/2*args().centermap_size
         radius = int(gaussian_radius_scale(bbox_hw_oncm,minimum=2.))
         radius_list.append(radius)
     return radius_list

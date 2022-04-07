@@ -18,8 +18,7 @@ setuptools.setup(
         'setuptools>=18.0',
         'cython',
         'numpy>=1.21',
-        'typing-extensions>=4.1',
-        'black'
+        'typing-extensions>=4.1'
     ],
     install_requires=requireds,
     description="ROMP: Monocular, One-stage, Regression of Multiple 3D People, ICCV21",

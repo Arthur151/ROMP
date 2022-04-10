@@ -24,15 +24,15 @@ class VertexJointSelector(nn.Module):
     def forward(self, vertices, joints):
         extra_joints21 = torch.index_select(vertices, 1, self.extra_joints_idxs)
         extra_joints9 = torch.einsum('bik,ji->bjk', [vertices, self.J_regressor_extra9])
-        # 54 joints = 24 smpl joints + 21 face & feet & hands joints + 9 extra joints from different datasets
-        joints54 = torch.cat([joints, extra_joints21, extra_joints9], dim=1)
+        joints_h36m17 = torch.einsum('bik,ji->bjk', [vertices, self.J_regressor_h36m17])
+        # 54 joints = 24 smpl joints + 21 face & feet & hands joints + 9 extra joints from different datasets + 17 joints from h36m
+        joints54_17 = torch.cat([joints, extra_joints21, extra_joints9, joints_h36m17], dim=1)
 
-        #joints_h36m17 = torch.einsum('bik,ji->bjk', [vertices, self.J_regressor_h36m17])
         # use the middle of hip used in the most 2D pose datasets, not the o-th Pelvis of SMPL 24 joint
         #joints_h36m17_pelvis = joints_h36m17[:,14].unsqueeze(1)
         #joints_h36m17 = joints_h36m17 - joints_h36m17_pelvis
 
-        return joints54 #{'joints54':joints54, 'joints_h36m17':joints_h36m17}
+        return joints54_17
 
 class SMPL(nn.Module):
     def __init__(self, model_path, model_type='smpl', dtype=torch.float32):
@@ -287,10 +287,10 @@ def export_smpl_to_onnx_dynamic(smpl_model, save_file, bs=1):
     "support dynamics batch size but slow"
     a = torch.rand([bs, 10]).cuda()
     b = torch.rand([bs, 72]).cuda()
-    dynamic_axes = {'betas':[0], 'poses':[0], 'verts':[0], 'joints':[0]}
+    dynamic_axes = {'smpl_betas':[0], 'smpl_thetas':[0], 'verts':[0], 'joints':[0]}
     torch.onnx.export(smpl_model, (a, b),
                       save_file, 
-                      input_names=['betas', 'poses'],
+                      input_names=['smpl_betas', 'smpl_thetas'],
                       output_names=['verts', 'joints', 'faces'],
                       export_params=True,
                       opset_version=12,
@@ -304,7 +304,7 @@ def export_smpl_to_onnx_static(smpl_model, save_file, bs=1):
     b = torch.rand([bs, 72]).cuda()
     torch.onnx.export(smpl_model, (a, b),
                       save_file, 
-                      input_names=['betas', 'poses'],
+                      input_names=['smpl_betas', 'smpl_thetas'],
                       output_names=['verts', 'joints', 'faces'],
                       export_params=True,
                       opset_version=12,
@@ -350,7 +350,7 @@ def test_onnx(dtype=np.float32, batch_size=1):
     a = np.random.random([batch_size, 10]).astype(dtype)
     b = np.random.random([batch_size, 72]).astype(dtype)
 
-    ort_inputs = {'betas':a, 'poses':b}
+    ort_inputs = {'smpl_betas':a, 'smpl_thetas':b}
     for _ in range(200):
         start_time = time.time()
         ort_outs = ort_session.run(None, ort_inputs)

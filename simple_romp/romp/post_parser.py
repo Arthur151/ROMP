@@ -3,7 +3,7 @@ from torch import nn
 import sys,os
 import numpy as np
 from .smpl import SMPL
-from .utils import rot6D_to_angular, batch_orth_proj
+from .utils import rot6D_to_angular, batch_orth_proj, estimate_translation
 
 class CenterMap(object):
     def __init__(self, conf_thresh):
@@ -65,7 +65,7 @@ def gather_feature(fmap, index, mask=None):
 
 def pack_params_dict(params_pred):
     idx_list, params_dict = [0], {}
-    part_name = ['cam', 'global_orient', 'body_pose', 'betas']
+    part_name = ['cam', 'global_orient', 'body_pose', 'smpl_betas']
     part_idx = [3, 6, 21*6, 10]
     for i,  (idx, name) in enumerate(zip(part_idx, part_name)):
         idx_list.append(idx_list[i] + idx)
@@ -74,7 +74,7 @@ def pack_params_dict(params_pred):
     params_dict['global_orient'] = rot6D_to_angular(params_dict['global_orient'])
     N = params_dict['body_pose'].shape[0]
     params_dict['body_pose'] = torch.cat([params_dict['body_pose'], torch.zeros(N,6).to(params_dict['body_pose'].device)],1)
-    params_dict['poses'] = torch.cat([params_dict['global_orient'], params_dict['body_pose']], 1)
+    params_dict['smpl_thetas'] = torch.cat([params_dict['global_orient'], params_dict['body_pose']], 1)
 
     return params_dict
 
@@ -93,9 +93,17 @@ def convert_cam_to_3d_trans(cams, weight=2.):
     trans3d = torch.stack([dx, dy, depth], 1)*weight
     return trans3d
 
+def convert_cam_to_3d_trans2(j3ds, pj3d): 
+    predicts_j3ds = j3ds[:,:24].contiguous().detach().cpu().numpy()
+    predicts_pj2ds = (pj3d[:,:,:2][:,:24].detach().cpu().numpy()+1)*256
+    cam_trans = estimate_translation(predicts_j3ds, predicts_pj2ds, \
+                                focal_length=443.4, img_size=np.array([512,512])).to(j3ds.device)
+    return cam_trans
+    
+
 def body_mesh_projection2image(j3d_preds, cam_preds, vertices=None, input2org_offsets=None):
     pj3d = batch_orth_proj(j3d_preds, cam_preds, mode='2d')
-    pred_cam_t = convert_cam_to_3d_trans(cam_preds)
+    pred_cam_t = convert_cam_to_3d_trans2(j3d_preds, pj3d)
     projected_outputs = {'pj2d': pj3d[:,:,:2], 'cam_trans':pred_cam_t}
     if vertices is not None:
         projected_outputs['verts_camed'] = batch_orth_proj(vertices, cam_preds, mode='3d',keep_dim=True)
@@ -111,7 +119,7 @@ class SMPL_parser(nn.Module):
         self.smpl_model = SMPL(model_path)
     
     def forward(self, outputs):
-        verts, joints, face = self.smpl_model(outputs['params']['betas'], outputs['params']['poses'])
+        verts, joints, face = self.smpl_model(outputs['smpl_betas'], outputs['smpl_thetas'])
         outputs.update({'verts': verts, 'joints': joints, 'smpl_face':face})
         
         return outputs
@@ -131,9 +139,8 @@ def parsing_outputs(center_maps, params_maps, centermap_parser):
         print('None person detected')
         return None
 
-    parsed_results = {}
     params_pred = parameter_sampling(params_maps, batch_ids, flat_inds, use_transform=True)
-    parsed_results['params'] = pack_params_dict(params_pred)
+    parsed_results = pack_params_dict(params_pred)
     parsed_results['centers_pred'] = torch.stack([flat_inds%64, flat_inds//64],1) * 512 // 64
     parsed_results['centers_conf'] = parameter_sampling(center_maps, batch_ids, flat_inds, use_transform=True)
     return parsed_results

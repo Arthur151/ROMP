@@ -31,28 +31,33 @@ def img_preprocess(image, input_size=512):
     return input_image, image_pad_info
 
 class ResultSaver:
-    def __init__(self, mode='image', save_path=None):
+    def __init__(self, mode='image', save_path=None, save_npz=True):
         self.is_dir = len(osp.splitext(save_path)[1]) == 0
         self.mode = mode
         self.save_path = save_path
+        self.save_npz = save_npz
         self.save_dir = save_path if self.is_dir else osp.dirname(save_path)
         if self.mode in ['image', 'video']:
             os.makedirs(self.save_dir, exist_ok=True)
         if self.mode == 'video':
             self.frame_save_paths = []
     
-    def __call__(self, outputs, input_path, img_ext='.jpg'):
+    def __call__(self, outputs, input_path, prefix=None, img_ext='.png'):
         if self.mode == 'video' or self.is_dir:
             save_name = osp.basename(input_path)
             save_path = osp.join(self.save_dir, osp.splitext(save_name)[0])+img_ext
         elif self.mode == 'image':
             save_path = self.save_path
 
+        if prefix is not None:
+            save_path = osp.splitext(save_path)[0]+f'_{prefix}'+osp.splitext(save_path)[1]
+
         rendered_image = None
         if outputs is not None:
             if 'rendered_image' in outputs:
                 rendered_image = outputs.pop('rendered_image')
-            np.savez(osp.splitext(save_path)[0]+'.npz', results=outputs)
+            if self.save_npz:
+                np.savez(osp.splitext(save_path)[0]+'.npz', results=outputs)
         if rendered_image is None:
             rendered_image = cv2.imread(input_path)
         
@@ -182,6 +187,8 @@ class OneEuroFilter:
     
     if isinstance(edx, float):
         cutoff = self.mincutoff + self.beta * np.abs(edx)
+    elif isinstance(edx, np.ndarray):
+        cutoff = self.mincutoff + self.beta * np.abs(edx)
     elif isinstance(edx, torch.Tensor):
         cutoff = self.mincutoff + self.beta * torch.abs(edx)
     if print_inter:
@@ -189,7 +196,7 @@ class OneEuroFilter:
     return self.x_filter.process(x, self.compute_alpha(cutoff))
 
 def create_OneEuroFilter(smooth_coeff):
-    return {'pose': OneEuroFilter(smooth_coeff, 0), 'cam': OneEuroFilter(3., .0), 'betas': OneEuroFilter(0.6, .0)}
+    return {'pose': OneEuroFilter(smooth_coeff, 0), 'cam': OneEuroFilter(3., .0), 'smpl_betas': OneEuroFilter(0.6, .0)}
 
 def euclidean_distance(detection, tracked_object):
     return np.linalg.norm(detection.points - tracked_object.estimate)
@@ -199,6 +206,13 @@ def get_tracked_ids(detections, tracked_objects):
     tracked_points = np.array([obj.last_detection.points for obj in tracked_objects])
     org_points = np.array([obj.points for obj in detections])
     tracked_ids = [tracked_ids_out[np.argmin(np.linalg.norm(tracked_points-point[None], axis=1))] for point in org_points]
+    return tracked_ids
+
+def get_tracked_ids3D(detections, tracked_objects):
+    tracked_ids_out = np.array([obj.id for obj in tracked_objects])
+    tracked_points = np.array([obj.last_detection.points for obj in tracked_objects])
+    org_points = np.array([obj.points for obj in detections])
+    tracked_ids = [tracked_ids_out[np.argmin(np.linalg.norm(tracked_points.reshape(-1,4)-point.reshape(1,4), axis=1))] for point in org_points]
     return tracked_ids
 
 #-----------------------------------------------------------------------------------------#
@@ -228,9 +242,9 @@ def batch_orth_proj(X, camera, mode='2d',keep_dim=False):
     return X_camed
 
 def vertices_kp3d_projection(outputs, meta_data=None, presp=False):
-    params_dict, vertices, j3ds = outputs['params'], outputs['verts'], outputs['j3d']
-    verts_camed = batch_orth_proj(vertices, params_dict['cam'], mode='3d',keep_dim=True)
-    pj3d = batch_orth_proj(j3ds, params_dict['cam'], mode='2d')
+    vertices, j3ds = outputs['verts'], outputs['j3d']
+    verts_camed = batch_orth_proj(vertices, outputs['cam'], mode='3d',keep_dim=True)
+    pj3d = batch_orth_proj(j3ds, outputs['cam'], mode='2d')
     predicts_j3ds = j3ds[:,:24].contiguous().detach().cpu().numpy()
     predicts_pj2ds = (pj3d[:,:,:2][:,:24].detach().cpu().numpy()+1)*256
     cam_trans = estimate_translation(predicts_j3ds, predicts_pj2ds, \
@@ -680,7 +694,7 @@ def wait_func(mode):
 
 class ProgressBar(object):
     DEFAULT = 'Progress: %(bar)s %(percent)3d%%'
-    FULL = '%(bar)s %(current)d/%(total)d (%(percent)3d%%) %(remaining)d to go'
+    FULL = "%(bar)s %(current)d/%(total)d (%(percent)3d%%) %(remaining)d to go \n"
 
     def __init__(self, total, width=40, fmt=DEFAULT, symbol='-',
                  output=sys.stderr):

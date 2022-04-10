@@ -1,1 +1,0 @@
-from .sim3drender import Sim3DR

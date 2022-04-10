@@ -476,12 +476,17 @@ class ROMPv1(nn.Module):
         center_maps = self.final_layers[2](x)
         cam_maps = self.final_layers[3](x)
         # to make sure that scale is always a positive value
-        cam_maps[:, 0] = torch.pow(1.1,cam_maps[:, 0])
+        #cam_maps[:, 0] = torch.pow(1.1,cam_maps[:, 0]) # not supported by tensorRT
         params_maps = torch.cat([cam_maps, params_maps], 1)
         return center_maps, params_maps 
 
 
-def export_model_to_onnx_static(model, save_file, bs=1):
+def export_model_to_onnx_static():
+    model = ROMPv1().cuda()
+    state_dict = torch.load('/home/yusun/.romp/ROMP.pkl')
+    model.load_state_dict(state_dict)
+    save_file = '/home/yusun/.romp/ROMP.onnx'
+
     image = torch.rand(1,512,512,3).cuda()
     torch.onnx.export(model, (image),
                       save_file, 
@@ -494,7 +499,7 @@ def export_model_to_onnx_static(model, save_file, bs=1):
 
 def test_model():
     model = ROMPv1().cuda()
-    state_dict = torch.load('/home/yusun/ROMP/trained_models/ROMP.pkl')
+    state_dict = torch.load('/home/yusun/.romp/ROMP.pkl')
     model.load_state_dict(state_dict) #, strict=False
     outputs = model(torch.rand(1,512,512,3).cuda())
     for key, value in outputs.items():
@@ -505,9 +510,26 @@ def test_model():
         else:
             print(key, value.shape)
 
+def test_onnx():
+    onnx_path = "/home/yusun/.romp/ROMP.onnx"
+    import onnx, onnxruntime
+    onnx_model = onnx.load(onnx_path)
+    onnx.checker.check_model(onnx_model)
+    ort_session = onnxruntime.InferenceSession(onnx_path)
+
+    import time
+    import cv2
+    import numpy as np
+    cost_time = []
+    image = cv2.imread('/home/yusun/CenterMesh/simple_romp/test/ages_croped.png').astype(np.float32)[None]
+    for _ in range(200):
+        start_time = time.time()
+        ort_outs = ort_session.run(None, {'image':image})
+        end_time = time.time()
+        cost_time.append(end_time - start_time)
+    print('cost time ', np.mean(cost_time))
+    print(cost_time[:10])
+
 if __name__ == '__main__':
-    model = ROMPv1().cuda()
-    state_dict = torch.load('/home/yusun/ROMP/trained_models/ROMP.pkl')
-    model.load_state_dict(state_dict)
-    save_file = '/home/yusun/ROMP/trained_models/ROMP.onnx'
-    export_model_to_onnx_static(model, save_file, bs=1)
+    #test_onnx()
+    export_model_to_onnx_static()

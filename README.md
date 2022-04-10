@@ -37,6 +37,7 @@ We provide user cross-platform API to run on Linux / Windows / Mac.
 [features](docs/features.md)
 
 ## News
+*2022/04/10:simple-romp v0.0.4 has been released. Adding onnx support, with faster inference speed on CPU/GPU.*  
 *2022/03/27:[Relative Human dataset](https://github.com/Arthur151/Relative_Human) has been released.*  
 *2022/03/18: Simple version of ROMP for all platform. Let's pip install simple-romp. See the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for details*  
 [Old logs](docs/updates.md)
@@ -45,6 +46,7 @@ We provide user cross-platform API to run on Linux / Windows / Mac.
 
 ### Installation
 ```
+pip install --upgrade setuptools numpy cython
 pip install simple-romp
 ```
 To run in real time, please refer to [install.md](docs/basic_installation.md) for installation.

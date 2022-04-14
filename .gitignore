@@ -4,3 +4,5 @@ models/
 demo/videos/
 model_data/
 romp/
+configs/
+simple_romp

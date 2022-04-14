@@ -6,7 +6,8 @@
 
 <p float="center">
     <div align=center><img src="../assets/demo/animation/blender_character_driven-min.gif" width="48%" />
-    <img src="../assets/demo/images_results/BEV_tennis_results.png" width="48%" /></div>
+    <img width="8%" />
+    <img src="../assets/demo/images_results/BEV_tennis_results.png" width="33%" /></div>
 </p>
 
 We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux / Windows / Mac. 

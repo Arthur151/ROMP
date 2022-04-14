@@ -80,21 +80,16 @@ Please refer to [bug.md](docs/bugs.md) for solutions. Welcome to submit the issu
 author = {Sun, Yu and Liu, Wu and Bao, Qian and Fu, Yili and Mei, Tao and Black, Michael J},
 title = {Putting People in their Place: Monocular Regression of 3D People in Depth},
 booktitle = {CVPR},
-year = {2022}
-}
-
+year = {2022}}
 @InProceedings{ROMP,
 author = {Sun, Yu and Bao, Qian and Liu, Wu and Fu, Yili and Michael J., Black and Mei, Tao},
 title = {Monocular, One-stage, Regression of Multiple 3D People},
 booktitle = {ICCV},
-year = {2021}
-}
+year = {2021}}
 ```
 
 ## Acknowledgement
 
-We thank all [contributors](docs/contributor.md) for their help!
-
-This work was supported by the National Key R&D Program of China under Grand No. 2020AAA0103800. 
-
+We thank all [contributors](docs/contributor.md) for their help!  
+This work was supported by the National Key R&D Program of China under Grand No. 2020AAA0103800.  
 **Disclosure**: MJB has received research funds from Adobe, Intel, Nvidia, Facebook, and Amazon and has financial interests in Amazon, Datagen Technologies, and Meshcapade GmbH. While he was part-time at Amazon during this project, his research was performed solely at Max Planck. 

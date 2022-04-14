@@ -45,7 +45,7 @@ Please use simple-romp for inference, the rest code is just for training.
 ### Installation
 ```
 pip install --upgrade setuptools numpy cython
-pip install simple-romp
+pip install --upgrade simple-romp
 ```
 To run in real time, please refer to [install.md](docs/basic_installation.md) for installation.
 

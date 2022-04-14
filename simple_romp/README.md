@@ -11,7 +11,7 @@ pip install --upgrade setuptools numpy cython
 ```
 
 ```
-pip install simple_romp
+pip install --upgrade simple_romp
 ```
 or download the package and install it from source:
 ```

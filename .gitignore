@@ -12,3 +12,5 @@ build/
 dist/
 *.egg-info/
 .eggs/
+__pycache__/
+demo/images/

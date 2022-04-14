@@ -195,13 +195,7 @@ def main():
         while True:
             frame = cap.read()
             outputs = romp(frame)
-        try:
-            while True:
-                frame = cap.read()
-                outputs = romp(frame)
-                print(outputs.keys())
-        except:
-            cap.stop()
+        cap.stop()
 
 if __name__ == '__main__':
     main()

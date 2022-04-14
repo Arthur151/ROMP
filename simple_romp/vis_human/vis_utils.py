@@ -43,7 +43,7 @@ def rotate_view_weak_perspective(verts, rx=30, ry=0, img_shape=[512,512], expand
     
     if scale is None:
         # To ensure all vertices are visible, we need to rescale the vertices
-        scale = expand_ratio / torch.abs(torch.div(verts_aligned[:,:,:2], rendered_image_center)).max()
+        scale = 1 / (expand_ratio * torch.abs(torch.div(verts_aligned[:,:,:2], rendered_image_center)).max()) 
     # move to the center of rendered image 
     verts_aligned *=  scale
     verts_aligned[:,:,:2] += rendered_image_center

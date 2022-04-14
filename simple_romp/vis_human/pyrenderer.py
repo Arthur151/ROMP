@@ -1,10 +1,18 @@
-import pyrender
+import os,sys
+try:
+    import pyrender
+except:
+    print('To use the pyrender, we are trying to install it via pip install pyrender.')
+    print('If you meet any bug in this process, please refer to https://pyrender.readthedocs.io/en/latest/install/index.html to install it by youself.')
+    os.system('pip install pyrender')
+    import pyrender
+
 import trimesh
 import numpy as np
 
 
 def add_light(scene, light):
-    # Use 3 directional lights
+    # Use 3 directional lights  
     light_pose = np.eye(4)
     light_pose[:3, 3] = np.array([0, -1, 1])
     scene.add(light, pose=light_pose)

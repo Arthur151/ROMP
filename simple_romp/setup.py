@@ -10,7 +10,7 @@ requireds = ["opencv-python","torch"]
 
 setuptools.setup(
     name='simple_romp',
-    version='0.0.4',
+    version='0.1.0',
     author="Yu Sun",
     author_email="yusun@stu.hit.edu.cn",
     setup_requires=[
@@ -30,6 +30,7 @@ setuptools.setup(
         'vis_human',
         'vis_human.sim3drender',
         'vis_human.sim3drender.lib',
+        'bev',
     ],
     ext_modules=cythonize([Extension("Sim3DR_Cython",
                            sources=["vis_human/sim3drender/lib/rasterize.pyx",
@@ -49,6 +50,7 @@ setuptools.setup(
     entry_points={
         "console_scripts": [
             "romp=romp.main:main",
+            "bev=bev.main:main",
         ],
     },
 )

@@ -70,16 +70,12 @@ def rasterize(
 
 class Sim3DR(object):
     def __init__(self, **kwargs):
-        self.intensity_ambient = convert_type(kwargs.get("intensity_ambient", 0.6))
-        self.intensity_directional = convert_type(
-            kwargs.get("intensity_directional", 0.6)
-        )
+        self.intensity_ambient = convert_type(kwargs.get("intensity_ambient", 0.66))
+        self.intensity_directional = convert_type(kwargs.get("intensity_directional", 0.36))
         self.intensity_specular = convert_type(kwargs.get("intensity_specular", 0.1))
-        self.specular_exp = kwargs.get("specular_exp", 5)
-        self.color_directional = convert_type(
-            kwargs.get("color_directional", (1, 1, 1))
-        )
-        self.light_pos = convert_type(kwargs.get("light_pos", (0, 0, -10)))
+        self.specular_exp = kwargs.get("specular_exp", 1)
+        self.color_directional = convert_type(kwargs.get("color_directional", (1, 1, 1)))
+        self.light_pos = convert_type(kwargs.get("light_pos", (0, 0, -5)))
         self.view_pos = convert_type(kwargs.get("view_pos", (0, 0, 5)))
 
     def update_light_pos(self, light_pos):

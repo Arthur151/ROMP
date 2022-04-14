@@ -18,50 +18,65 @@ or download the package and install it from source:
 python setup.py install
 ```
 
+For Mac users, we strongly recommand to upgrade your pytorch to the latest version to support more basic operations used in BEV. To achieve this, please run
+```
+pip install --upgrade torch torchvision
+```
+
 ## Usage
 <p float="center">
-<img src="../../assets/demo/animation/video_demo_nofp.gif" width="32%" />
-  <img src="../../assets/demo/animation/video_demo_fp.gif" width="40%" />
+<img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/video_demo_nofp.gif" width="32%" />
+  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/video_demo_fp.gif" width="40%" />
 </p>
 
 Webcam demo:
 ```
 romp --mode=webcam --show
+bev --mode=webcam --show
 ```
 For Mac Users, please use the original terminal instead of other terminal app (e.g. iTerm2) to avoid the bug `zsh: abort`.
 
 <p float="center">
-  <img src="../../assets/demo/animation/image_demo1-min.gif" width="32%" />
-  <img src="../../assets/demo/animation/image_demo2-min.gif" width="32%" />
-  <img src="../../assets/demo/animation/image_demo3-min.gif" width="32%" />
+  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/image_demo1-min.gif" width="32%" />
+  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/image_demo2-min.gif" width="32%" />
+  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/image_demo3-min.gif" width="32%" />
 </p>
 
 Processing a single image:
 ```
 romp --mode=image --calc_smpl --render_mesh --input=/path/to/image.jpg --save_path=/path/to/results.jpg
+bev -i /path/to/image.jpg -o /path/to/results.jpg
 ```
 
 Processing a folder of images:
 ```
 romp --mode=video --calc_smpl --render_mesh  --input=/path/to/image/folder/ --save_path=/path/to/output/folder/
+bev -m video -i /path/to/image/folder/ -o /path/to/output/folder/
 ```
 <p float="center">
-  <img src="../../assets/demo/animation/c1_results_compressed.gif" width="32%" />
-  <img src="../../assets/demo/animation/c4_results_compressed.gif" width="32%" />
-  <img src="../../assets/demo/animation/c0_results_compressed.gif" width="32%" />
+  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/c1_results_compressed.gif" width="32%" />
+  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/c4_results_compressed.gif" width="32%" />
+  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/c0_results_compressed.gif" width="32%" />
 </p>
 
 
 Processing a video:
 ```
 romp --mode=video --calc_smpl --render_mesh  --input=/path/to/video.mp4 --save_path=/path/to/output/folder/results.mp4 --save_video
+bev -m video -i /path/to/video.mp4 -o /path/to/output/folder/results.mp4 --save_video
 ```
 
-Optional functions:
+Common optional functions:
 ```
 # show the results during processing image / video, add:
 --show
 
+# items you want to visualized, including mesh,pj2d,j3d,mesh_bird_view,mesh_side_view,center_conf,rotate_mesh. Please add if you want to see more:
+--show_items=mesh,mesh_bird_view
+```
+
+ROMP only optional functions:
+```
 # to smooth the results in webcam / video processing, add: (the smaller the smooth_coeff, the smoother) 
 --temporal_optimize --smooth_coeff=3.
 
@@ -71,9 +86,10 @@ Optional functions:
 # to show the largest person only (remove the small subjects in background), add:
 --show_largest 
 ```
+
 More options, see `romp -h`
 
-Note that if you are using CPU for inference, we highly recommand to add `--onnx` for much faster speed.
+Note that if you are using CPU for ROMP inference, we highly recommand to add `--onnx` for much faster speed.
 
 ### Tools
 To convert the trained ROMP model '.pkl' (like ROMP.pkl) to simple-romp '.pth' model, please run

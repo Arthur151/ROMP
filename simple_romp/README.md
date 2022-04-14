@@ -26,9 +26,10 @@ pip install --upgrade torch torchvision
 ## Usage
 Webcam demo:
 ```
-romp --mode=webcam --show
+romp --mode=webcam --show 
 bev --mode=webcam --show
 ```
+For faster inference with romp on CPU, you may run `romp --mode=webcam --show --onnx` instead.  
 For Mac Users, please use the original terminal instead of other terminal app (e.g. iTerm2) to avoid the bug `zsh: abort`.
 
 <p float="center">

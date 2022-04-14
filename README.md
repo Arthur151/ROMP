@@ -1,21 +1,37 @@
-<h1 align="center"> 
-  <img src="../assets/demo/ROMP_logo.png" width="20%" />
-</h1>
 <h2 align="center"> Monocular, One-stage, Regression of Multiple 3D People </h2>
 
-[![Google Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg)
+[![Google Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg) [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/centerhmr-a-bottom-up-single-shot-method-for/3d-human-pose-estimation-on-3d-poses-in-the)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3d-poses-in-the?p=centerhmr-a-bottom-up-single-shot-method-for)
+
 [![arXiv](https://img.shields.io/badge/arXiv-2008.12272-00ff00.svg)](https://arxiv.org/abs/2008.12272)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/centerhmr-a-bottom-up-single-shot-method-for/3d-human-pose-estimation-on-3d-poses-in-the)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3d-poses-in-the?p=centerhmr-a-bottom-up-single-shot-method-for)
 
-[ROMP](https://arxiv.org/abs/2008.12272) is a **one-stage** method for recovering multi-person 3D meshes from a single image. It runs in **real time** on a 1070Ti GPU.
+<html>
+    <table style="margin-left: auto; margin-right: auto;">
+        <tr>
+            <td>
+                <p float="center">
+                <img src="../assets/demo/ROMP_logo.png" width="20%" />
+                <img src="../assets/demo/animation/blender_character_driven-min.gif" width="66%" />
+                </p>
+                [ROMP][https://arxiv.org/abs/2008.12272] is a **one-stage** method for recovering multi-person 3D meshes from a single image. It runs in **real time** on a 1070Ti GPU.
+            </td>
+            <td>
+                <p float="center">
+                <img src="../assets/demo/ROMP_logo.png" width="20%" />
+                <img src="../assets/demo/animation/Solvay_conference_1927_all_people.png" width="66%" />
+                <img src="../assets/demo/animation/Solvay_conference_1927_all_people.png" width="66%" />
+                </p>
+                [BEV](https://arxiv.org/abs/2112.08274) is built on ROMP to further explore multi-person **depth relationships** and support **all age groups**. 
+            </td>
+        </tr>
+    </table>
+</html>
 
-[BEV](https://arxiv.org/abs/2112.08274) is built on ROMP to further explore multi-person **depth relationships** and support **all age groups**. 
+<h1 align="center"> 
+  
+</h1>
 
-We provide **cross-platform API** to run on Linux / Windows / Mac, which can be easily installed via pip. 
+We provide **cross-platform API** (installed via pip) to run on Linux / Windows / Mac. 
 
-<p float="center">
-  <img src="../assets/demo/animation/blender_character_driven-min.gif" width="66%" />
-</p>
 
 ## Table of contents
 - [Table of contents](#table-of-contents)
@@ -33,8 +49,9 @@ We provide **cross-platform API** to run on Linux / Windows / Mac, which can be 
 - [Acknowledgement](#acknowledgement)
 
 ## News
-*2022/04/10:simple-romp v0.0.4 has been released. Adding onnx support, with faster inference speed on CPU/GPU.*  
-*2022/03/27:[Relative Human dataset](https://github.com/Arthur151/Relative_Human) has been released.*  
+*2022/04/14: Inference code of BEV has been released in simple-romp.*
+*2022/04/10: simple-romp v0.0.4 has been released. Adding onnx support, with faster inference speed on CPU/GPU.*  
+*2022/03/27: [Relative Human dataset](https://github.com/Arthur151/Relative_Human) has been released.*  
 *2022/03/18: Simple version of ROMP for all platform. See the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for details*  
 [Old logs](docs/updates.md)
 

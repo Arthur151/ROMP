@@ -10,7 +10,8 @@
     <img src="../assets/demo/animation/Solvay_conference_1927_all_people.png" width="28%" />
     <img src="../assets/demo/animation/conference_mesh_rotating.gif" width="28%" /></div>
 </p>
-We provide **cross-platform API** (installed via pip) to run on Linux / Windows / Mac. 
+
+We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux / Windows / Mac. 
 
 ## Table of contents
 - [Table of contents](#table-of-contents)

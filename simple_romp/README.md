@@ -34,9 +34,10 @@ For faster inference with romp on CPU, you may run `romp --mode=webcam --show --
 For Mac Users, please use the original terminal instead of other terminal app (e.g. iTerm2) to avoid the bug `zsh: abort`.
 
 <p float="center">
-  <img src="../../assets/demo/animation/image_demo1-min.gif" width="32%" />
   <img src="../../assets/demo/animation/image_demo2-min.gif" width="32%" />
-  <img src="../../assets/demo/animation/image_demo3-min.gif" width="32%" />
+  <img src="../../assets/demo/animation/Solvay_conference_1927_all_people.png" width="32%" />
+  <img src="../../assets/demo/animation/conference_mesh_rotating.gif" width="32%" /></div>
+</p>
 </p>
 
 In this [folder](https://github.com/Arthur151/ROMP/tree/assets/demo/BEV_demo_images), we prepare some demo images for testing.

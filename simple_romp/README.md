@@ -24,6 +24,7 @@ pip install --upgrade torch torchvision
 ```
 
 ## Usage
+
 Webcam demo:
 ```
 romp --mode=webcam --show 
@@ -37,6 +38,8 @@ For Mac Users, please use the original terminal instead of other terminal app (e
   <img src="../../assets/demo/animation/image_demo2-min.gif" width="32%" />
   <img src="../../assets/demo/animation/image_demo3-min.gif" width="32%" />
 </p>
+
+In this [folder](https://github.com/Arthur151/ROMP/tree/assets/demo/BEV_demo_images), we prepare some demo images for testing.
 
 Processing a single image:
 ```

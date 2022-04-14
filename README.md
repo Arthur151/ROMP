@@ -9,18 +9,16 @@
         <tr>
             <td>
                 <p float="center">
-                <img src="../assets/demo/ROMP_logo.png" width="20%" />
-                <img src="../assets/demo/animation/blender_character_driven-min.gif" width="66%" />
+                <img src="../assets/demo/animation/blender_character_driven-min.gif" width="100%" />
                 </p>
-                [ROMP][https://arxiv.org/abs/2008.12272] is a **one-stage** method for recovering multi-person 3D meshes from a single image. It runs in **real time** on a 1070Ti GPU.
+                ROMP is a <b>one-stage</b><br/> method for recovering multi-person 3D meshes from a single image. It runs in <b>real time</b><br/> on a 1070Ti GPU.
             </td>
             <td>
                 <p float="center">
-                <img src="../assets/demo/ROMP_logo.png" width="20%" />
-                <img src="../assets/demo/animation/Solvay_conference_1927_all_people.png" width="66%" />
-                <img src="../assets/demo/animation/conference_mesh_rotating.gif" width="66%" />
+                <img src="../assets/demo/animation/Solvay_conference_1927_all_people.png" width="20%" />
+                <img src="../assets/demo/animation/conference_mesh_rotating.gif" width="20%" />
                 </p>
-                [BEV](https://arxiv.org/abs/2112.08274) is built on ROMP to further explore multi-person **depth relationships** and support **all age groups**. 
+                BEV is built on ROMP to further explore multi-person <b>depth relationships</b><br/> and support <b>all age groups</b><br/>. 
             </td>
         </tr>
     </table>
@@ -32,6 +30,7 @@
 
 We provide **cross-platform API** (installed via pip) to run on Linux / Windows / Mac. 
 
+[ROMP arxiv][https://arxiv.org/abs/2008.12272] [BEV arxiv](https://arxiv.org/abs/2112.08274)
 
 ## Table of contents
 - [Table of contents](#table-of-contents)

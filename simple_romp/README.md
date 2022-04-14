@@ -24,11 +24,6 @@ pip install --upgrade torch torchvision
 ```
 
 ## Usage
-<p float="center">
-<img src="../../assets/demo/animation/video_demo_nofp.gif" width="32%" />
-  <img src="../../assets/demo/animation/video_demo_fp.gif" width="40%" />
-</p>
-
 Webcam demo:
 ```
 romp --mode=webcam --show
@@ -86,7 +81,10 @@ ROMP only optional functions:
 # to show the largest person only (remove the small subjects in background), add:
 --show_largest 
 ```
-
+<p float="center">
+<img src="../../assets/demo/animation/video_demo_nofp.gif" width="32%" />
+  <img src="../../assets/demo/animation/video_demo_fp.gif" width="40%" />
+</p>
 More options, see `romp -h`
 
 Note that if you are using CPU for ROMP inference, we highly recommand to add `--onnx` for much faster speed.

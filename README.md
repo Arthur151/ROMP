@@ -1,36 +1,15 @@
 <h2 align="center"> Monocular, One-stage, Regression of Multiple 3D People </h2>
 
-[![Google Colab demo](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg) [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/centerhmr-a-bottom-up-single-shot-method-for/3d-human-pose-estimation-on-3d-poses-in-the)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3d-poses-in-the?p=centerhmr-a-bottom-up-single-shot-method-for)
-
-[![arXiv](https://img.shields.io/badge/arXiv-2008.12272-00ff00.svg)](https://arxiv.org/abs/2008.12272)
-
-<html>
-    <table style="margin-left: auto; margin-right: auto;">
-        <tr>
-            <td>
-                <p float="center">
-                <img src="../assets/demo/animation/blender_character_driven-min.gif" width="100%" />
-                </p>
-                ROMP is a <b>one-stage</b><br/> method for recovering multi-person 3D meshes from a single image. It runs in <b>real time</b><br/> on a 1070Ti GPU.
-            </td>
-            <td>
-                <p float="center">
-                <img src="../assets/demo/animation/Solvay_conference_1927_all_people.png" width="20%" />
-                <img src="../assets/demo/animation/conference_mesh_rotating.gif" width="20%" />
-                </p>
-                BEV is built on ROMP to further explore multi-person <b>depth relationships</b><br/> and support <b>all age groups</b><br/>. 
-            </td>
-        </tr>
-    </table>
-</html>
-
-<h1 align="center"> 
-  
-</h1>
+| [ROMP](https://arxiv.org/abs/2008.12272) is a concise one-stage method for monocular multi-person 3D mesh recovery in real time. | [BEV](https://arxiv.org/abs/2112.08274) further explores multi-person depth relationships and support all age groups.  |
+| --- | --- |
+<p float="center">
+    <img src="../assets/demo/animation/blender_character_driven-min.gif" width="40%" />
+    <img  width="2%" />
+    <img src="../assets/demo/animation/Solvay_conference_1927_all_people.png" width="26%" />
+    <img src="../assets/demo/animation/conference_mesh_rotating.gif" width="30%" />
+</p>
 
 We provide **cross-platform API** (installed via pip) to run on Linux / Windows / Mac. 
-
-[ROMP arxiv][https://arxiv.org/abs/2008.12272] [BEV arxiv](https://arxiv.org/abs/2112.08274)
 
 ## Table of contents
 - [Table of contents](#table-of-contents)

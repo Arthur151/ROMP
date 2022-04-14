@@ -7,17 +7,15 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2008.12272-00ff00.svg)](https://arxiv.org/abs/2008.12272)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/centerhmr-a-bottom-up-single-shot-method-for/3d-human-pose-estimation-on-3d-poses-in-the)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-3d-poses-in-the?p=centerhmr-a-bottom-up-single-shot-method-for)
 
-[ROMP]((https://arxiv.org/abs/2008.12272)) is a concise one-stage network for multi-person 3D mesh recovery from a single image. It can achieve real-time inference speed on a 1070Ti GPU.
+[ROMP](https://arxiv.org/abs/2008.12272) is a **one-stage** method for recovering multi-person 3D meshes from a single image. It runs in **real time** on a 1070Ti GPU.
 
-[BEV](https://arxiv.org/abs/2112.08274) is built on ROMP to further explore multi-person depth relationships and support all age groups. 
+[BEV](https://arxiv.org/abs/2112.08274) is built on ROMP to further explore multi-person **depth relationships** and support **all age groups**. 
 
-We provide cross-platform API to run on Linux / Windows / Mac. 
+We provide **cross-platform API** to run on Linux / Windows / Mac, which can be easily installed via pip. 
 
 <p float="center">
   <img src="../assets/demo/animation/blender_character_driven-min.gif" width="66%" />
 </p>
-
-*Please use simple-romp for inference, the rest code is just for training.*
 
 ## Table of contents
 - [Table of contents](#table-of-contents)
@@ -41,6 +39,8 @@ We provide cross-platform API to run on Linux / Windows / Mac.
 [Old logs](docs/updates.md)
 
 ## Getting started
+
+Please use simple-romp for inference, the rest code is just for training.
 
 ### Installation
 ```

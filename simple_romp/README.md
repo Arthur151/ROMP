@@ -25,8 +25,8 @@ pip install --upgrade torch torchvision
 
 ## Usage
 <p float="center">
-<img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/video_demo_nofp.gif" width="32%" />
-  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/video_demo_fp.gif" width="40%" />
+<img src="../../assets/demo/animation/video_demo_nofp.gif" width="32%" />
+  <img src="../../assets/demo/animation/video_demo_fp.gif" width="40%" />
 </p>
 
 Webcam demo:
@@ -37,9 +37,9 @@ bev --mode=webcam --show
 For Mac Users, please use the original terminal instead of other terminal app (e.g. iTerm2) to avoid the bug `zsh: abort`.
 
 <p float="center">
-  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/image_demo1-min.gif" width="32%" />
-  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/image_demo2-min.gif" width="32%" />
-  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/image_demo3-min.gif" width="32%" />
+  <img src="../../assets/demo/animation/image_demo1-min.gif" width="32%" />
+  <img src="../../assets/demo/animation/image_demo2-min.gif" width="32%" />
+  <img src="../../assets/demo/animation/image_demo3-min.gif" width="32%" />
 </p>
 
 Processing a single image:
@@ -54,9 +54,9 @@ romp --mode=video --calc_smpl --render_mesh  --input=/path/to/image/folder/ --sa
 bev -m video -i /path/to/image/folder/ -o /path/to/output/folder/
 ```
 <p float="center">
-  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/c1_results_compressed.gif" width="32%" />
-  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/c4_results_compressed.gif" width="32%" />
-  <img src="https://github.com/Arthur151/ROMP/tree/assets/demo/animation/c0_results_compressed.gif" width="32%" />
+  <img src="../../assets/demo/animation/c1_results_compressed.gif" width="32%" />
+  <img src="../../assets/demo/animation/c4_results_compressed.gif" width="32%" />
+  <img src="../../assets/demo/animation/c0_results_compressed.gif" width="32%" />
 </p>
 
 

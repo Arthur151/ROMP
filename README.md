@@ -42,7 +42,7 @@ Please use simple-romp for inference, the rest code is just for training.
 pip install --upgrade setuptools numpy cython
 pip install --upgrade simple-romp
 ```
-For more details, please refer to [install.md]([docs/basic_installation.md](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md)).
+For more details, please refer to [install.md](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md).
 
 ### Try on Google Colab
 

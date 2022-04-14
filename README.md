@@ -1,4 +1,4 @@
-<h1 align="center"> Monocular, One-stage, Regression of Multiple 3D People </h2>
+<h2 align="center"> Monocular, One-stage, Regression of Multiple 3D People </h2>
 
 | [ROMP](https://arxiv.org/abs/2008.12272) is a concise one-stage method for monocular multi-person 3D mesh recovery in real time. | [BEV](https://arxiv.org/abs/2112.08274) further explores multi-person depth relationships and supports all age groups.  |
 | --- | --- |

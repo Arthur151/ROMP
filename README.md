@@ -18,7 +18,7 @@
                 <p float="center">
                 <img src="../assets/demo/ROMP_logo.png" width="20%" />
                 <img src="../assets/demo/animation/Solvay_conference_1927_all_people.png" width="66%" />
-                <img src="../assets/demo/animation/Solvay_conference_1927_all_people.png" width="66%" />
+                <img src="../assets/demo/animation/conference_mesh_rotating.gif" width="66%" />
                 </p>
                 [BEV](https://arxiv.org/abs/2112.08274) is built on ROMP to further explore multi-person **depth relationships** and support **all age groups**. 
             </td>

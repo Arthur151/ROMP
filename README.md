@@ -1,14 +1,15 @@
 <h2 align="center"> Monocular, One-stage, Regression of Multiple 3D People </h2>
 
-| [ROMP](https://arxiv.org/abs/2008.12272) is a concise one-stage method for monocular multi-person 3D mesh recovery in real time. | [BEV](https://arxiv.org/abs/2112.08274) further explores multi-person depth relationships and supports all age groups.  |
-| --- | --- |
-<p float="center">
-    <img src="../assets/demo/animation/blender_character_driven-min.gif" width="40%" />
-    <img  width="2%" />
-    <img src="../assets/demo/animation/Solvay_conference_1927_all_people.png" width="26%" />
-    <img src="../assets/demo/animation/conference_mesh_rotating.gif" width="30%" />
-</p>
 
+| <div align=center><img src="../assets/demo/ROMP_logo.png" width="30%" /></div> | <div align=center><img src="../assets/demo/BEV_logo.png" width="30%" /></div> |
+| :---: | :---: |
+| [ROMP](https://arxiv.org/abs/2008.12272) is a concise **one-stage** method for monocular multi-person 3D mesh recovery in **real time**. | [BEV](https://arxiv.org/abs/2112.08274) further explores multi-person **depth relationships** and supports **all age groups**.  |
+
+<p float="center">
+    <div align=center><img src="../assets/demo/animation/blender_character_driven-min.gif" width="42%" />
+    <img src="../assets/demo/animation/Solvay_conference_1927_all_people.png" width="28%" />
+    <img src="../assets/demo/animation/conference_mesh_rotating.gif" width="28%" /></div>
+</p>
 We provide **cross-platform API** (installed via pip) to run on Linux / Windows / Mac. 
 
 ## Table of contents

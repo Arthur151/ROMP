@@ -79,7 +79,8 @@ class MPI_INF_3DHP(Image_base):
         kp2ds = np.concatenate([kp2ds, vis_mask[:,None]],1)[None]
 
         root_trans = kp3ds[:,self.root_inds].mean(1)
-        kp3ds -= root_trans[:,None]
+        
+        kp3ds[:,vis_mask] -= root_trans[:,None]
 
         # vmask_2d | 0: kp2d/bbox | 1: track ids | 2: detect all people in image
         # vmask_3d | 0: kp3d | 1: smpl global orient | 2: smpl body pose | 3: smpl body shape

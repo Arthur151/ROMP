@@ -9,17 +9,18 @@
 
 [ROMP]((https://arxiv.org/abs/2008.12272)) is a concise one-stage network for multi-person 3D mesh recovery from a single image. It can achieve real-time inference speed on a 1070Ti GPU.
 
-[BEV](https://arxiv.org/abs/2112.08274) is built on ROMP to further explore multi-person depth relationships and support all ages. To be released on this repo. Stay tuned.
+[BEV](https://arxiv.org/abs/2112.08274) is built on ROMP to further explore multi-person depth relationships and support all age groups. 
 
-We provide user cross-platform API to run on Linux / Windows / Mac. 
+We provide cross-platform API to run on Linux / Windows / Mac. 
 
 <p float="center">
   <img src="../assets/demo/animation/blender_character_driven-min.gif" width="66%" />
 </p>
 
+*Please use simple-romp for inference, the rest code is just for training.*
+
 ## Table of contents
 - [Table of contents](#table-of-contents)
-- [Features](#features)
 - [News](#news)
 - [Getting started](#getting-started)
   - [Installation](#installation)
@@ -33,13 +34,10 @@ We provide user cross-platform API to run on Linux / Windows / Mac.
 - [Citation](#citation)
 - [Acknowledgement](#acknowledgement)
 
-## Features
-[features](docs/features.md)
-
 ## News
 *2022/04/10:simple-romp v0.0.4 has been released. Adding onnx support, with faster inference speed on CPU/GPU.*  
 *2022/03/27:[Relative Human dataset](https://github.com/Arthur151/Relative_Human) has been released.*  
-*2022/03/18: Simple version of ROMP for all platform. Let's pip install simple-romp. See the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for details*  
+*2022/03/18: Simple version of ROMP for all platform. See the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for details*  
 [Old logs](docs/updates.md)
 
 ## Getting started
@@ -97,13 +95,6 @@ year = {2021}
 
 We thank all [contributors](docs/contributor.md) for their help!
 
-We thank [Peng Cheng](https://github.com/CPFLAME) for his constructive comments on Center map training.  
+This work was supported by the National Key R&D Program of China under Grand No. 2020AAA0103800. 
 
-Here are some great resources we benefit:
-
-- SMPL models and layer is borrowed from MPII [SMPL-X model](https://github.com/vchoutas/smplx).
-- Some functions are borrowed from [HMR-pytorch](https://github.com/MandyMo/pytorch_HMR) and [SPIN](https://github.com/nkolot/SPIN).
-- The evaluation code and GT annotations of 3DPW dataset is brought from [3dpw-eval](https://github.com/aymenmir1/3dpw-eval) and [VIBE](https://github.com/mkocabas/VIBE).
-- 3D mesh visualization is supported by [vedo](https://github.com/marcomusy/vedo), [EasyMocap](https://github.com/zju3dv/EasyMocap), [minimal-hand](https://github.com/CalciferZh/minimal-hand), [Open3D](https://github.com/intel-isl/Open3D), and [Pyrender](https://github.com/mmatl/pyrender).
-
-Please consider citing their papers.
+**Disclosure**: MJB has received research funds from Adobe, Intel, Nvidia, Facebook, and Amazon and has financial interests in Amazon, Datagen Technologies, and Meshcapade GmbH. While he was part-time at Amazon during this project, his research was performed solely at Max Planck. 

@@ -12,6 +12,8 @@
 
 We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux / Windows / Mac. 
 
+[[project page]](https://github.com/Arthur151/yusun.github.io/blob/main/BEV/BEV.html) [[Relative Human dataset]](https://github.com/Arthur151/Relative_Human)
+
 ## Table of contents
 - [Table of contents](#table-of-contents)
 - [News](#news)
@@ -30,8 +32,6 @@ We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux
 ## News
 *2022/04/14: Inference code of BEV has been released in simple-romp v0.1.0.*   
 *2022/04/10: Adding onnx support, with faster inference speed on CPU/GPU.*  
-*2022/03/27: [Relative Human dataset](https://github.com/Arthur151/Relative_Human) has been released.*  
-*2022/03/18: Simple version of ROMP for all platform. See the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for details*  
 [Old logs](docs/updates.md)
 
 ## Getting started

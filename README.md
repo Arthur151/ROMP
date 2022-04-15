@@ -12,7 +12,7 @@
 
 We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux / Windows / Mac. 
 
-[[project page]](https://github.com/Arthur151/yusun.github.io/blob/main/BEV/BEV.html) [[Relative Human dataset]](https://github.com/Arthur151/Relative_Human)
+[[project page]](https://arthur151.github.io/BEV/BEV.html) [[Relative Human dataset]](https://github.com/Arthur151/Relative_Human)
 
 ## Table of contents
 - [Table of contents](#table-of-contents)

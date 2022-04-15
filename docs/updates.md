@@ -1,5 +1,6 @@
 ## Update logs
-*2022/03/18: Simple version of ROMP for all platform. Let's pip install simple-romp. See the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for details*  
+*2022/03/27: [Relative Human dataset](https://github.com/Arthur151/Relative_Human) has been released.*   
+*2022/03/18: Simple version of ROMP for all platform. See the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for details*  (https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for details*  
 *2022/02/11: Support running on Windows.*  
 *2021/12/23: Add [Training guidance](https://github.com/Arthur151/ROMP/blob/master/docs/train.md#training-guidance).*   
 *2021/12/20: Upgrade the Pytorch to 1.10.0, Pytorch3D to 0.6.1.*  

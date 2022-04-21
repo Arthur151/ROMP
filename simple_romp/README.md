@@ -101,6 +101,25 @@ cd /path/to/ROMP/simple_romp/
 python tools/convert_checkpoints.py ROMP.pkl ROMP.pth
 ```
 
+### Joints in output .npz file
+
+We generate 2D/3D position of 71 joints from estimated 3D body meshes.   
+The 71 joints are 24 SMPL joints + 30 extra joints + 17 h36m joints:
+```
+SMPL_24 = {
+'Pelvis_SMPL':0, 'L_Hip_SMPL':1, 'R_Hip_SMPL':2, 'Spine_SMPL': 3, 'L_Knee':4, 'R_Knee':5, 'Thorax_SMPL': 6, 'L_Ankle':7, 'R_Ankle':8,'Thorax_up_SMPL':9,
+'L_Toe_SMPL':10, 'R_Toe_SMPL':11, 'Neck': 12, 'L_Collar':13, 'R_Collar':14, 'Jaw':15, 'L_Shoulder':16, 'R_Shoulder':17,
+'L_Elbow':18, 'R_Elbow':19, 'L_Wrist': 20, 'R_Wrist': 21, 'L_Hand':22, 'R_Hand':23}
+SMPL_EXTRA_30 = {
+'Nose':24, 'R_Eye':25, 'L_Eye':26, 'R_Ear': 27, 'L_Ear':28,
+'L_BigToe':29, 'L_SmallToe': 30, 'L_Heel':31, 'R_BigToe':32,'R_SmallToe':33, 'R_Heel':34,
+'L_Hand_thumb':35, 'L_Hand_index': 36, 'L_Hand_middle':37, 'L_Hand_ring':38, 'L_Hand_pinky':39,
+'R_Hand_thumb':40, 'R_Hand_index':41,'R_Hand_middle':42, 'R_Hand_ring':43, 'R_Hand_pinky': 44,
+'R_Hip': 45, 'L_Hip':46, 'Neck_LSP':47, 'Head_top':48, 'Pelvis':49, 'Thorax_MPII':50,
+'Spine_H36M':51, 'Jaw_H36M':52, 'Head':53}
+```
+H36m 17 joints are just regressed them for fair comparison with previous methods. I am not sure their precise joint names.
+
 ## Copyright
 
 Codes released under MIT license. All rights reserved by Yu Sun.

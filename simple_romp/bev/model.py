@@ -238,7 +238,7 @@ class BEVv1(nn.Module):
         if len(center_preds_info_3d[0])==0:
             print('No person detected!')
             return None
-        pred_batch_ids, pred_czyxs, top_score = center_preds_info_3d
+        pred_batch_ids, pred_czyxs, center_confs = center_preds_info_3d
         cams_preds = cam_maps_3d[pred_batch_ids,:,pred_czyxs[:,0],pred_czyxs[:,1],pred_czyxs[:,2]]
 
         front_view_features = self.param_head(x)
@@ -246,7 +246,7 @@ class BEVv1(nn.Module):
         
         output = {'params_pred':params_preds.float(), 'cam_czyx':cam_czyx.float(), 
                 'center_map':center_maps_fv.float(),'center_map_3d':center_maps_3d.float().squeeze(),
-                'pred_batch_ids':pred_batch_ids, 'pred_czyxs':pred_czyxs, 'top_score':top_score} 
+                'pred_batch_ids':pred_batch_ids, 'pred_czyxs':pred_czyxs, 'center_confs':center_confs} 
         return output
 
 def export_model_to_onnx_static():

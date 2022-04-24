@@ -141,7 +141,7 @@ def parsing_outputs(center_maps, params_maps, centermap_parser):
 
     params_pred = parameter_sampling(params_maps, batch_ids, flat_inds, use_transform=True)
     parsed_results = pack_params_dict(params_pred)
-    parsed_results['centers_pred'] = torch.stack([flat_inds%64, flat_inds//64],1) * 512 // 64
-    parsed_results['centers_conf'] = parameter_sampling(center_maps, batch_ids, flat_inds, use_transform=True)
+    parsed_results['center_preds'] = torch.stack([flat_inds%64, flat_inds//64],1) * 512 // 64
+    parsed_results['center_confs'] = parameter_sampling(center_maps, batch_ids, flat_inds, use_transform=True)
     return parsed_results
 

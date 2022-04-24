@@ -98,7 +98,7 @@ def rendering_romp_bev_results(renderer, outputs, image, rendering_cfgs, alpha=1
     
     if 'center_conf' in rendering_cfgs['items']:
         for ind, kp in enumerate(outputs['pj2d_org'].cpu().numpy()[:,0]):
-            cv2.putText(result_image[1], '{:.3f}'.format(outputs['top_score'][ind]), tuple(kp.astype(int)), cv2.FONT_HERSHEY_COMPLEX,1,(255,0,255),1)  
+            cv2.putText(result_image[1], '{:.3f}'.format(outputs['center_confs'][ind]), tuple(kp.astype(int)), cv2.FONT_HERSHEY_COMPLEX,1,(255,0,255),1)  
 
     outputs['rendered_image'] = np.concatenate(result_image, 1)
     return outputs

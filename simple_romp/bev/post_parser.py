@@ -189,7 +189,7 @@ def suppressing_redundant_prediction_via_projection(outputs, img_shape, thresh=1
     if len(repeat_subj_inds)>0:
         # exclude the subject behind the duplicated one, larger depth, smaller scale value
         if conf_based:
-            center_confs = outputs['top_score']
+            center_confs = outputs['center_confs']
             removed_subj_inds = torch.where(center_confs[repeat_subj_inds[0]]<center_confs[repeat_subj_inds[1]], repeat_subj_inds[0], repeat_subj_inds[1])
         else:
             removed_subj_inds = torch.where(person_scales[repeat_subj_inds[0]]<person_scales[repeat_subj_inds[1]], repeat_subj_inds[0], repeat_subj_inds[1])

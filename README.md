@@ -21,7 +21,6 @@ We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux
   - [Installation](#installation)
   - [Try on Google Colab](#try-on-google-colab)
 - [How to use it](#how-to-use-it)
-  - [Inference](#inference)
   - [Export](#export)
   - [Train](#train)
   - [Evaluation](#evaluation)
@@ -51,8 +50,7 @@ It allows you to run the project in the cloud, free of charge. [Google Colab dem
 
 ## How to use it
 
-### Inference
-Please refer to the [guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md).
+#### Please refer to [this guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md).
 
 ### Export
 

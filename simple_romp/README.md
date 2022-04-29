@@ -101,6 +101,13 @@ cd /path/to/ROMP/simple_romp/
 python tools/convert_checkpoints.py ROMP.pkl ROMP.pth
 ```
 
+### How to load the results saved in .npz file
+
+```
+import numpy as np
+results = np.load('/path/to/results.npz',allow_pickle=True)['results'][()]
+```
+
 ### Joints in output .npz file
 
 We generate 2D/3D position of 71 joints from estimated 3D body meshes.   

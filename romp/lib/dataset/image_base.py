@@ -482,7 +482,7 @@ def test_dataset(dataset,with_3d=False,with_smpl=False):
     batch_size, model_type= 2, 'smpl'
     dataloader = DataLoader(dataset = dataset,batch_size = batch_size,shuffle = True,\
         drop_last = False,pin_memory = True,num_workers = 1)
-    visualizer = Visualizer(resolution = (512,512,3), result_img_dir=save_dir,with_renderer=True)
+    visualizer = Visualizer(resolution = (512,512,3), result_img_dir=save_dir, renderer_type=args().renderer)
 
     from visualization.visualization import make_heatmaps
     if with_smpl:

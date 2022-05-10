@@ -10,7 +10,7 @@ requireds = ["opencv-python","torch"]
 
 setuptools.setup(
     name='simple_romp',
-    version='0.1.0',
+    version='1.0.0',
     author="Yu Sun",
     author_email="yusun@stu.hit.edu.cn",
     setup_requires=[
@@ -19,6 +19,7 @@ setuptools.setup(
         'cython',
         'numpy>=1.21.0',
         'typing-extensions>=4.1'
+        'scipy',
     ],
     install_requires=requireds,
     description="ROMP: Monocular, One-stage, Regression of Multiple 3D People, ICCV21",
@@ -31,6 +32,7 @@ setuptools.setup(
         'vis_human.sim3drender',
         'vis_human.sim3drender.lib',
         'bev',
+        'tracker',
     ],
     ext_modules=cythonize([Extension("Sim3DR_Cython",
                            sources=["vis_human/sim3drender/lib/rasterize.pyx",

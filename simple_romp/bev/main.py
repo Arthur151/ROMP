@@ -10,10 +10,10 @@ import copy
 
 from .model import BEVv1
 from .post_parser import SMPLA_parser, body_mesh_projection2image, pack_params_dict,\
-    suppressing_redundant_prediction_via_projection, remove_outlier
-from romp.utils import img_preprocess, create_OneEuroFilter, euclidean_distance, \
+    suppressing_redundant_prediction_via_projection, remove_outlier, denormalize_cam_params_to_trans
+from romp.utils import img_preprocess, create_OneEuroFilter, check_filter_state, \
     time_cost, download_model, determine_device, ResultSaver, WebcamVideoStream, \
-    wait_func, collect_frame_path, progress_bar, get_tracked_ids3D
+    wait_func, collect_frame_path, progress_bar, smooth_results, convert_tensor2numpy
 from vis_human import setup_renderer, rendering_romp_bev_results
 
 model_dict = {
@@ -62,7 +62,6 @@ def bev_settings():
         args.relative_scale_thresh = conf_dict[model_id][2]
     if not torch.cuda.is_available():
         args.GPU = -1
-        args.temporal_optimize = False
     if args.show:
         args.render_mesh = True
     if args.render_mesh or args.show_largest:
@@ -71,8 +70,8 @@ def bev_settings():
         smpl_url = 'https://github.com/Arthur151/ROMP/releases/download/S1/smpla_packed_info.pth'
         download_model(smpl_url, args.smpl_path, 'SMPL-A')
     if not os.path.exists(args.smil_path):
-        smil_url = 'https://github.com/Arthur151/ROMP/releases/download/S1/smil_packed_info.pth'
-        download_model(smil_url, args.smil_path, 'SMIL')
+        smpl_url = 'https://github.com/Arthur151/ROMP/releases/download/S1/smil_packed_info.pth'
+        download_model(smpl_url, args.smil_path, 'SMIL')
     if not os.path.exists(args.model_path):
         romp_url = 'https://github.com/Arthur151/ROMP/releases/download/S1/'+model_dict[model_id]
         download_model(romp_url, args.model_path, 'BEV')
@@ -82,8 +81,6 @@ def bev_settings():
         args.relative_scale_thresh = long_conf_dict[model_id][2]
         args.overlap_ratio = long_conf_dict[args.model_id][3]
     
-    if args.temporal_optimize:
-        print('Temporal optimization is not supported for BEV in current released version.')
     return args
 
 
@@ -104,10 +101,20 @@ class BEV(nn.Module):
     def _initilization_(self):        
         if self.settings.calc_smpl:
             self.smpl_parser = SMPLA_parser(self.settings.smpl_path, self.settings.smil_path).to(self.tdevice)
+        
+        if self.settings.temporal_optimize:
+            self._initialize_optimization_tools_(self.settings.smooth_coeff)
 
         if self.settings.render_mesh or self.settings.mode == 'webcam':
             self.renderer = setup_renderer(name=self.settings.renderer)
         self.visualize_items = self.settings.show_items.split(',')
+        self.result_keys = ['smpl_thetas', 'smpl_betas', 'cam','cam_trans', 'params_pred', 'center_confs', 'pred_batch_ids']
+    
+    def _initialize_optimization_tools_(self, smooth_coeff):
+        self.OE_filters = {}
+        if not self.settings.show_largest:
+            from tracker.byte_tracker_3dcenter import Tracker
+            self.tracker = Tracker(det_thresh=0.12, low_conf_det_thresh=0.05, track_buffer=60, match_thresh=300, frame_rate=30)
 
     def single_image_forward(self, image):
         input_image, image_pad_info = img_preprocess(image)
@@ -115,17 +122,24 @@ class BEV(nn.Module):
         if parsed_results is None:
             return None, image_pad_info
         parsed_results.update(pack_params_dict(parsed_results['params_pred']))
+        parsed_results.update({'cam_trans':denormalize_cam_params_to_trans(parsed_results['cam'])})
+
+        all_result_keys = list(parsed_results.keys())
+        for key in all_result_keys:
+            if key not in self.result_keys:
+                del parsed_results[key]
         return parsed_results, image_pad_info
         
     @time_cost('BEV')
     @torch.no_grad()
-    def forward(self, image, **kwargs):
+    def forward(self, image, signal_ID=0, **kwargs):
         if image.shape[1] / image.shape[0] >= 2:
             outputs = self.process_long_image(image, show_patch_results=self.settings.show_patch_results)
         else:
-            outputs = self.process_normal_image(image)
+            outputs = self.process_normal_image(image, signal_ID)
         if outputs is None:
             return None
+
         if self.settings.render_mesh:
             mesh_color_type = 'identity' if self.settings.mode!='webcam' and not self.settings.save_video else 'same'
             rendering_cfgs = {'mesh_color':mesh_color_type, 'items': self.visualize_items, 'renderer': self.settings.renderer}
@@ -135,16 +149,20 @@ class BEV(nn.Module):
             show_image = outputs['rendered_image'] if h<=1080 else cv2.resize(outputs['rendered_image'], (int(w*(1080/h)), 1080))
             cv2.imshow('rendered', show_image)
             wait_func(self.settings.mode)
-        return outputs
+        return convert_tensor2numpy(outputs)
         
-    def process_normal_image(self, image):
+    def process_normal_image(self, image, signal_ID):
         outputs, image_pad_info = self.single_image_forward(image)
         meta_data = {'input2org_offsets': image_pad_info}
         
         if outputs is None:
             return None
+        
         if self.settings.temporal_optimize:
-            outputs = self.temporal_optimization(outputs)
+            outputs = self.temporal_optimization(outputs, signal_ID)
+            if outputs is None:
+                return None
+        
         if self.settings.calc_smpl:
             verts, joints, face = self.smpl_parser(outputs['smpl_betas'], outputs['smpl_thetas']) 
             outputs.update({'verts': verts, 'joints': joints, 'smpl_face':face})
@@ -152,6 +170,7 @@ class BEV(nn.Module):
                 meta_data['vertices'] = outputs['verts']
             projection = body_mesh_projection2image(outputs['joints'], outputs['cam'], **meta_data)
             outputs.update(projection)
+            
             outputs = suppressing_redundant_prediction_via_projection(outputs,image.shape, thresh=self.settings.nms_thresh)
             outputs = remove_outlier(outputs,relative_scale_thresh=self.settings.relative_scale_thresh)
         return outputs
@@ -231,6 +250,34 @@ class BEV(nn.Module):
         outputs = suppressing_redundant_prediction_via_projection(outputs, full_image.shape, thresh=self.settings.nms_thresh,conf_based=True)
         outputs = remove_outlier(outputs, scale_thresh=0.5, relative_scale_thresh=self.settings.relative_scale_thresh)
 
+        return outputs
+    
+    def temporal_optimization(self, outputs, signal_ID, image_scale=128, depth_scale=30):
+        check_filter_state(self.OE_filters, signal_ID, self.settings.show_largest, self.settings.smooth_coeff)
+        if self.settings.show_largest:
+            max_id = torch.argmax(outputs['cam'][:,0])
+            outputs['smpl_thetas'], outputs['smpl_betas'], outputs['cam'] = \
+                smooth_results(self.OE_filters[signal_ID], \
+                    outputs['smpl_thetas'][max_id], outputs['smpl_betas'][max_id], outputs['cam'][max_id])
+        else:
+            cam_trans = outputs['cam_trans'].cpu().numpy()
+            cams = outputs['cam'].cpu().numpy()
+            det_confs = outputs['center_confs'].cpu().numpy()
+            tracking_points = np.concatenate([(cams[:,[2,1]]+1)*image_scale, cam_trans[:,[2]]*depth_scale, cams[:,[0]]*image_scale/2],1)
+            tracked_ids, results_inds = self.tracker.update(tracking_points, det_confs)
+            if len(tracked_ids) == 0:
+                return None
+
+            for key in self.result_keys:
+                outputs[key] = outputs[key][results_inds]
+
+            for ind, tid in enumerate(tracked_ids):
+                if tid not in self.OE_filters[signal_ID]:
+                    self.OE_filters[signal_ID][tid] = create_OneEuroFilter(self.settings.smooth_coeff)
+                outputs['smpl_thetas'][ind], outputs['smpl_betas'][ind], outputs['cam'][ind] = \
+                    smooth_results(self.OE_filters[signal_ID][tid], \
+                    outputs['smpl_thetas'][ind], outputs['smpl_betas'][ind], outputs['cam'][ind])
+            outputs['track_ids'] = torch.Tensor(tracked_ids).long()
         return outputs
 
 def main():

@@ -250,7 +250,7 @@ def pack_params_dict(params_pred):
     params_dict['body_pose'] = torch.cat([params_dict['body_pose'], torch.zeros(N,6).to(params_dict['body_pose'].device)],1)
     params_dict['smpl_thetas'] = torch.cat([params_dict['global_orient'], params_dict['body_pose']], 1)
 
-    return params_dict
+    return {'cam': params_dict['cam'], 'smpl_thetas': params_dict['smpl_thetas'], 'smpl_betas': params_dict['smpl_betas']}
 
 class SMPLA_parser(nn.Module):
     def __init__(self, smpla_path, smil_path):

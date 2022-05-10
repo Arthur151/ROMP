@@ -30,6 +30,13 @@ def img_preprocess(image, input_size=512):
     input_image = torch.from_numpy(cv2.resize(pad_image, (input_size,input_size), interpolation=cv2.INTER_CUBIC))[None].float()
     return input_image, image_pad_info
 
+def convert_tensor2numpy(outputs):
+    result_keys = list(outputs.keys())
+    for key in result_keys:
+        if isinstance(outputs[key], torch.Tensor):
+            outputs[key] = outputs[key].cpu().numpy()
+    return outputs
+
 class ResultSaver:
     def __init__(self, mode='image', save_path=None, save_npz=True):
         self.is_dir = len(osp.splitext(save_path)[1]) == 0
@@ -146,11 +153,20 @@ def collect_frame_path(video_path, save_path):
 #                         tracking & temporal optimization utils                                    
 #-----------------------------------------------------------------------------------------#
 
-def smooth_pose_jitering_eular(pred_poses, OE_filter):
-    pose_euler = np.array([transform_rot_representation(vec, input_type='vec',out_type='euler') for vec in pred_poses[3:].reshape((-1,3))])
-    body_pose_euler = OE_filter.process(pose_euler.reshape(-1))
-    pred_poses[3:] = np.array([transform_rot_representation(bodypose, input_type='euler',out_type='vec') for bodypose in body_pose_euler.reshape(-1,3)]).reshape(-1)
-    return pred_poses
+def smooth_global_rot_matrix(pred_rots, OE_filter):
+    rot_mat = batch_rodrigues(pred_rots[None]).squeeze(0)
+    smoothed_rot_mat = OE_filter.process(rot_mat)
+    smoothed_rot = rotation_matrix_to_angle_axis(smoothed_rot_mat.reshape(1,3,3)).reshape(-1)
+    return smoothed_rot
+
+    device = pred_rots.device
+    #print('before',pred_rots)
+    rot_euler = transform_rot_representation(pred_rots.cpu().numpy(), input_type='vec',out_type='mat')
+    smoothed_rot = OE_filter.process(rot_euler)
+    smoothed_rot = transform_rot_representation(smoothed_rot, input_type='mat',out_type='vec')
+    smoothed_rot = torch.from_numpy(smoothed_rot).float().to(device)
+    #print('after',smoothed_rot)
+    return smoothed_rot
 
 class LowPassFilter:
   def __init__(self):
@@ -168,6 +184,8 @@ class LowPassFilter:
 
 class OneEuroFilter:
   def __init__(self, mincutoff=1.0, beta=0.0, dcutoff=1.0, freq=30):
+    # min_cutoff: Decreasing the minimum cutoff frequency decreases slow speed jitter
+    # beta: Increasing the speed coefficient(beta) decreases speed lag.
     self.freq = freq
     self.mincutoff = mincutoff
     self.beta = beta
@@ -195,8 +213,31 @@ class OneEuroFilter:
         print(self.compute_alpha(cutoff))
     return self.x_filter.process(x, self.compute_alpha(cutoff))
 
+def check_filter_state(OE_filters, signal_ID, show_largest=False, smooth_coeff=3.):
+    if len(OE_filters)>100:
+        del OE_filters
+    if signal_ID not in OE_filters:
+        if show_largest:
+            OE_filters[signal_ID] = create_OneEuroFilter(smooth_coeff)
+        else:
+            OE_filters[signal_ID] = {}
+    if len(OE_filters[signal_ID])>1000:
+        del OE_filters[signal_ID]
+
 def create_OneEuroFilter(smooth_coeff):
-    return {'pose': OneEuroFilter(smooth_coeff, 0), 'cam': OneEuroFilter(3., .0), 'smpl_betas': OneEuroFilter(0.6, .0)}
+    return {'smpl_thetas': OneEuroFilter(smooth_coeff, 0.7), 'cam': OneEuroFilter(3., 0.7), 'smpl_betas': OneEuroFilter(0.6, 0.7), 'global_rot': OneEuroFilter(smooth_coeff, 0.7)}
+
+
+def smooth_results(filters, body_pose=None, body_shape=None, cam=None):
+    if body_pose is not None:
+        global_rot = smooth_global_rot_matrix(body_pose[:3], filters['global_rot'])
+        body_pose = torch.cat([global_rot, filters['smpl_thetas'].process(body_pose[3:])], 0)
+    if body_shape is not None:
+        body_shape = filters['smpl_betas'].process(body_shape)
+    if cam is not None:
+        cam = filters['cam'].process(cam)
+    return body_pose, body_shape, cam
+
 
 def euclidean_distance(detection, tracked_object):
     return np.linalg.norm(detection.points - tracked_object.estimate)
@@ -467,21 +508,12 @@ def rotation_matrix_to_angle_axis(rotation_matrix):
     Returns:
         Tensor: Rodrigues vector transformation.
     Shape:
-        - Input: :math:`(N, 3, 4)`
+        - Input: :math:`(N, 3, 3)`
         - Output: :math:`(N, 3)`
     Example:
-        >>> input = torch.rand(2, 3, 4)  # Nx4x4
+        >>> input = torch.rand(2, 3, 3) 
         >>> output = tgm.rotation_matrix_to_angle_axis(input)  # Nx3
     """
-    if rotation_matrix.shape[1:] == (3,3):
-        hom_mat = torch.tensor([0, 0, 1]).float()
-        rot_mat = rotation_matrix.reshape(-1, 3, 3)
-        batch_size, device = rot_mat.shape[0], rot_mat.device
-        hom_mat = hom_mat.view(1, 3, 1)
-        hom_mat = hom_mat.repeat(batch_size, 1, 1).contiguous()
-        hom_mat = hom_mat.to(device)
-        rotation_matrix = torch.cat([rot_mat, hom_mat], dim=-1)
-
     quaternion = rotation_matrix_to_quaternion(rotation_matrix)
     aa = quaternion_to_angle_axis(quaternion)
     aa[torch.isnan(aa)] = 0.0
@@ -490,12 +522,17 @@ def rotation_matrix_to_angle_axis(rotation_matrix):
 def quaternion_to_angle_axis(quaternion: torch.Tensor) -> torch.Tensor:
     """
     This function is borrowed from https://github.com/kornia/kornia
+
     Convert quaternion vector to angle axis of rotation.
+
     Adapted from ceres C++ library: ceres-solver/include/ceres/rotation.h
+
     Args:
         quaternion (torch.Tensor): tensor with quaternions.
+
     Return:
         torch.Tensor: tensor with angle axis of rotation.
+
     Shape:
         - Input: :math:`(*, 4)` where `*` means, any number of dimensions
         - Output: :math:`(*, 3)`
@@ -537,16 +574,22 @@ def quaternion_to_angle_axis(quaternion: torch.Tensor) -> torch.Tensor:
 def rotation_matrix_to_quaternion(rotation_matrix, eps=1e-6):
     """
     This function is borrowed from https://github.com/kornia/kornia
+
     Convert 3x4 rotation matrix to 4d quaternion vector
+
     This algorithm is based on algorithm described in
     https://github.com/KieranWynn/pyquaternion/blob/master/pyquaternion/quaternion.py#L201
+
     Args:
         rotation_matrix (Tensor): the rotation matrix to convert.
+
     Return:
         Tensor: the rotation in quaternion
+
     Shape:
         - Input: :math:`(N, 3, 4)`
         - Output: :math:`(N, 4)`
+
     Example:
         >>> input = torch.rand(4, 3, 4)  # Nx3x4
         >>> output = tgm.rotation_matrix_to_quaternion(input)  # Nx4
@@ -558,10 +601,6 @@ def rotation_matrix_to_quaternion(rotation_matrix, eps=1e-6):
     if len(rotation_matrix.shape) > 3:
         raise ValueError(
             "Input size must be a three dimensional tensor. Got {}".format(
-                rotation_matrix.shape))
-    if not rotation_matrix.shape[-2:] == (3, 4):
-        raise ValueError(
-            "Input size must be a N x 3 x 4  tensor. Got {}".format(
                 rotation_matrix.shape))
 
     rmat_t = torch.transpose(rotation_matrix, 1, 2)
@@ -611,6 +650,7 @@ def rotation_matrix_to_quaternion(rotation_matrix, eps=1e-6):
     return q
 
 
+
 def transform_rot_representation(rot, input_type='mat',out_type='vec'):
     '''
     make transformation between different representation of 3D rotation
@@ -620,6 +660,7 @@ def transform_rot_representation(rot, input_type='mat',out_type='vec'):
         'vec': rotation vector (3)
         'euler': Euler degrees in x,y,z (3)
     '''
+    from scipy.spatial.transform import Rotation as R
     if input_type=='mat':
         r = R.from_matrix(rot)
     elif input_type=='quat':

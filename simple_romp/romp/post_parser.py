@@ -134,7 +134,7 @@ def parameter_sampling(maps, batch_ids, flat_inds, use_transform=True):
 
 def parsing_outputs(center_maps, params_maps, centermap_parser):
     center_preds_info = centermap_parser.parse_centermap(center_maps)
-    batch_ids, flat_inds, cyxs, top_score = center_preds_info
+    batch_ids, flat_inds, cyxs, center_confs = center_preds_info
     if len(batch_ids)==0:
         print('None person detected')
         return None

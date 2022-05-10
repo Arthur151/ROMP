@@ -8,9 +8,9 @@ from torch import nn
 import argparse
 
 from .post_parser import SMPL_parser, body_mesh_projection2image, parsing_outputs
-from .utils import img_preprocess, create_OneEuroFilter, euclidean_distance, \
+from .utils import img_preprocess, create_OneEuroFilter, euclidean_distance, check_filter_state, \
     time_cost, download_model, determine_device, ResultSaver, WebcamVideoStream, \
-    wait_func, collect_frame_path, progress_bar, get_tracked_ids
+    wait_func, collect_frame_path, progress_bar, get_tracked_ids, smooth_results, convert_tensor2numpy
 from vis_human import setup_renderer, rendering_romp_bev_results
 from .post_parser import CenterMap
 
@@ -26,7 +26,7 @@ def romp_settings():
     parser.add_argument('--center_thresh', type=float, default=0.25, help = 'The confidence threshold of positive detection in 2D human body center heatmap.')
     parser.add_argument('--show_largest', action='store_true', help = 'Whether to show the largest person only')
     parser.add_argument('-sc','--smooth_coeff', type=float, default=3., help = 'The smoothness coeff of OneEuro filter, the smaller, the smoother.')
-    parser.add_argument('--calc_smpl', action='store_true', help = 'Whether to calculate the smpl mesh from estimated SMPL parameters')
+    parser.add_argument('--calc_smpl', action='store_false', help = 'Whether to calculate the smpl mesh from estimated SMPL parameters')
     parser.add_argument('--render_mesh', action='store_true', help = 'Whether to render the estimated 3D mesh mesh to image')
     parser.add_argument('--renderer', type=str, default='sim3dr', help = 'Choose the renderer for visualizaiton: pyrender (great but slow), sim3dr (fine but fast)')
     parser.add_argument('--show', action='store_true', help = 'Whether to show the rendered results')
@@ -75,10 +75,15 @@ class ROMP(nn.Module):
                 import onnxruntime
             except:
                 print('To use onnx model, we need to install the onnxruntime python package. Please install it by youself if failed!')
-                os.system('pip install onnxruntime')
+                if not torch.cuda.is_available():
+                    os.system('pip install onnxruntime')
+                else:
+                    os.system('pip install onnxruntime-gpu')
                 import onnxruntime
+            print('creating onnx model')
             self.ort_session = onnxruntime.InferenceSession(self.settings.model_onnx_path,\
                  providers=['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider'])
+            print('created!')
     
     def _initilization_(self):
         self.centermap_parser = CenterMap(conf_thresh=self.settings.center_thresh)
@@ -87,7 +92,7 @@ class ROMP(nn.Module):
             self.smpl_parser = SMPL_parser(self.settings.smpl_path).to(self.tdevice)
         
         if self.settings.temporal_optimize:
-            self._initialize_optimization_tools_(self.settings.smooth_coeff)
+            self._initialize_optimization_tools_()
 
         if self.settings.render_mesh:
             self.visualize_items = self.settings.show_items.split(',')
@@ -104,7 +109,7 @@ class ROMP(nn.Module):
         parsed_results = parsing_outputs(center_maps, params_maps, self.centermap_parser)
         return parsed_results, image_pad_info
     
-    def _initialize_optimization_tools_(self, smooth_coeff):
+    def _initialize_optimization_tools_(self):
         self.OE_filters = {}
         if not self.settings.show_largest:
             try:
@@ -113,21 +118,16 @@ class ROMP(nn.Module):
                 print('To perform temporal optimization, installing norfair for tracking.')
                 os.system('pip install norfair')
                 from norfair import Tracker
-            self.tracker = Tracker(distance_function=euclidean_distance, distance_threshold=80)
+            self.tracker = Tracker(distance_function=euclidean_distance, distance_threshold=120)
             self.tracker_initialized = False
-        else:
-            self.OE_filters = create_OneEuroFilter(smooth_coeff)
     
-    def temporal_optimization(self, outputs):
+    def temporal_optimization(self, outputs, signal_ID):
+        check_filter_state(self.OE_filters, signal_ID, self.settings.show_largest, self.settings.smooth_coeff)
         if self.settings.show_largest:
             max_id = torch.argmax(outputs['cam'][:,0])
-            pred_pose = outputs['smpl_thetas'][max_id]
-            pred_beta = outputs['smpl_betas'][max_id]
-            pred_cam = outputs['cam'][max_id]
-            pred_pose[3:] = self.OE_filters['pose'].process(pred_pose[3:])
-            outputs['smpl_thetas'] = pred_pose[None]
-            outputs['smpl_betas'] = self.OE_filters['smpl_betas'].process(pred_beta)[None]
-            outputs['cam'] = self.OE_filters['cam'].process(pred_cam)[None]
+            outputs['smpl_thetas'], outputs['smpl_betas'], outputs['cam'] = \
+                smooth_results(self.OE_filters[signal_ID], \
+                    outputs['smpl_thetas'][max_id], outputs['smpl_betas'][max_id], outputs['cam'][max_id])
         else:
             pred_cams = outputs['cam']
             from norfair import Detection
@@ -139,36 +139,34 @@ class ROMP(nn.Module):
             if len(tracked_objects)==0:
                 return outputs
             tracked_ids = get_tracked_ids(detections, tracked_objects)
-            for sid, tid in enumerate(tracked_ids):
-                if tid not in self.OE_filters:
-                    self.OE_filters[tid] = create_OneEuroFilter(self.settings.smooth_coeff)
-                pred_pose = outputs['smpl_thetas'][sid]
-                pred_beta = outputs['smpl_betas'][sid]
-                pred_cam = outputs['cam'][sid]
-                pred_pose[3:] = self.OE_filters[tid]['pose'].process(pred_pose[3:])
-                outputs['smpl_thetas'][sid] = pred_pose
-                outputs['smpl_betas'][sid] = self.OE_filters[tid]['smpl_betas'].process(pred_beta)
-                outputs['cam'][sid] = self.OE_filters[tid]['cam'].process(pred_cam)
-            outputs['tracked_ids'] = tracked_ids
+            for ind, tid in enumerate(tracked_ids):
+                if tid not in self.OE_filters[signal_ID]:
+                    self.OE_filters[signal_ID][tid] = create_OneEuroFilter(self.settings.smooth_coeff)
+                
+                outputs['smpl_thetas'][ind], outputs['smpl_betas'][ind], outputs['cam'][ind] = \
+                    smooth_results(self.OE_filters[signal_ID][tid], \
+                    outputs['smpl_thetas'][ind], outputs['smpl_betas'][ind], outputs['cam'][ind])
+
+            outputs['track_ids'] = np.array(tracked_ids).astype(np.int32)
         return outputs
 
     @time_cost('ROMP')
-    def forward(self, image, **kwargs):
+    def forward(self, image, signal_ID=0, **kwargs):
         outputs, image_pad_info = self.single_image_forward(image)
         if outputs is None:
             return None
         if self.settings.temporal_optimize:
-            outputs = self.temporal_optimization(outputs)
+            outputs = self.temporal_optimization(outputs, signal_ID)
         if self.settings.calc_smpl:
             outputs = self.smpl_parser(outputs) 
             outputs.update(body_mesh_projection2image(outputs['joints'], outputs['cam'], vertices=outputs['verts'], input2org_offsets=image_pad_info))
         if self.settings.render_mesh:
-            rendering_cfgs = {'mesh_color':'same', 'items': self.visualize_items, 'renderer': self.settings.renderer}
+            rendering_cfgs = {'mesh_color':'identity', 'items': self.visualize_items, 'renderer': self.settings.renderer} # 'identity'
             outputs = rendering_romp_bev_results(self.renderer, outputs, image, rendering_cfgs)
         if self.settings.show:
             cv2.imshow('rendered', outputs['rendered_image'])
             wait_func(self.settings.mode)
-        return outputs
+        return convert_tensor2numpy(outputs)
 
 def main():
     args = romp_settings()

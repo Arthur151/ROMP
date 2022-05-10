@@ -2,7 +2,7 @@ import imp
 import cv2
 import torch
 import numpy as np
-from .vis_utils import mesh_color_left2right, rotate_view_perspective, rendering_mesh_rotating_view, \
+from .vis_utils import mesh_color_left2right, mesh_color_trackID, rotate_view_perspective, rendering_mesh_rotating_view, \
     rotate_view_weak_perspective, draw_skeleton_multiperson, Plotter3dPoses
 import copy
 import time
@@ -29,13 +29,17 @@ def rendering_romp_bev_results(renderer, outputs, image, rendering_cfgs, alpha=1
 
     cam_trans = outputs['cam_trans']
     if rendering_cfgs['mesh_color'] == 'identity':
-        mesh_colors = mesh_color_left2right(cam_trans)
+        if 'track_ids' in outputs:
+            mesh_colors = mesh_color_trackID(outputs['track_ids'])
+        else:
+            mesh_colors = mesh_color_left2right(cam_trans)
     elif rendering_cfgs['mesh_color'] == 'same':
         mesh_colors = np.array([[.9, .9, .8] for _ in range(len(cam_trans))])
 
     if rendering_cfgs['renderer'] == 'sim3dr':
         depth_order = torch.sort(cam_trans[:,2].cpu(),descending=True).indices.numpy()
         vertices = outputs['verts_camed_org'][depth_order].cpu().numpy()
+        mesh_colors = mesh_colors[depth_order]
         verts_tran = (outputs['verts'] + cam_trans.unsqueeze(1))[depth_order]
         vertices[:,:,2] = vertices[:,:,2]*-1 
         verts_tran[:,:,2] = verts_tran[:,:,2]*-1
@@ -100,5 +104,9 @@ def rendering_romp_bev_results(renderer, outputs, image, rendering_cfgs, alpha=1
         for ind, kp in enumerate(outputs['pj2d_org'].cpu().numpy()[:,0]):
             cv2.putText(result_image[1], '{:.3f}'.format(outputs['center_confs'][ind]), tuple(kp.astype(int)), cv2.FONT_HERSHEY_COMPLEX,1,(255,0,255),1)  
 
+    if 'tracking' in rendering_cfgs['items'] and 'track_ids' in outputs:
+        for ind, kp in enumerate(outputs['pj2d_org'].cpu().numpy()[:,0]):
+            cv2.putText(result_image[1], '{:d}'.format(outputs['track_ids'][ind]), tuple(kp.astype(int)), cv2.FONT_HERSHEY_COMPLEX,2,(255,0,255),2)  
+    
     outputs['rendered_image'] = np.concatenate(result_image, 1)
     return outputs

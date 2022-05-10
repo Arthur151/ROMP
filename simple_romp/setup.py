@@ -6,11 +6,17 @@ import numpy
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-requireds = ["opencv-python","torch"]
+requireds = ["opencv-python","torch",
+        'setuptools>=18.0.0',
+        'cython',
+        'numpy>=1.21.0',
+        'typing-extensions>=4.1'
+        'scipy',
+        'lap']
 
 setuptools.setup(
     name='simple_romp',
-    version='1.0.0',
+    version='1.0.3',
     author="Yu Sun",
     author_email="yusun@stu.hit.edu.cn",
     setup_requires=[
@@ -20,6 +26,7 @@ setuptools.setup(
         'numpy>=1.21.0',
         'typing-extensions>=4.1'
         'scipy',
+        'lap'
     ],
     install_requires=requireds,
     description="ROMP: Monocular, One-stage, Regression of Multiple 3D People, ICCV21",

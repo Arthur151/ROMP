@@ -2,3 +2,4 @@ numpy
 opencv-python
 cython
 torch
+lap

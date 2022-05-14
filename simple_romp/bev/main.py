@@ -12,7 +12,7 @@ from .model import BEVv1
 from .post_parser import SMPLA_parser, body_mesh_projection2image, pack_params_dict,\
     suppressing_redundant_prediction_via_projection, remove_outlier, denormalize_cam_params_to_trans
 from romp.utils import img_preprocess, create_OneEuroFilter, check_filter_state, \
-    time_cost, download_model, determine_device, ResultSaver, WebcamVideoStream, \
+    time_cost, download_model, determine_device, ResultSaver, WebcamVideoStream, save_video_results, \
     wait_func, collect_frame_path, progress_bar, smooth_results, convert_tensor2numpy
 from vis_human import setup_renderer, rendering_romp_bev_results
 
@@ -295,7 +295,8 @@ def main():
         for frame_path in progress_bar(frame_paths):
             image = cv2.imread(frame_path)
             outputs = bev(image)
-            saver(outputs, frame_path, prefix=f'_{model_id}_{args.center_thresh}')
+            saver(outputs, frame_path) #prefix=f'_{model_id}_{args.center_thresh}'
+        save_video_results(saver.frame_save_paths)
         if args.save_video:
             saver.save_video(video_save_path, frame_rate=args.frame_rate)
 

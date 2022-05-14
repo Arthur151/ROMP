@@ -9,7 +9,7 @@ import argparse
 
 from .post_parser import SMPL_parser, body_mesh_projection2image, parsing_outputs
 from .utils import img_preprocess, create_OneEuroFilter, euclidean_distance, check_filter_state, \
-    time_cost, download_model, determine_device, ResultSaver, WebcamVideoStream, \
+    time_cost, download_model, determine_device, ResultSaver, WebcamVideoStream, save_video_results, \
     wait_func, collect_frame_path, progress_bar, get_tracked_ids, smooth_results, convert_tensor2numpy
 from vis_human import setup_renderer, rendering_romp_bev_results
 from .post_parser import CenterMap
@@ -184,6 +184,7 @@ def main():
             image = cv2.imread(frame_path)
             outputs = romp(image)
             saver(outputs, frame_path)
+        save_video_results(saver.frame_save_paths)
         if args.save_video:
             saver.save_video(video_save_path, frame_rate=args.frame_rate)
 

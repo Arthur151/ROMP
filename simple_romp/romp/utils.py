@@ -81,6 +81,18 @@ class ResultSaver:
             writer.write(cv2.imread(frame_path))
         writer.release()
 
+
+def save_video_results(frame_save_paths):
+    video_results = {}
+    for ind, save_path in enumerate(frame_save_paths):
+        npz_path = osp.splitext(save_path)[0]+'.npz'
+        frame_results = np.load(npz_path, allow_pickle=True)['results'][()]
+        base_name = osp.basename(save_path)
+        video_results[base_name] = frame_results
+    video_results_save_path = osp.join(osp.dirname(frame_save_paths[0]), 'video_results.npz')
+    np.savez(video_results_save_path, results=video_results)
+
+
 class WebcamVideoStream(object):
     def __init__(self, src=0):
         # initialize the video camera stream and read the first frame

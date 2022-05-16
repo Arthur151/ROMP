@@ -44,13 +44,13 @@ In this [folder](https://github.com/Arthur151/ROMP/tree/assets/demo/BEV_demo_ima
 
 Processing a single image:
 ```
-romp --mode=image --calc_smpl --render_mesh --input=/path/to/image.jpg --save_path=/path/to/results.jpg
+romp --mode=image --calc_smpl --render_mesh -i=/path/to/image.jpg -o=/path/to/results.jpg
 bev -i /path/to/image.jpg -o /path/to/results.jpg
 ```
 
 Processing a folder of images:
 ```
-romp --mode=video --calc_smpl --render_mesh  --input=/path/to/image/folder/ --save_path=/path/to/output/folder/
+romp --mode=video --calc_smpl --render_mesh -i=/path/to/image/folder/ -o=/path/to/output/folder/
 bev -m video -i /path/to/image/folder/ -o /path/to/output/folder/
 ```
 <p float="center">
@@ -62,7 +62,7 @@ bev -m video -i /path/to/image/folder/ -o /path/to/output/folder/
 
 Processing a video:
 ```
-romp --mode=video --calc_smpl --render_mesh  --input=/path/to/video.mp4 --save_path=/path/to/output/folder/results.mp4 --save_video
+romp --mode=video --calc_smpl --render_mesh -i=/path/to/video.mp4 -o=/path/to/output/folder/results.mp4 --save_video
 bev -m video -i /path/to/video.mp4 -o /path/to/output/folder/results.mp4 --save_video
 ```
 
@@ -77,8 +77,8 @@ Common optional functions:
 
 ROMP only optional functions:
 ```
-# to smooth the results in webcam / video processing, add: (the smaller the smooth_coeff, the smoother) 
---temporal_optimize --smooth_coeff=3.
+# to smooth the results in webcam / video processing, add: (the smaller the smooth_coeff (sc) is, the smoother the motion would be) 
+-t -sc=3.
 
 # to use the onnx version of ROMP for faster inference, please add:
 --onnx
@@ -94,7 +94,31 @@ More options, see `romp -h`
 
 Note that if you are using CPU for ROMP inference, we highly recommand to add `--onnx` for much faster speed.
 
-### Tools
+### Calling as python lib
+
+Both ROMP and BEV can be called as a python lib for further development.
+
+```
+import romp
+settings = romp.main.default_settings 
+# settings is just a argparse Namespace. To change it, for instance, you can change mode via
+# settings.mode='video'
+romp_model = romp.ROMP(settings)
+outputs = romp_model(cv2.imread('path/to/image.jpg'))
+
+import bev
+settings = bev.main.default_settings
+# settings is just a argparse Namespace. To change it, for instance, you can change mode via
+# settings.mode='video'
+bev_model = bev.BEV(settings)
+outputs = bev_model(cv2.imread('path/to/image.jpg'))
+```
+
+### Export motion to .fbx / .glb / .bvh
+
+Please refer to [export.md](doc/export.md) for details.
+
+### Convert checkpoints
 To convert the trained ROMP model '.pkl' (like ROMP.pkl) to simple-romp '.pth' model, please run
 ```
 cd /path/to/ROMP/simple_romp/
@@ -126,6 +150,7 @@ SMPL_EXTRA_30 = {
 'Spine_H36M':51, 'Jaw_H36M':52, 'Head':53}
 ```
 H36m 17 joints are just regressed them for fair comparison with previous methods. I am not sure their precise joint names.
+
 
 ## Copyright
 

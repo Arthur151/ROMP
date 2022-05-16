@@ -9,12 +9,12 @@ import argparse
 
 from .post_parser import SMPL_parser, body_mesh_projection2image, parsing_outputs
 from .utils import img_preprocess, create_OneEuroFilter, euclidean_distance, check_filter_state, \
-    time_cost, download_model, determine_device, ResultSaver, WebcamVideoStream, save_video_results, \
-    wait_func, collect_frame_path, progress_bar, get_tracked_ids, smooth_results, convert_tensor2numpy
+    time_cost, download_model, determine_device, ResultSaver, WebcamVideoStream, convert_cam_to_3d_trans,\
+    wait_func, collect_frame_path, progress_bar, get_tracked_ids, smooth_results, convert_tensor2numpy, save_video_results
 from vis_human import setup_renderer, rendering_romp_bev_results
 from .post_parser import CenterMap
 
-def romp_settings():
+def romp_settings(input_args=sys.argv[1:]):
     parser = argparse.ArgumentParser(description = 'ROMP: Monocular, One-stage, Regression of Multiple 3D People')
     parser.add_argument('-m', '--mode', type=str, default='image', help = 'Inferece mode, including image, video, webcam')
     parser.add_argument('-i', '--input', type=str, default=None, help = 'Path to the input image / video')
@@ -36,7 +36,7 @@ def romp_settings():
     parser.add_argument('--smpl_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','smpl_packed_info.pth'), help = 'The path of smpl model file')
     parser.add_argument('--model_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','ROMP.pkl'), help = 'The path of ROMP checkpoint')
     parser.add_argument('--model_onnx_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','ROMP.onnx'), help = 'The path of ROMP onnx checkpoint')
-    args = parser.parse_args()
+    args = parser.parse_args(input_args)
 
     if not torch.cuda.is_available():
         args.GPU = -1
@@ -55,6 +55,8 @@ def romp_settings():
         romp_onnx_url = 'https://github.com/Arthur151/ROMP/releases/download/S1/ROMP.onnx'
         download_model(romp_onnx_url, args.model_onnx_path, 'ROMP')
     return args
+
+default_settings = romp_settings(input_args=[])
 
 class ROMP(nn.Module):
     def __init__(self, romp_settings):
@@ -157,6 +159,7 @@ class ROMP(nn.Module):
             return None
         if self.settings.temporal_optimize:
             outputs = self.temporal_optimization(outputs, signal_ID)
+        outputs['cam_trans'] = convert_cam_to_3d_trans(outputs['cam'])
         if self.settings.calc_smpl:
             outputs = self.smpl_parser(outputs) 
             outputs.update(body_mesh_projection2image(outputs['joints'], outputs['cam'], vertices=outputs['verts'], input2org_offsets=image_pad_info))

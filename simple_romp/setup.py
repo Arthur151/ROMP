@@ -16,7 +16,7 @@ requireds = ["opencv-python","torch",
 
 setuptools.setup(
     name='simple_romp',
-    version='1.0.0',
+    version='1.0.2',
     author="Yu Sun",
     author_email="yusun@stu.hit.edu.cn",
     setup_requires=[

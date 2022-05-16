@@ -1,4 +1,5 @@
 from __future__ import print_function
+from sympy import sequence
 
 import torch
 from torch.nn import functional as F
@@ -30,7 +31,11 @@ def img_preprocess(image, input_size=512):
     input_image = torch.from_numpy(cv2.resize(pad_image, (input_size,input_size), interpolation=cv2.INTER_CUBIC))[None].float()
     return input_image, image_pad_info
 
-def convert_tensor2numpy(outputs):
+def convert_tensor2numpy(outputs, del_keys=['verts_camed','smpl_face', 'pj2d', 'verts_camed_org']):
+    for key in del_keys:
+        if key in outputs:
+            del outputs[key]
+
     result_keys = list(outputs.keys())
     for key in result_keys:
         if isinstance(outputs[key], torch.Tensor):
@@ -84,13 +89,26 @@ class ResultSaver:
 
 def save_video_results(frame_save_paths):
     video_results = {}
-    for ind, save_path in enumerate(frame_save_paths):
+    video_sequence_results = {}
+    for frame_id, save_path in enumerate(frame_save_paths):
         npz_path = osp.splitext(save_path)[0]+'.npz'
         frame_results = np.load(npz_path, allow_pickle=True)['results'][()]
         base_name = osp.basename(save_path)
         video_results[base_name] = frame_results
+        
+        if 'track_ids' not in frame_results:
+            continue
+        for subj_ind, track_id in enumerate(frame_results['track_ids']):
+            if track_id not in video_sequence_results:
+                video_sequence_results[track_id] = {'frame_id':[]}
+            video_sequence_results[track_id]['frame_id'].append(frame_id)
+            for key in frame_results:
+                if key not in video_sequence_results[track_id]:
+                    video_sequence_results[track_id][key] = []
+                video_sequence_results[track_id][key].append(frame_results[key][subj_ind])
+
     video_results_save_path = osp.join(osp.dirname(frame_save_paths[0]), 'video_results.npz')
-    np.savez(video_results_save_path, results=video_results)
+    np.savez(video_results_save_path, results=video_results, sequence_results=video_sequence_results)
 
 
 class WebcamVideoStream(object):
@@ -237,7 +255,7 @@ def check_filter_state(OE_filters, signal_ID, show_largest=False, smooth_coeff=3
         del OE_filters[signal_ID]
 
 def create_OneEuroFilter(smooth_coeff):
-    return {'smpl_thetas': OneEuroFilter(smooth_coeff, 0.7), 'cam': OneEuroFilter(3., 0.7), 'smpl_betas': OneEuroFilter(0.6, 0.7), 'global_rot': OneEuroFilter(smooth_coeff, 0.7)}
+    return {'smpl_thetas': OneEuroFilter(smooth_coeff, 0.7), 'cam': OneEuroFilter(1.6, 0.7), 'smpl_betas': OneEuroFilter(0.6, 0.7), 'global_rot': OneEuroFilter(smooth_coeff, 0.7)}
 
 
 def smooth_results(filters, body_pose=None, body_shape=None, cam=None):

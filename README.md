@@ -21,7 +21,7 @@ We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux
   - [Installation](#installation)
   - [Try on Google Colab](#try-on-google-colab)
 - [How to use it](#how-to-use-it)
-  - [Export](#export)
+    - [Please refer to this guidance for inference & export (fbx/glb/bvh).](#please-refer-to-this-guidance-for-inference--export-fbxglbbvh)
   - [Train](#train)
   - [Evaluation](#evaluation)
   - [Bugs report](#bugs-report)
@@ -29,6 +29,7 @@ We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux
 - [Acknowledgement](#acknowledgement)
 
 ## News
+*2022/05/16: simple-romp v1.0 is released to support tracking, calling in python, exporting bvh, and etc.*   
 *2022/04/14: Inference code of BEV has been released in simple-romp v0.1.0.*   
 *2022/04/10: Adding onnx support, with faster inference speed on CPU/GPU.*  
 [Old logs](docs/updates.md)
@@ -50,11 +51,7 @@ It allows you to run the project in the cloud, free of charge. [Google Colab dem
 
 ## How to use it
 
-#### Please refer to [this guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md).
-
-### Export
-
-Please refer to [expert.md](docs/export.md) to export the results to fbx files for Blender usage. 
+#### Please refer to [this guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for inference & export (fbx/glb/bvh).
 
 ### Train
 For training, please refer to [installation.md](docs/installation.md) for full installation.

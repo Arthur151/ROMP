@@ -180,7 +180,7 @@ def suppressing_redundant_prediction_via_projection(outputs, img_shape, thresh=1
     pj2d_dist_mat_normalized = pj2d_dist_mat / max_scale_mat
 
     triu_mask = torch.triu(torch.ones_like(pj2d_dist_mat), diagonal=1)<0.5
-    pj2d_dist_mat_normalized[triu_mask] = torch.inf
+    pj2d_dist_mat_normalized[triu_mask] = 10000.
     # print('pj2d_dist_mat_normalized', sorted(pj2d_dist_mat_normalized[pj2d_dist_mat_normalized<100].cpu().numpy()))
 
     max_length = max(img_shape)

@@ -12,8 +12,8 @@ from .model import BEVv1
 from .post_parser import SMPLA_parser, body_mesh_projection2image, pack_params_dict,\
     suppressing_redundant_prediction_via_projection, remove_outlier, denormalize_cam_params_to_trans
 from romp.utils import img_preprocess, create_OneEuroFilter, check_filter_state, \
-    time_cost, download_model, determine_device, ResultSaver, WebcamVideoStream, save_video_results, \
-    wait_func, collect_frame_path, progress_bar, smooth_results, convert_tensor2numpy
+    time_cost, download_model, determine_device, ResultSaver, WebcamVideoStream, \
+    wait_func, collect_frame_path, progress_bar, smooth_results, convert_tensor2numpy, save_video_results
 from vis_human import setup_renderer, rendering_romp_bev_results
 
 model_dict = {
@@ -24,7 +24,7 @@ model_id = 2
 conf_dict = {1:[0.25, 20, 2], 2:[0.1, 20, 1.6]}
 long_conf_dict = {1:[0.12, 20, 1.5, 0.46], 2:[0.08, 20, 1.6, 0.8]}
 
-def bev_settings():
+def bev_settings(input_args=sys.argv[1:]):
     parser = argparse.ArgumentParser(description = 'ROMP: Monocular, One-stage, Regression of Multiple 3D People')
     parser.add_argument('-m', '--mode', type=str, default='image', help = 'Inferece mode, including image, video, webcam')
     parser.add_argument('--model_id', type=int, default=2, help = 'Whether to process the input as a long image, sliding window way')
@@ -53,7 +53,7 @@ def bev_settings():
     # not support temporal processing now
     parser.add_argument('-t', '--temporal_optimize', action='store_true', help = 'Whether to use OneEuro filter to smooth the results')
     parser.add_argument('-sc','--smooth_coeff', type=float, default=3., help = 'The smoothness coeff of OneEuro filter, the smaller, the smoother.')
-    args = parser.parse_args()
+    args = parser.parse_args(input_args)
 
     if args.model_id != 2:
         args.model_path = osp.join(osp.expanduser("~"),'.romp',model_dict[args.model_id])
@@ -70,8 +70,8 @@ def bev_settings():
         smpl_url = 'https://github.com/Arthur151/ROMP/releases/download/S1/smpla_packed_info.pth'
         download_model(smpl_url, args.smpl_path, 'SMPL-A')
     if not os.path.exists(args.smil_path):
-        smpl_url = 'https://github.com/Arthur151/ROMP/releases/download/S1/smil_packed_info.pth'
-        download_model(smpl_url, args.smil_path, 'SMIL')
+        smil_url = 'https://github.com/Arthur151/ROMP/releases/download/S1/smil_packed_info.pth'
+        download_model(smil_url, args.smil_path, 'SMIL')
     if not os.path.exists(args.model_path):
         romp_url = 'https://github.com/Arthur151/ROMP/releases/download/S1/'+model_dict[model_id]
         download_model(romp_url, args.model_path, 'BEV')
@@ -83,6 +83,7 @@ def bev_settings():
     
     return args
 
+default_settings = bev_settings(input_args=[])
 
 class BEV(nn.Module):
     def __init__(self, romp_settings):
@@ -162,6 +163,7 @@ class BEV(nn.Module):
             outputs = self.temporal_optimization(outputs, signal_ID)
             if outputs is None:
                 return None
+            outputs.update({'cam_trans':denormalize_cam_params_to_trans(outputs['cam'])})
         
         if self.settings.calc_smpl:
             verts, joints, face = self.smpl_parser(outputs['smpl_betas'], outputs['smpl_thetas']) 
@@ -277,7 +279,7 @@ class BEV(nn.Module):
                 outputs['smpl_thetas'][ind], outputs['smpl_betas'][ind], outputs['cam'][ind] = \
                     smooth_results(self.OE_filters[signal_ID][tid], \
                     outputs['smpl_thetas'][ind], outputs['smpl_betas'][ind], outputs['cam'][ind])
-            outputs['track_ids'] = torch.Tensor(tracked_ids).long()
+            outputs['track_ids'] = np.array(tracked_ids).astype(np.int32)
         return outputs
 
 def main():
@@ -295,7 +297,7 @@ def main():
         for frame_path in progress_bar(frame_paths):
             image = cv2.imread(frame_path)
             outputs = bev(image)
-            saver(outputs, frame_path) #prefix=f'_{model_id}_{args.center_thresh}'
+            saver(outputs, frame_path, prefix=f'_{model_id}_{args.center_thresh}')
         save_video_results(saver.frame_save_paths)
         if args.save_video:
             saver.save_video(video_save_path, frame_rate=args.frame_rate)

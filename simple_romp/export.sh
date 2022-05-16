@@ -1,0 +1,1 @@
+python tools/convert2fbx.py --input=/home/yusun/BEV_results/video_results.npz --output=/home/yusun/BEV_results/dance.bvh --gender=female

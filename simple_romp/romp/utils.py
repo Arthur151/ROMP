@@ -1,6 +1,4 @@
 from __future__ import print_function
-from sympy import sequence
-
 import torch
 from torch.nn import functional as F
 import numpy as np

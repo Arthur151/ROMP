@@ -118,8 +118,8 @@ class SMPL_parser(nn.Module):
         super(SMPL_parser, self).__init__()
         self.smpl_model = SMPL(model_path)
     
-    def forward(self, outputs):
-        verts, joints, face = self.smpl_model(outputs['smpl_betas'], outputs['smpl_thetas'])
+    def forward(self, outputs, root_align=False):
+        verts, joints, face = self.smpl_model(outputs['smpl_betas'], outputs['smpl_thetas'], root_align=root_align)
         outputs.update({'verts': verts, 'joints': joints, 'smpl_face':face})
         
         return outputs

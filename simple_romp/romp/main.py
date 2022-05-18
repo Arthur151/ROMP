@@ -36,6 +36,7 @@ def romp_settings(input_args=sys.argv[1:]):
     parser.add_argument('--smpl_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','smpl_packed_info.pth'), help = 'The path of smpl model file')
     parser.add_argument('--model_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','ROMP.pkl'), help = 'The path of ROMP checkpoint')
     parser.add_argument('--model_onnx_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','ROMP.onnx'), help = 'The path of ROMP onnx checkpoint')
+    parser.add_argument('--root_align',type=bool, default=False, help = 'Please set this config as True to use the ROMP checkpoints trained by yourself.')
     args = parser.parse_args(input_args)
 
     if not torch.cuda.is_available():
@@ -161,7 +162,7 @@ class ROMP(nn.Module):
             outputs = self.temporal_optimization(outputs, signal_ID)
         outputs['cam_trans'] = convert_cam_to_3d_trans(outputs['cam'])
         if self.settings.calc_smpl:
-            outputs = self.smpl_parser(outputs) 
+            outputs = self.smpl_parser(outputs, root_align=self.settings.root_align) 
             outputs.update(body_mesh_projection2image(outputs['joints'], outputs['cam'], vertices=outputs['verts'], input2org_offsets=image_pad_info))
         if self.settings.render_mesh:
             rendering_cfgs = {'mesh_color':'identity', 'items': self.visualize_items, 'renderer': self.settings.renderer} # 'identity'

@@ -59,7 +59,7 @@ class SMPL(nn.Module):
         self.register_buffer('lbs_weights',model_info['weights'])
 
     #@time_cost('SMPL')
-    def forward(self, betas=None, poses=None):
+    def forward(self, betas=None, poses=None, root_align=False):
         ''' Forward pass for the SMPL model
             Parameters
             ----------
@@ -98,6 +98,12 @@ class SMPL(nn.Module):
                                self.J_regressor, self.parents,
                                self.lbs_weights, dtype=self.dtype)
         joints54 = self.vertex_joint_selector(vertices, joints)
+
+        if root_align:
+            # use the Pelvis of most 2D image, not the original Pelvis
+            root_trans = joints54[:,[45,46]].mean(1).unsqueeze(1)
+            joints54 = joints54 - root_trans
+            vertices =  vertices - root_trans
 
         return vertices, joints54, self.faces_tensor
 

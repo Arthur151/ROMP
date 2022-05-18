@@ -67,13 +67,13 @@ def bev_settings(input_args=sys.argv[1:]):
     if args.render_mesh or args.show_largest:
         args.calc_smpl = True
     if not os.path.exists(args.smpl_path):
-        smpl_url = 'https://github.com/Arthur151/ROMP/releases/download/S1/smpla_packed_info.pth'
+        smpl_url = 'https://github.com/Arthur151/ROMP/releases/download/V2.0/smpla_packed_info.pth'
         download_model(smpl_url, args.smpl_path, 'SMPL-A')
     if not os.path.exists(args.smil_path):
-        smil_url = 'https://github.com/Arthur151/ROMP/releases/download/S1/smil_packed_info.pth'
+        smil_url = 'https://github.com/Arthur151/ROMP/releases/download/V2.0/smil_packed_info.pth'
         download_model(smil_url, args.smil_path, 'SMIL')
     if not os.path.exists(args.model_path):
-        romp_url = 'https://github.com/Arthur151/ROMP/releases/download/S1/'+model_dict[model_id]
+        romp_url = 'https://github.com/Arthur151/ROMP/releases/download/V2.0/'+model_dict[model_id]
         download_model(romp_url, args.model_path, 'BEV')
     if args.crowd:
         args.center_thresh = long_conf_dict[args.model_id][0]

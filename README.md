@@ -61,6 +61,14 @@ Please prepare the training datasets following [dataset.md](docs/dataset.md), an
 
 Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks.
 
+### Docker usage
+  ```
+  # Build
+  docker build --rm -t romp .
+  # Inference
+  docker run --rm -v <absolute_local_path>:/workspace/results romp bash
+  ```
+
 ### Bugs report
 
 Please refer to [bug.md](docs/bugs.md) for solutions. Welcome to submit the issues for related bugs. I will solve them as soon as possible.

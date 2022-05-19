@@ -113,7 +113,9 @@ class WebcamVideoStream(object):
     def __init__(self, src=0):
         # initialize the video camera stream and read the first frame
         # from the stream
-        self.stream = cv2.VideoCapture(src)
+        # self.stream = cv2.VideoCapture(src)
+        self.stream = cv2.VideoCapture("/dev/video0", cv2.CAP_V4L2)
+        
         (self.grabbed, self.frame) = self.stream.read()
         # initialize the variable used to indicate if the thread should
         # be stopped

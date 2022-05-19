@@ -64,11 +64,6 @@ Please prepare the training datasets following [dataset.md](docs/dataset.md), an
 Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks.
 
 ### Docker usage
-  **Installation**
-  ```
-  git clone https://github.com/AliYqb/ROMP.git
-  cd ROMP
-  ```
   **Build**
   ```
   docker build --rm -t romp .

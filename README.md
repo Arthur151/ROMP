@@ -31,6 +31,8 @@ We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux
 ## News
 *2022/05/16: simple-romp v1.0 is released to support tracking, calling in python, exporting bvh, and etc.*   
 *2022/04/14: Inference code of BEV has been released in simple-romp v0.1.0.*   
+
+
 *2022/04/10: Adding onnx support, with faster inference speed on CPU/GPU.*  
 [Old logs](docs/updates.md)
 
@@ -60,6 +62,21 @@ Please prepare the training datasets following [dataset.md](docs/dataset.md), an
 ### Evaluation
 
 Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks.
+
+### Docker usage
+  **Installation**
+  ```
+  git clone https://github.com/AliYqb/ROMP.git
+  cd ROMP
+  ```
+  **Build**
+  ```
+  docker build --rm -t romp .
+  ```
+  **Inference**
+  ```
+  docker run --rm -v <absolute_local_path>:/workspace/results romp bash
+  ```
 
 ### Bugs report
 

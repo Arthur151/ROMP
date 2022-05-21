@@ -66,7 +66,7 @@ Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks
   # Build
   docker build --rm -t romp .
   # Inference
-  docker run --rm -v <absolute_local_path>:/workspace/results romp bash
+  docker run --privileged --rm -it --gpus 0 --ipc=host -p 8888:8888 -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd):/workspace/results --device /dev/video0 -e DISPLAY=$DISPLAY romp --mode=webcam
   ```
 
 ### Bugs report

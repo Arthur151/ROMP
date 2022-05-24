@@ -4,11 +4,7 @@
 | :---: | :---: |
 | ROMP is a **one-stage** method for monocular multi-person 3D mesh recovery in **real time**. | BEV further explores multi-person **depth relationships** and supports **all age groups**.  |
 | **[[Paper]](https://arxiv.org/abs/2008.12272) [[Video]](https://www.youtube.com/watch?v=hunBPJxnyBU)** | **[[Project Page]](https://arthur151.github.io/BEV/BEV.html) [[Paper]](https://arxiv.org/abs/2112.08274) [[Video]](https://youtu.be/Q62fj_6AxRI) [[RH Dataset]](https://github.com/Arthur151/Relative_Human)** |
-
-<p float="center">
-    <div align=center><img src="../assets/demo/animation/blender_character_driven-min.gif" width="46%" />
-    <img src="../assets/demo/images_results/BEV_tennis_results.png" width="33%" /></div>
-</p>
+<img src="../assets/demo/animation/blender_character_driven-min.gif" alt="drawing" width="500"/> | <img src="../assets/demo/images_results/BEV_tennis_results.png" alt="drawing" width="340"/>
 
 We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux / Windows / Mac. 
 

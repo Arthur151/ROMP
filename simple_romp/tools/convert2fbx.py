@@ -242,7 +242,7 @@ def process_poses(
         frame_names = sorted(list(frame_results.keys()))
         poses, trans = np.zeros((len(frame_names), 72)), np.zeros((len(frame_names), 3))
         for inds, frame_name in enumerate(frame_names):
-            poses[inds] = frame_results[frame_name]['poses'][0]
+            poses[inds] = frame_results[frame_name]['smpl_thetas'][0]
             trans[inds] = frame_results[frame_name]['cam_trans'][0]
 
     if gender == 'female':

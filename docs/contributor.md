@@ -11,6 +11,7 @@ ROMP has also benefited from many developers, including
  - [Chuanhang Yan](https://github.com/yanch2116) : developing an [addon for driving character in Blender](https://github.com/yanch2116/Blender-addons-for-SMPL).  
  - [Tian Jin](https://github.com/jinfagang): help in simplified smpl and fast rendering ([realrender](https://pypi.org/project/realrender/)).
  - [ZhengdiYu](https://github.com/ZhengdiYu) : helpful discussion on optimizing the implementation details.
+ - [Ali Yaghoubian](https://github.com/AliYqb) : add Docker file for simple-romp.
 
 
 ## Related repos

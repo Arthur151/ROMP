@@ -47,7 +47,7 @@ class CenterMap(object):
         '''
            center_locs is in the order of (y,x), corresponding to (w,h), while in the loading data, we have rectified it to the correct (x, y) order
         '''
-        radius_list = _calc_radius_(bboxes_hw_norm)
+        radius_list = _calc_radius_(bboxes_hw_norm, map_size=self.size)
 
         if args().collision_aware_centermap and occluded_by_who is not None:
             # CAR : Collision-Aware Represenation
@@ -135,14 +135,14 @@ def nms(det, pool_func=None):
     det = det * maxm
     return det
 
-def _calc_radius_(bboxes_hw_norm):
-    radius_list = []
-    for bbox_norm in bboxes_hw_norm:
-        # bbox_hw is the bbox_height/image_height
-        bbox_hw_oncm = bbox_norm/2*args().centermap_size
-        radius = int(gaussian_radius_scale(bbox_hw_oncm,minimum=2.))
-        radius_list.append(radius)
-    return radius_list
+def _calc_radius_(bboxes_hw_norm, map_size=64):
+    if len(bboxes_hw_norm) == 0:
+        return []
+    minimum_radius = map_size / 32.
+    scale_factor = map_size / 16.
+    scales = np.linalg.norm(np.array(bboxes_hw_norm)/2, ord=2, axis=1)
+    radius = (scales * scale_factor + minimum_radius).astype(np.uint8)
+    return radius
 
 def gather_feature(fmap, index, mask=None, use_transform=False):
     if use_transform:
@@ -158,14 +158,6 @@ def gather_feature(fmap, index, mask=None, use_transform=False):
         fmap = fmap[mask]
         fmap = fmap.reshape(-1, dim)
     return fmap
-
-
-def gaussian_radius_scale(det_size, min_overlap=0.3, k_low=1, k_range=7, minimum=2.):
-    # min_overlap reduce the radius when multiple person gathered togather to avoid center ambiguous.
-    height, width = det_size
-    bbox_size = np.sqrt(height**2+width**2)
-    radius = k_low + k_range * (bbox_size/(args().centermap_size*np.sqrt(2)))**2
-    return max(radius,minimum)
 
 def gaussian2D(shape, sigma=1):
     m, n = [(ss - 1.) / 2. for ss in shape]

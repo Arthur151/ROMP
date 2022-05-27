@@ -98,7 +98,7 @@ def convert_cam_params_to_centermap_coords(cam_params, cam3dmap_anchor):
 
 def denormalize_center(center, size=128):
     center = (center+1)/2*size
-    center = torch.clip(center, 1, size-1).long()
+    center = torch.clamp(center, 1, size-1).long()
     return center
 
 class BEVv1(nn.Module):

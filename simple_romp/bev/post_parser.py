@@ -61,7 +61,7 @@ class CenterMap3D(object):
 
         mask = topk_score>self.conf_thresh
         batch_ids = torch.where(mask)[0]
-        center_zyxs = torch.stack([topk_zs[mask], topk_ys[mask], topk_xs[mask]]).permute((1,0)).long()
+        center_zyxs = torch.stack([topk_zs[mask].long(), topk_ys[mask].long(), topk_xs[mask].long()]).permute((1,0)).long()
 
         return [batch_ids, center_zyxs, topk_score[mask]]
 

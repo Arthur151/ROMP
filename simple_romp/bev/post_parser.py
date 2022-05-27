@@ -155,7 +155,7 @@ def remove_subjects(outputs, removed_subj_inds):
     N = len(outputs['params_pred'])
     remove_mask = torch.ones(N).bool()
     remove_mask[removed_subj_inds] = False
-    left_subj_inds = torch.arange(N)[remove_mask]
+    left_subj_inds = torch.where(remove_mask)[0].tolist()
     
     keys = list(outputs.keys())
     for key in keys:

@@ -1,8 +1,10 @@
 # Simple_ROMP
 
-Simplified implementation of ROMP: Monocular, One-stage, Regression of Multiple 3D People, ICCV21
+Simplified implementation of ROMP [ICCV21] and BEV [CVPR22]
 
-Please refer to https://github.com/Arthur151/ROMP for more details
+As shown in [the main page](https://github.com/Arthur151/ROMP), the differences between ROMP and BEV are:
+ROMP has a lighter head to efficiently estimate the SMPL 3D pose/shape parameters and roughly 2D position/scale of people in the image.
+BEV explicitly reasons about relative depths of people and support all age groups with SMPL+A model. 
 
 ## Installation
 

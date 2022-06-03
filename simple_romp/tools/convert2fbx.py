@@ -90,7 +90,7 @@ bone_name_from_index = {
     23: 'R_Hand'
 }
 
-
+# To use other avatar for animation, please define the corresponding 3D skeleton like this.
 bone_name_from_index_character = {
     0 : 'Hips',
     1 : 'RightUpLeg',
@@ -166,26 +166,10 @@ def process_pose(current_frame, pose, trans, pelvis_position):
     bones = armature.pose.bones
 
     # Pelvis: X-Right, Y-Up, Z-Forward (Blender -Y)
-
+    root_location = Vector(
+        (100*trans[1], 100*trans[2], 100*trans[0])) - pelvis_position
     # Set absolute pelvis location relative to Pelvis bone head
-    try:
-        bones[bone_name_from_index[0]].location = Vector((100*trans[1], 100*trans[2], 100*trans[0])) - pelvis_position
-    except :
-        # Handle missing / wrong gender bones. This will change the models gender if a problem is found and continue on.
-        bonename = bone_name_from_index[0]
-        if "m_" in bonename:
-            for bone in bone_name_from_index:
-                bone_name_from_index[bone] = bone_name_from_index[bone].replace("m_", "f_")
-                
-            bone_name_from_index[0] = bonename.replace("m_", "f_")
-            bones[bonename.replace("m_", "f_")].location = Vector((100*trans[1], 100*trans[2], 100*trans[0])) - pelvis_position
-            
-            
-        if "f_" in bonename:
-            for bone in bone_name_from_index:
-                bone = bone.replace("f_", "m_")
-            bone_name_from_index[0] = bonename.replace("f_", "m_")
-            bones[bonename.replace("f_", "m_")].location = Vector((100*trans[1], 100*trans[2], 100*trans[0])) - pelvis_position
+    bones[bone_name_from_index[0]].location = root_location
             
     # bones['Root'].location = Vector(trans)
     bones[bone_name_from_index[0]].keyframe_insert('location', frame=current_frame)
@@ -198,9 +182,9 @@ def process_pose(current_frame, pose, trans, pelvis_position):
 
         bone_rotation = Matrix(mat_rot).to_quaternion()
         quat_x_90_cw = Quaternion((1.0, 0.0, 0.0), radians(-90))
-        quat_x_n135_cw = Quaternion((1.0, 0.0, 0.0), radians(-135))
-        quat_x_p45_cw = Quaternion((1.0, 0.0, 0.0), radians(45))
-        quat_y_90_cw = Quaternion((0.0, 1.0, 0.0), radians(-90))
+        #quat_x_n135_cw = Quaternion((1.0, 0.0, 0.0), radians(-135))
+        #quat_x_p45_cw = Quaternion((1.0, 0.0, 0.0), radians(45))
+        #quat_y_90_cw = Quaternion((0.0, 1.0, 0.0), radians(-90))
         quat_z_90_cw = Quaternion((0.0, 0.0, 1.0), radians(-90))
 
         if index == 0:
@@ -255,7 +239,7 @@ def process_poses(
             bone_name_from_index[k] = 'm_avg_' + v
     elif gender == 'character':
         model_path = character_model_path
-        for k,v in bone_name_from_index.items():
+        for k, v in bone_name_from_index_character.items():
             bone_name_from_index[k] = 'mixamorig1:' + v
     else:
         print('ERROR: Unsupported gender: ' + gender)

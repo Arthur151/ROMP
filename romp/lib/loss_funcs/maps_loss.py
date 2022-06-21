@@ -11,6 +11,7 @@ import config
 import time
 import pickle
 import numpy as np
+from utils.center_utils import denormalize_center
 
 DEFAULT_DTYPE = torch.float32
 
@@ -28,10 +29,9 @@ def focal_loss(pred, gt):
 
     loss = torch.zeros(gt.size(0)).to(pred.device)
 
-    # log(0) lead to nan loss, collipsed
-    pred_log = pred.clone()
-    pred_log[pred<1e-6] = 1e-6
-    pred_log[pred>1-1e-6] = 1-1e-6
+    # when x <=0, log(x) lead to nan loss, collipsed
+    # To take care of 1-pred_log in neg_loss, pred_log < 1-1e-4
+    pred_log = torch.clamp(pred.clone(), min=1e-3, max=1-1e-3)
     pos_loss = torch.log(pred_log) * torch.pow(1 - pred, 2) * pos_inds
     neg_loss = torch.log(1 - pred_log) * torch.pow(pred, 2) * neg_weights * neg_inds
 
@@ -40,8 +40,37 @@ def focal_loss(pred, gt):
     pos_loss = pos_loss.sum(-1).sum(-1)
     neg_loss = neg_loss.sum(-1).sum(-1)
     mask = num_pos>0
-    #loss[~mask] = loss[~mask] - neg_loss[~mask]
-    loss[mask] = loss[mask] - (pos_loss[mask] + neg_loss[mask]) / num_pos[mask]
+    loss[~mask] = loss[~mask] - neg_loss[~mask]
+    loss[mask] = loss[mask] - (pos_loss[mask] + neg_loss[mask]) / (num_pos[mask]+1e-4)
+    return loss.mean(-1)
+
+def focal_loss_3D(pred, gt):
+    ''' Modified focal loss. Exactly the same as CornerNet.
+      Runs faster and costs a little bit more memory
+    Arguments:
+      pred (batch x z x h x w)
+      gt_regr (batch x z x h x w)
+    '''
+    pos_inds = gt.eq(1).float()
+    neg_inds = gt.lt(1).float()
+
+    neg_weights = torch.pow(1 - gt, 4)
+
+    loss = torch.zeros(gt.size(0)).to(pred.device)
+
+    # log(0) lead to nan loss, collipsed
+    # To take care of 1-pred_log in neg_loss, pred_log < 1-1e-4
+    pred_log = torch.clamp(pred.clone(), min=1e-3, max=1-1e-3)
+    pos_loss = torch.log(pred_log) * torch.pow(1 - pred, 2) * pos_inds
+    neg_loss = torch.log(1 - pred_log) * torch.pow(pred, 2) * neg_weights * neg_inds
+    
+    # if not visible or not labelled, ignore the corresponding joints loss
+    num_pos  = pos_inds.float().sum(-1).sum(-1).sum(-1)
+    pos_loss = pos_loss.sum(-1).sum(-1).mean(-1)
+    neg_loss = neg_loss.sum(-1).sum(-1).mean(-1)
+    mask = num_pos>0
+    loss[~mask] = loss[~mask] - neg_loss[~mask]
+    loss[mask] = loss[mask] - (pos_loss[mask] + neg_loss[mask]) / (num_pos[mask]+1e-4)
     return loss.mean(-1)
 
 def make_input(t, requires_grad=False, need_cuda=True):

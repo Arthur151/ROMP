@@ -19,7 +19,7 @@ def batch_l2_loss(real,predict):
     loss_batch = torch.norm(real-predict, p=2, dim=1)
     return loss_batch.mean()
 
-def batch_l2_loss_param(real,predict):
+def batch_smpl_pose_l2_error(real,predict):
     # convert to rot mat, multiple angular maps to the same rotation with Pi as a period.
     batch_size = real.shape[0]
     real = batch_rodrigues(real.reshape(-1,3)).contiguous()#(N*J)*3 -> (N*J)*3*3
@@ -33,7 +33,6 @@ def _calc_MPJAE(rel_pose_pred,rel_pose_real):
     global_pose_rotmat_real = trans_relative_rot_to_global_rotmat(rel_pose_real, with_global_rot=True)
     MPJAE_error = _calc_joint_angle_error(global_pose_rotmat_pred, global_pose_rotmat_real).cpu().numpy()
     return MPJAE_error
-
 
 def trans_relative_rot_to_global_rotmat(params, with_global_rot=False):
     '''

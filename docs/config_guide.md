@@ -9,7 +9,7 @@ Please choose the renderer ('pyrender' or 'pytorch3d') for visualizing the estim
 
 #### GPUS (str)
 GPU device number. 
-To run the code on GPUs, please set it to the GPU device number, such as `GPUS: 0` or `GPUS: 0,1,2,3`.  To run the code on CPU, please set it to `GPUS: -1`.
+To run the code on GPUs, please set it to the GPU device number, such as `GPUS: 0` or `gpu: 0`.  To run the code on CPU, please set it to `GPUS: -1`.
 
 #### inputs (str)
 Path of the folder containing the input images / path of the input video file. 

@@ -22,6 +22,8 @@ git clone -b master --single-branch https://github.com/Arthur151/ROMP
 
 #### 2. Fetching data
 
+We have update the [model_data](https://github.com/Arthur151/ROMP/releases/download/v1.1/model_data.zip). 
+
 Please download the essential data (model_data.zip, demo_data.zip) and pre-trained model (trained_models) from :   
 (Option 1) Github release: [model_data.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/model_data.zip), [demo_data.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/demo_videos.zip), [trained_models_try.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/trained_models_try.zip) or [trained_models.zip](https://github.com/Arthur151/ROMP/releases/download/v1.1/trained_models.zip)  
 (Option 2) [Google drive](https://drive.google.com/drive/folders/1YdsHh62KGuQMowRjKM9Vzj_7pflb51BB?usp=sharing).   

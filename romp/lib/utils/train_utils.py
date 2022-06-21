@@ -32,18 +32,18 @@ def copy_state_dict(cur_state_dict, pre_state_dict, prefix = 'module.', drop_pre
                 k=k.split(prefix)[1]
             success_layers.append(k)
         except:
-            logging.info('copy param {} failed, mismatched'.format(k))
+            print('copy param {} failed, mismatched'.format(k)) # logging.info
             continue
-    logging.info('missing parameters of layers:{}'.format(failed_layers))
+    print('missing parameters of layers:{}'.format(failed_layers))
 
     if fix_loaded and len(failed_layers)>0:
-        print('fixing the layers that were loaded successfully, while train the layers that failed,')
+        logging.info('fixing the layers that were loaded successfully, while train the layers that failed,')
         for k in cur_state_dict.keys():
             try:
                 if k in success_layers:
                     cur_state_dict[k].requires_grad=False
             except:
-                print('fixing the layer {} failed'.format(k))
+                logging.info('fixing the layer {} failed'.format(k))
 
     return success_layers
 
@@ -63,7 +63,7 @@ def load_model(path, model, prefix = 'module.', drop_prefix='',optimizer=None, *
 def save_single_model(model,path):
     logging.info('saving {}'.format(path))
     #model_save = {'model_state_dict':model.state_dict(),'optimizer_state_dict':optimizer.state_dict()}
-    torch.save(model.state_dict(), path)
+    torch.save(model.module.state_dict(), path)
 
 def save_model(model, title, parent_folder=None):
     if not os.path.exists(parent_folder):
@@ -76,8 +76,7 @@ def save_model(model, title, parent_folder=None):
 
 def process_idx(reorganize_idx, vids=None):
     result_size = reorganize_idx.shape[0]
-    if isinstance(reorganize_idx, torch.Tensor):
-        reorganize_idx = reorganize_idx.cpu().numpy()
+    reorganize_idx = reorganize_idx.cpu().numpy()
     used_idx = reorganize_idx[vids] if vids is not None else reorganize_idx
     used_org_inds = np.unique(used_idx)
     per_img_inds = [np.where(reorganize_idx==org_idx)[0] for org_idx in used_org_inds]
@@ -101,6 +100,24 @@ def determine_rendering_order(rendered_img, thresh=0.):
         main_renders[other_render_mask] = other_renders[other_render_mask]
     return main_renders[None]
 
+
+
+# def process_idx(reorganize_idx, vids=None):
+#     result_size = reorganize_idx.shape[0]
+#     reorganize_idx = reorganize_idx.cpu().numpy()
+#     used_idx = reorganize_idx[vids] if vids is not None else reorganize_idx
+#     used_idx_org = np.unique(used_idx)
+#     used_idx_now, img_idx, img_inds, count = [], [], [], 0
+#     for idx, org_idx in enumerate(used_idx_org):
+#         each_img_idx = np.where(reorganize_idx==org_idx)[0]
+#         img_idx.append(each_img_idx)
+#         used_idx_now.append(each_img_idx[0])
+#         img_inds.append(np.arange(len(each_img_idx))+count) 
+#         count+=len(each_img_idx)
+#     if len(img_idx)!=0:
+#         all_idx = np.concatenate(img_idx)
+#     used_idx_now = np.array(used_idx_now)
+#     return used_idx_org, used_idx_now, all_idx, img_inds
 
 def fix_backbone(params, exclude_key=['backbone.']):
     for exclude_name in exclude_key:

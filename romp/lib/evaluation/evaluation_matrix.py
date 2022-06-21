@@ -3,8 +3,104 @@ import torch
 import numpy as np
 
 import config
+import constants
 from smplx import SMPL
 # Part of the codes are brought from https://github.com/mkocabas/VIBE/blob/master/lib/utils/eval_utils.py
+
+def _calc_matched_PCKh_(real, pred, kp2d_mask, error_thresh=0.143):
+    # error_thresh is set as the ratio between the head and the body.
+    # he head / body for normal people are between 6~8, therefore, we set it to 1/7=0.143
+    PCKs = torch.ones(len(kp2d_mask)).float().cuda()*-1.
+    if kp2d_mask.sum()>0:
+        vis = (real>-1.).sum(-1)==real.shape[-1]
+        error = torch.norm(real-pred, p=2, dim=-1)
+        
+        for ind, (e, v) in enumerate(zip(error, vis)):
+            if v.sum() < 2:
+                continue
+            real_valid = real[ind,v]
+            person_scales = torch.sqrt((real_valid[:,0].max(-1).values - real_valid[:,0].min(-1).values)**2 + \
+                            (real_valid[:,1].max(-1).values - real_valid[:,1].min(-1).values)**2)
+            error_valid = e[v]
+            correct_kp_mask = ((error_valid / person_scales) < error_thresh).float()
+            PCKs[ind] = correct_kp_mask.sum()/len(correct_kp_mask)
+    return PCKs
+
+def _calc_relative_age_error_weak_(age_preds, age_gts, matched_mask=None):
+    valid_mask = age_gts != -1
+    if matched_mask is not None:
+        valid_mask *= matched_mask
+    error_dict = {age_name:[] for age_name in constants.relative_age_types}
+    if valid_mask.sum()>0:
+        for age_id, age_name in enumerate(constants.relative_age_types):
+            age_gt = age_gts[valid_mask].long() == age_id
+            age_pred = age_preds[valid_mask][age_gt].long() # == age_id  
+            error_dict.update({age_name: [age_pred]})
+    return error_dict
+
+def _calc_absolute_depth_error(trans_preds, trans_gt):
+    trans_error = np.sqrt(((trans_gt - trans_preds)**2).sum(-1))
+    return trans_error
+
+def _calc_relative_depth_error_weak_(pred_depths, depth_ids, reorganize_idx, age_gts=None, thresh=0.2, matched_mask=None):
+    depth_ids = depth_ids.to(pred_depths.device)
+    depth_ids_vmask = depth_ids != -1
+    pred_depths_valid = pred_depths[depth_ids_vmask]
+    valid_inds = reorganize_idx[depth_ids_vmask]
+    depth_ids = depth_ids[depth_ids_vmask]
+    age_gts = age_gts[depth_ids_vmask]
+    error_dict = {'eq': [], 'cd': [], 'fd':[], 'eq_age': [], 'cd_age': [], 'fd_age':[]}
+    error_each_age = {age_type:[] for age_type in constants.relative_age_types}
+    for b_ind in torch.unique(valid_inds):
+        sample_inds = valid_inds == b_ind
+        if matched_mask is not None:
+            sample_inds *= matched_mask[depth_ids_vmask]
+        did_num = sample_inds.sum()
+        if did_num > 1:
+            pred_depths_sample = pred_depths_valid[sample_inds]
+            triu_mask = torch.triu(torch.ones(did_num, did_num), diagonal=1).bool()
+            dist_mat = (pred_depths_sample.unsqueeze(0).repeat(did_num, 1) - pred_depths_sample.unsqueeze(1).repeat(1,did_num))[triu_mask]
+            did_mat = (depth_ids[sample_inds].unsqueeze(0).repeat(did_num, 1) - depth_ids[sample_inds].unsqueeze(1).repeat(1,did_num))[triu_mask]
+            
+            error_dict['eq'].append(dist_mat[did_mat==0])
+            error_dict['cd'].append(dist_mat[did_mat<0])
+            error_dict['fd'].append(dist_mat[did_mat>0])
+            if age_gts is not None:
+                age_sample = age_gts[sample_inds]
+                age_mat = torch.cat([age_sample.unsqueeze(0).repeat(did_num, 1).unsqueeze(-1), age_sample.unsqueeze(1).repeat(1, did_num).unsqueeze(-1)], -1)[triu_mask]
+                error_dict['eq_age'].append(age_mat[did_mat==0])
+                error_dict['cd_age'].append(age_mat[did_mat<0])
+                error_dict['fd_age'].append(age_mat[did_mat>0])
+
+    return error_dict
+
+
+def _calc_relative_depth_error_withgts_(pred_depths, depth_gts, reorganize_idx, age_gts=None, thresh=0.3, matched_mask=None):
+    depth_gts = depth_gts.to(pred_depths.device)
+    error_dict = {'eq': [], 'cd': [], 'fd':[], 'eq_age': [], 'cd_age': [], 'fd_age':[]}
+    for b_ind in torch.unique(reorganize_idx):
+        sample_inds = reorganize_idx == b_ind
+        if matched_mask is not None:
+            sample_inds *= matched_mask
+        did_num = sample_inds.sum()
+        if did_num > 1:
+            pred_depths_sample = pred_depths[sample_inds]
+            triu_mask = torch.triu(torch.ones(did_num, did_num), diagonal=1).bool()
+            dist_mat = (pred_depths_sample.unsqueeze(0).repeat(did_num, 1) - pred_depths_sample.unsqueeze(1).repeat(1,did_num))[triu_mask]
+            dist_mat_gt = (depth_gts[sample_inds].unsqueeze(0).repeat(did_num, 1) - depth_gts[sample_inds].unsqueeze(1).repeat(1,did_num))[triu_mask]
+            
+            error_dict['eq'].append(dist_mat[torch.abs(dist_mat_gt)<thresh])
+            error_dict['cd'].append(dist_mat[dist_mat_gt<-thresh])
+            error_dict['fd'].append(dist_mat[dist_mat_gt>thresh])
+            if age_gts is not None:
+                age_sample = age_gts[sample_inds]
+                age_mat = torch.cat([age_sample.unsqueeze(0).repeat(did_num, 1).unsqueeze(-1), age_sample.unsqueeze(1).repeat(1, did_num).unsqueeze(-1)], -1)[triu_mask]
+                error_dict['eq_age'].append(age_mat[torch.abs(dist_mat_gt)<thresh])
+                error_dict['cd_age'].append(age_mat[dist_mat_gt<-thresh])
+                error_dict['fd_age'].append(age_mat[dist_mat_gt>thresh])
+
+    return error_dict
+
 
 def compute_error_verts(pred_theta=None, target_theta=None, target_verts=None, pred_verts=None, smpl_path=None):
     """

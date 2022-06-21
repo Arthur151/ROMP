@@ -19,14 +19,16 @@ We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux
     - [Please refer to this guidance for inference & export (fbx/glb/bvh).](#please-refer-to-this-guidance-for-inference--export-fbxglbbvh)
   - [Train](#train)
   - [Evaluation](#evaluation)
+  - [Docker usage](#docker-usage)
   - [Bugs report](#bugs-report)
 - [Citation](#citation)
 - [Acknowledgement](#acknowledgement)
 
 ## News
+*2022/06/21: Training & evaluation code of BEV is released. Please update the [model_data](https://github.com/Arthur151/ROMP/releases/download/v1.1/model_data.zip).*   
 *2022/05/16: simple-romp v1.0 is released to support tracking, calling in python, exporting bvh, and etc.*   
 *2022/04/14: Inference code of BEV has been released in simple-romp v0.1.0.*   
-*2022/04/10: Adding onnx support, with faster inference speed on CPU/GPU.*  
+*2022/04/10: Adding onnx support, with faster inference speed on CPU/GPU.*   
 [Old logs](docs/updates.md)
 
 ## Getting started
@@ -54,19 +56,15 @@ Please prepare the training datasets following [dataset.md](docs/dataset.md), an
 
 ### Evaluation
 
-Please refer to [evaluation.md](docs/evaluation.md) for evaluation on benchmarks.
+Please refer to [romp_evaluation.md](docs/romp_evaluation.md) and [bev_evaluation.md](docs/bev_evaluation.md) for evaluation on benchmarks.
 
 ### Docker usage
-  ```
-  # Build
-  docker build --rm -t romp .
-  # Inference
-  docker run --privileged --rm -it --gpus 0 --ipc=host -p 8888:8888 -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd):/workspace/results --device /dev/video0 -e DISPLAY=$DISPLAY romp --mode=webcam
-  ```
+
+Please refer to [docker.md](docs/docker.md)
 
 ### Bugs report
 
-Please refer to [bug.md](docs/bugs.md) for solutions. Welcome to submit the issues for related bugs. I will solve them as soon as possible.
+Welcome to submit issues for the bugs.
 
 ## Citation
 ```bibtex

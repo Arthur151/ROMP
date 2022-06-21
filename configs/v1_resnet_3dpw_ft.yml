@@ -2,7 +2,7 @@
 ARGS:
  tab: 'V1_resnet_pw3d_ft'
  dataset: 'crowdpose,pw3d'
- GPUS: 0,1,2,3
+ gpu: 0
  distributed_training: False
  model_version: 1
  epoch: 1
@@ -47,6 +47,7 @@ loss_weight:
   Shape: 6.
   Prior: 1.6
   CenterMap: 160.
+  Cam: 200.
 
 sample_prob:
  crowdpose: 0.2

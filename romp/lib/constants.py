@@ -14,8 +14,6 @@ OpenPose_25 = {
     'R_Eye':15, 'L_Eye':16, 'R_Ear':17, 'L_Ear':18, 'L_BigToe':19, 'L_SmallToe':20, 'L_Heel':21, 'R_BigToe':22, 'R_SmallToe':23, 'R_Heel':24
     }
 
-#OpenPose_25_kploss_weight = np.array([0.6, 1., 1., 1.16, 1.28, 1, 1.16, 1.28, 0.8, 0.6, 1.2, 1.4, 0.6, 1.2, 1.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4,0.4, 0.4,0.4, 0.4])
-
 SMPL_24 = {
     'Pelvis_SMPL':0, 'L_Hip_SMPL':1, 'R_Hip_SMPL':2, 'Spine_SMPL': 3, 'L_Knee':4, 'R_Knee':5, 'Thorax_SMPL': 6, 'L_Ankle':7, 'R_Ankle':8,'Thorax_up_SMPL':9, \
     'L_Toe_SMPL':10, 'R_Toe_SMPL':11, 'Neck': 12, 'L_Collar':13, 'R_Collar':14, 'Jaw':15, 'L_Shoulder':16, 'R_Shoulder':17,\
@@ -56,6 +54,13 @@ SMPL54_weights = np.array([0.2, 0.2, 0.2, 0.2, 1,1, 0.2, 2, 2, 0.2, \
     1, 1, 1, 2, 1, 0.6, \
     0.6, 0.6, 0.8
     ])
+
+joint2D_tree = {
+    'L_Shoulder':['Jaw', 'Nose', 'R_Eye', 'L_Eye', 'R_Ear', 'L_Ear'],\
+    'L_Ankle':['L_BigToe', 'L_SmallToe', 'L_Heel', 'L_Toe_SMPL'],\
+    'R_Ankle':['R_BigToe', 'R_SmallToe', 'R_Heel', 'R_Toe_SMPL'],\
+}
+
 
 # root 0/spin 3/thorax 6/Thorax_up 9 rotation is still at body center;  
 # L_Hip -> L_Hip_SMPL; R_Hip -> R_Hip_SMPL
@@ -134,7 +139,10 @@ Panoptic_15 = {
     'L_Knee':7, 'L_Ankle':8, 'R_Shoulder': 9, 'R_Elbow':10, 'R_Wrist':11, 'R_Hip':12, 'R_Knee':13, 'R_Ankle':14
     }
 
-
+BK_19 = {
+    'Head_top': 0, 'Nose': 1, 'Neck': 2, 'L_Eye': 3, 'R_Eye': 4, 'L_Shoulder': 5, 'R_Shoulder': 6, 'L_Elbow': 7, 'R_Elbow': 8, 'L_Wrist': 9, 'R_Wrist': 10,\
+    'L_Hip': 11, 'R_Hip': 12, 'L_Knee':13, 'R_Knee':14,'L_Ankle':15, 'R_Ankle':16,'L_BigToe':17, 'R_BigToe':18
+}
 
 Crowdpose_14 = {"L_Shoulder":0, "R_Shoulder":1, "L_Elbow":2, "R_Elbow":3, "L_Wrist":4, "R_Wrist":5,\
      "L_Hip":6, "R_Hip":7, "L_Knee":8, "R_Knee":9, "L_Ankle":10, "R_Ankle":11, "Head_top":12, "Neck_LSP":13}
@@ -307,12 +315,15 @@ cmup_action_names = ['haggling1', 'mafia2', 'ultimatum1', 'pizza1']
 
 SMPL_MAJOR_JOINTS = np.array([1, 2, 4, 5, 7, 8, 16, 17, 18, 19, 20, 21])
 
-dataset_involved = ['h36m', 'mupots', 'pw3d', 'mpiinf', 'jta','cmup', 'oh','mpiinf_test', 'pw3d_pc', 'pw3d_nc','pw3d_oc','pw3d_vibe', 'pw3d_normal','agora']
+dataset_involved = ['h36m', 'mupots', 'pw3d', 'mpiinf', 'jta','cmup', 'oh','mpiinf_test', 'pw3d_pc', 'pw3d_nc','pw3d_oc','pw3d_vibe', 'pw3d_normal','agora','mini','pw3d_od']
+dataset_kp2ds = ['h36m', 'mupots', 'pw3d', 'mpiinf', 'jta','cmup', 'oh','mpiinf_test', 'pw3d_pc', 'pw3d_nc','pw3d_oc','pw3d_vibe', 'pw3d_normal','agora','mini','relativity', 'aich', 'crowdpose','pw3d_od']
 dataset_smpl2lsp = ['h36m', 'cmup','mpiinf','mpiinf_test', 'jta', 'pw3d_nc','pw3d_oc','pw3d_vibe'] #'pw3d', 
 MPJAE_ds = ['pw3d_normal', 'h36m']
-PVE_ds = ['pw3d_pc', 'pw3d_nc','pw3d_oc','pw3d_vibe', 'pw3d_normal', 'oh','agora']
-dataset_depth = ['mupots','agora']
-#dataset_smplparams = ['h36m', 'pw3d','oh','agora']
+PVE_ds = ['pw3d_pc', 'pw3d_nc','pw3d_oc','pw3d_vibe', 'pw3d_normal', 'oh','agora','mini']
+dataset_depth = ['mupots','agora','mini','pw3d_od']
+dataset_relative_depth = ['relativity']
+dataset_relative_age = ['relativity', 'agora', 'mupots']
+dataset_nokp3ds = ['relativity', 'aich', 'crowdpose']
 
 img_exts = ['.bmp', '.dib', '.jpg', '.jpeg', '.jpe', '.png', '.webp', '.pbm', '.pgm', '.ppm', '.pxm', '.pnm', '.tiff', '.tif', '.sr', '.ras', '.exr', '.hdr', '.pic',\
             '.PNG', '.JPG', '.JPEG']
@@ -333,3 +344,22 @@ wardrobe = {# Shirt
             # Suit
             '030':'SMPL_suit_m_hr.jpg','031':'SMPL_suit2_m_hr.jpg','032':'SMPL_suit3_m_hr.jpg',
             }
+
+
+age_threshold = {'adult': [-0.05,0,0.15], 'teen':[0.15, 0.3, 0.45], 'kid':[0.45, 0.6, 0.75], 'baby':[0.75,0.9,1]}
+#{'adult': [-0.04,0,0.08], 'teen':[0.08, 0.18, 0.36], 'kid':[0.36, 0.48, 0.6], 'baby':[0.6,0.78,1]}
+relative_depth_types = ['eq', 'cd', 'fd']
+relative_age_types = ['adult', 'teen', 'kid', 'baby']
+
+def get_cam3dmap_anchor(FOV, centermap_size):
+    depth_level = np.array([1, 10, 20, 100], dtype=np.float32)
+    #map_coord_range_each_level = (np.array([4/64., 50/64., 6/64., 4/64.], dtype=np.float32) * args().centermap_size).astype(np.int)
+    map_coord_range_each_level = (np.array([2/64., 25/64., 3/64., 2/64.], dtype=np.float32) * centermap_size).astype(np.int)
+    scale_level = 1/np.tan(np.radians(FOV/2.))/depth_level
+    cam3dmap_anchor = []
+    scale_cache = 8
+    for scale, coord_range in zip(scale_level, map_coord_range_each_level):
+        cam3dmap_anchor.append(scale_cache-np.arange(1,coord_range+1)/coord_range*(scale_cache-scale))
+        scale_cache = scale
+    cam3dmap_anchor = np.concatenate(cam3dmap_anchor)
+    return cam3dmap_anchor

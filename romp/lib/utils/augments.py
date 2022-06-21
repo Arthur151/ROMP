@@ -22,11 +22,14 @@ import skimage.data
 import PIL.Image
 
 import sys, os
-root_dir = os.path.join(os.path.dirname(__file__),'..')
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
 import constants
+import random
 
+def convert_bbox2scale(ltrb, input_size):
+    h, w = input_size
+    l, t, r, b = ltrb
+    scale = max(r-l, b-t) / min(h, w)
+    return scale 
 
 def calc_aabb(ptSets):
     ptLeftTop     = np.array([np.min(ptSets[:,0]),np.min(ptSets[:,1])])
@@ -74,7 +77,6 @@ def rot_aa(aa, rot):
 
 def flip_pose(pose):
     #Flip pose.The flipping is based on SMPL parameters.
-
     flipped_parts = constants.SMPL_POSE_FLIP_PERM
     pose = pose[flipped_parts]
     # we also negate the second and the third dimension of the axis-angle
@@ -82,13 +84,14 @@ def flip_pose(pose):
     pose[2::3] = -pose[2::3]
     return pose
 
-def pose_processing(pose, rot, flip, valid_flag):
+def pose_processing(pose, rot, flip, valid_grot=False, valid_pose=False):
     """Process SMPL theta parameters  and apply all augmentation transforms."""
     
-    # rotation or the pose parameters
-    pose[:3] = rot_aa(pose[:3], rot)
+    if valid_grot:
+        # rotation or the pose parameters
+        pose[:3] = rot_aa(pose[:3], rot)
     # flip the pose parameters
-    if flip and valid_flag[1]:
+    if flip and valid_pose:
         pose = flip_pose(pose)
     
     return pose
@@ -122,6 +125,7 @@ def image_crop_pad(image, kp2ds=None, crop_trbl=(0,0,0,0), bbox=None, pad_ratio=
     pad_func = iaa.Sequential([iaa.Pad(px=pad_trbl, keep_size=False)])
     image_aug = pad_func(image=image_aug)
 
+    kp2ds_aug = None
     if kp2ds is not None:
         # org_shape = kp2ds.shape
         # kp2ds_ia = convert2keypointsonimage(kp2ds.reshape(-1, org_shape[-1]), image.shape)
@@ -135,9 +139,7 @@ def image_crop_pad(image, kp2ds=None, crop_trbl=(0,0,0,0), bbox=None, pad_ratio=
         #         image = kps.draw_on_image(image, size=7)
         #         kps_aug = convert2keypointsonimage(kp2ds_aug[inds,:,:2], image_aug.shape)
         #         image_aug = kps_aug.draw_on_image(image_aug, size=7)
-        return image_aug, kp2ds_aug, np.array([*image_aug.shape[:2], *crop_trbl, *pad_trbl])
-    else:
-        return image_aug, None, np.array([*image_aug.shape[:2], *crop_trbl, *pad_trbl])
+    return image_aug, kp2ds_aug, np.array([*image_aug.shape[:2], *crop_trbl, *pad_trbl])
     
 def image_pad_white_bg(image, pad_trbl=None, pad_ratio=1.,pad_cval=255):
     if pad_trbl is None:
@@ -146,13 +148,14 @@ def image_pad_white_bg(image, pad_trbl=None, pad_ratio=1.,pad_cval=255):
     image_aug = pad_func(image=image)
     return image_aug, np.array([*image_aug.shape[:2], *[0,0,0,0], *pad_trbl])
 
+def process_image(originImage, full_kp2ds=None, augments=None, is_pose2d=[True], random_crop=False):
+    orgImage_white_bg, pad_trbl = image_pad_white_bg(originImage)
+    if full_kp2ds is None and augments is None:
+        return orgImage_white_bg, pad_trbl
 
-def process_image(originImage, full_kp2ds=None, augments=None, is_pose2d=True, multiperson=False):
-    crop_trbl, bbox = (0,0,0,0), None
-
+    crop_bbox = None
     if augments is not None:
-        height, width = originImage.shape[0], originImage.shape[1]
-        scale, rot, flip = augments
+        rot, flip, crop_bbox, img_scale = augments
 
         if rot != 0:
             originImage, full_kp2ds = img_kp_rotate(originImage, full_kp2ds, rot)
@@ -161,22 +164,10 @@ def process_image(originImage, full_kp2ds=None, augments=None, is_pose2d=True, m
             originImage = np.fliplr(originImage)
             full_kp2ds = [flip_kps(kps_i, width=originImage.shape[1], is_pose=is_2d_pose) for kps_i, is_2d_pose in zip(full_kp2ds, is_pose2d)]
 
-        if not multiperson and is_pose2d.sum()>0:
-            kps_vis = full_kp2ds[np.where(np.array(is_pose2d))[0][np.random.randint(is_pose2d.sum())]]
-            if (kps_vis[:,2]>0).sum()>2:
-                box = calc_aabb(kps_vis[kps_vis[:,2]>0,:2].copy())
-                leftTop, rightBottom = np.clip(box[0], 0, width), np.clip(box[1], 0, height)
-                [l, t], [r, b] = get_image_cut_box(leftTop, rightBottom, scale)
-                bbox = (l,t,r,b)
-
-    orgImage_white_bg, pad_trbl = image_pad_white_bg(originImage)
-    if full_kp2ds is None and augments is None:
-        return orgImage_white_bg, pad_trbl
-    
-    image_aug, kp2ds_aug, offsets = image_crop_pad(originImage, kp2ds=full_kp2ds, crop_trbl=crop_trbl, bbox=bbox, pad_ratio=1.)
+    image_aug, kp2ds_aug, offsets = image_crop_pad(originImage, kp2ds=full_kp2ds, bbox=crop_bbox, pad_ratio=1.)
     return image_aug, orgImage_white_bg, kp2ds_aug, offsets
 
-def get_image_cut_box(leftTop, rightBottom, ExpandsRatio, Center = None):
+def get_image_cut_box(leftTop, rightBottom, ExpandsRatio, Center = None, force_square=False):
     ExpandsRatio = [ExpandsRatio, ExpandsRatio, ExpandsRatio, ExpandsRatio]
 
     def _expand_crop_box(lt, rb, scale):
@@ -200,16 +191,15 @@ def get_image_cut_box(leftTop, rightBottom, ExpandsRatio, Center = None):
     cx = offset[0]
     cy = offset[1]
 
-    r = max(cx, cy, 1)
-
-    cx = r
-    cy = r
+    if force_square:
+        r = max(cx, cy)
+        cx = r
+        cy = r
 
     x = int(Center[0])
     y = int(Center[1])
 
     return [x - cx, y - cy], [x + cx, y + cy]
-
 
 
 class RandomErasing(object):
@@ -333,8 +323,6 @@ def img_kp_trans_rotate_scale(image, kp2ds=None, rotate=0, trans=None, scale=Non
         return image_aug, kp2ds_aug
     else:
         return image_aug
-
-
 
 def augment_blur(image):
     choise = np.random.randint(4)

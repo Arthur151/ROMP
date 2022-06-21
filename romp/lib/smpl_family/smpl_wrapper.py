@@ -3,22 +3,19 @@ import torch.nn as nn
 import numpy as np 
 
 import sys, os
-root_dir = os.path.join(os.path.dirname(__file__),'..')
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
 import config
 from config import args
 import constants
-from models.smpl import SMPL
+from smpl_family.smpl import SMPL
 from utils.projection import vertices_kp3d_projection
 from utils.rot_6D import rot6D_to_angular
 
 class SMPLWrapper(nn.Module):
     def __init__(self):
         super(SMPLWrapper,self).__init__()
-        self.smpl_model = SMPL(args().smpl_model_path, J_reg_extra9_path=args().smpl_J_reg_extra_path, J_reg_h36m17_path=args().smpl_J_reg_h37m_path, \
-            batch_size=args().batch_size,model_type='smpl', gender='neutral', use_face_contour=False, ext='npz',flat_hand_mean=True, use_pca=False,\
-            ).cuda() #dtype=torch.float16 if args().model_precision=='fp16' else torch.float32
+        #self.smpl_model = smpl_model.create(args().smpl_model_path, J_reg_extra9_path=args().smpl_J_reg_extra_path, J_reg_h36m17_path=args().smpl_J_reg_h37m_path, \
+        #    batch_size=args().batch_size,model_type='smpl', gender='neutral', use_face_contour=False, ext='npz',flat_hand_mean=True, use_pca=False).cuda()
+        self.smpl_model = SMPL(args().smpl_model_path, model_type='smpl')
         self.part_name = ['cam', 'global_orient', 'body_pose', 'betas']
         self.part_idx = [args().cam_dim, args().rot_dim,  (args().smpl_joint_num-1)*args().rot_dim,       10]
 
@@ -44,27 +41,11 @@ class SMPLWrapper(nn.Module):
         params_dict['body_pose'] = torch.cat([params_dict['body_pose'], torch.zeros(N,6).to(params_dict['body_pose'].device)],1) 
         params_dict['poses'] = torch.cat([params_dict['global_orient'], params_dict['body_pose']], 1)
         
-        smpl_outs = self.smpl_model(**params_dict, return_verts=True, return_full_pose=True)
+        vertices, joints54_17 = self.smpl_model(betas=params_dict['betas'], poses=params_dict['poses'], root_align=args().smpl_mesh_root_align)
 
-        outputs.update({'params': params_dict, **smpl_outs})
+        outputs.update({'params': params_dict, 'verts': vertices, 'j3d':joints54_17[:,:54], 'joints_h36m17':joints54_17[:,54:]})
 
-        outputs.update(vertices_kp3d_projection(outputs,meta_data=meta_data,presp=args().perspective_proj))        
+        outputs.update(vertices_kp3d_projection(outputs['j3d'], outputs['params']['cam'], \
+                    vertices=outputs['verts'], input2orgimg_offsets=meta_data['offsets'], presp=args().perspective_proj))        
         
         return outputs
-
-    def recalc_outputs(self, params_dict, meta_data):
-        smpl_outs = self.smpl_model.single_forward(**params_dict, return_verts=True, return_full_pose=True)
-        outputs = {'params': params_dict, **smpl_outs}
-        outputs.update(vertices_kp3d_projection(outputs,meta_data=meta_data,presp=args().perspective_proj))
-        outputs = set_items_float(outputs)
-        
-        return outputs
-
-def set_items_float(out_dict):
-    items = list(out_dict.keys())
-    for item in items:
-        if isinstance(out_dict[item], dict):
-            out_dict[item] = set_items_float(out_dict[item])
-        elif isinstance(out_dict[item], torch.Tensor):
-            out_dict[item] = out_dict[item].float()
-    return out_dict

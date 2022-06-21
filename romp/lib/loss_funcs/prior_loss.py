@@ -159,10 +159,9 @@ class L2Prior(nn.Module):
 
 class MaxMixturePrior(nn.Module):
 
-    def __init__(self, prior_folder=args().smpl_model_path,
+    def __init__(self, smpl_prior_path=args().smpl_prior_path,
                  num_gaussians=8, dtype=DEFAULT_DTYPE, epsilon=1e-16,
-                 use_merged=True,
-                 **kwargs):
+                 use_merged=True, **kwargs):
         super(MaxMixturePrior, self).__init__()
 
         if dtype == DEFAULT_DTYPE:
@@ -176,12 +175,12 @@ class MaxMixturePrior(nn.Module):
         self.num_gaussians = num_gaussians
         self.epsilon = epsilon
         self.use_merged = use_merged
-        gmm_fn = 'gmm_{:02d}.pkl'.format(num_gaussians)
+        
+        #gmm_fn = 'gmm_{:02d}.pkl'.format(num_gaussians)
+        #smpl_prior_path = os.path.join(prior_folder, gmm_fn)
+        assert os.path.exists(smpl_prior_path),print('The path to the mixture prior {} does not exist'.format(smpl_prior_path))
 
-        full_gmm_fn = os.path.join(prior_folder, gmm_fn)
-        assert os.path.exists(full_gmm_fn),print('The path to the mixture prior {} does not exist'.format(full_gmm_fn))
-
-        with open(full_gmm_fn, 'rb') as f:
+        with open(smpl_prior_path, 'rb') as f:
             gmm = pickle.load(f, encoding='latin1')
 
         if type(gmm) == dict:
@@ -210,21 +209,17 @@ class MaxMixturePrior(nn.Module):
                             for c in gmm['covars']])
         const = (2 * np.pi)**(69 / 2.)
 
-        nll_weights = np.asarray(gmm['weights'] / (const *
-                                                   (sqrdets / sqrdets.min())))
+        nll_weights = np.asarray(gmm['weights'] / (const * (sqrdets / sqrdets.min())))
         nll_weights = torch.tensor(nll_weights, dtype=dtype).unsqueeze(dim=0)
         self.register_buffer('nll_weights', nll_weights)
 
         weights = torch.tensor(gmm['weights'], dtype=dtype).unsqueeze(dim=0)
         self.register_buffer('weights', weights)
 
-        self.register_buffer('pi_term',
-                             torch.log(torch.tensor(2 * np.pi, dtype=dtype)))
+        self.register_buffer('pi_term', torch.log(torch.tensor(2 * np.pi, dtype=dtype)))
 
-        cov_dets = [np.log(np.linalg.det(cov.astype(np_dtype)) + epsilon)
-                    for cov in covs]
-        self.register_buffer('cov_dets',
-                             torch.tensor(cov_dets, dtype=dtype))
+        cov_dets = [np.log(np.linalg.det(cov.astype(np_dtype)) + epsilon) for cov in covs]
+        self.register_buffer('cov_dets', torch.tensor(cov_dets, dtype=dtype))
 
         # The dimensionality of the random variable
         self.random_var_dim = self.means.shape[1]
@@ -234,7 +229,7 @@ class MaxMixturePrior(nn.Module):
         mean_pose = torch.matmul(self.weights, self.means)
         return mean_pose
 
-    def merged_log_likelihood(self, pose, betas):
+    def merged_log_likelihood(self, pose):
         param_num = pose.shape[1]
         diff_from_mean = pose.unsqueeze(dim=1) - self.means[:,:param_num]
 
@@ -242,8 +237,7 @@ class MaxMixturePrior(nn.Module):
                                       [self.precisions[:,:param_num,:param_num], diff_from_mean])
         diff_prec_quadratic = (prec_diff_prod * diff_from_mean).sum(dim=-1)
 
-        curr_loglikelihood = 0.5 * diff_prec_quadratic - \
-            torch.log(self.nll_weights)
+        curr_loglikelihood = 0.5 * diff_prec_quadratic - torch.log(self.nll_weights)
         #  curr_loglikelihood = 0.5 * (self.cov_dets.unsqueeze(dim=0) +
         #  self.random_var_dim * self.pi_term +
         #  diff_prec_quadratic
@@ -252,7 +246,7 @@ class MaxMixturePrior(nn.Module):
         min_likelihood, _ = torch.min(curr_loglikelihood, dim=1)
         return min_likelihood
 
-    def log_likelihood(self, pose, betas, *args, **kwargs):
+    def log_likelihood(self, pose, *args, **kwargs):
         ''' Create graph operation for negative log-likelihood calculation
         '''
         likelihoods = []
@@ -281,11 +275,11 @@ class MaxMixturePrior(nn.Module):
 
         return weight_component + log_likelihoods[:, min_idx]
 
-    def forward(self, pose, betas):
+    def forward(self, pose):
         if self.use_merged:
-            return self.merged_log_likelihood(pose, betas)
+            return self.merged_log_likelihood(pose)
         else:
-            return self.log_likelihood(pose, betas)
+            return self.log_likelihood(pose)
 
 class MultiLossFactory(nn.Module):
     def __init__(self, num_joints):

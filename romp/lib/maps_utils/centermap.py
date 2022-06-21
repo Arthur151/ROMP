@@ -3,6 +3,7 @@ import sys,os
 import numpy as np
 
 from config import args
+from utils.cam_utils import convert_cam_params_to_centermap_coords, convert_scale_to_depth_level
 
 
 class CenterMap(object):
@@ -14,8 +15,13 @@ class CenterMap(object):
         self.dims = 1
         self.sigma = 1
         self.conf_thresh= args().centermap_conf_thresh
-        print('Confidence:', self.conf_thresh)
         self.gk_group, self.pool_group = self.generate_kernels(args().kernel_sizes)
+        if args().model_version>4:
+            self.prepare_parsing()
+        
+    def prepare_parsing(self):
+        self.coordmap_3d = get_3Dcoord_maps(size=self.size)
+        self.maxpool3d = torch.nn.MaxPool3d(5, 1, (5-1)//2)
 
     def generate_kernels(self, kernel_size_list):
         gk_group, pool_group = {}, {}
@@ -38,10 +44,50 @@ class CenterMap(object):
         return (valid_batch_inds, valid_person_ids, center_gt_valid)
     
     def generate_centermap(self, center_locs, **kwargs):
-        return self.generate_centermap_heatmap_adaptive_scale(center_locs, **kwargs)
+        if self.style =='heatmap':
+            return self.generate_centermap_heatmap(center_locs, **kwargs)
+        elif self.style == 'heatmap_adaptive_scale':
+            return self.generate_centermap_heatmap_adaptive_scale(center_locs, **kwargs)
+        else:
+            raise NotImplementedError
 
     def parse_centermap(self, center_map):
-        return self.parse_centermap_heatmap_adaptive_scale_batch(center_map)
+        if self.style == 'heatmap_adaptive_scale' and center_map.shape[1]==1:
+            return self.parse_centermap_heatmap_adaptive_scale_batch(center_map)
+        elif self.style == 'heatmap_adaptive_scale' and center_map.shape[1]==self.size:
+            return self.parse_3dcentermap_heatmap_adaptive_scale_batch(center_map)
+        else:
+            raise NotImplementedError
+
+    def generate_centermap_mask(self,center_locs):
+        centermap = np.ones((self.dims,self.size,self.size))
+        centermap[-1] = 0
+        for center_loc in center_locs:
+            map_coord = ((center_loc+1)/2 * self.size).astype(np.int)-1
+            centermap[0,map_coord[0],map_coord[1]] = 0
+            centermap[1,map_coord[0],map_coord[1]] = 1
+        return centermap
+
+    def generate_centermap_heatmap(self,center_locs, kernel_size=5,**kwargs):
+        hms = np.zeros((self.dims, self.size, self.size),dtype=np.float32)
+        offset = (kernel_size-1)//2
+        for idx, pt in enumerate(center_locs):
+            x, y = int((pt[0]+1)/2*self.size), int((pt[1]+1)/2*self.size)
+            if x < 0 or y < 0 or \
+               x >= self.size or y >= self.size:
+                continue
+
+            ul = int(np.round(x - offset)), int(np.round(y - offset))
+            br = int(np.round(x + offset+1)), int(np.round(y + offset+1))
+
+            c, d = max(0, -ul[0]), min(br[0], self.size) - ul[0]
+            a, b = max(0, -ul[1]), min(br[1], self.size) - ul[1]
+
+            cc, dd = max(0, ul[0]), min(br[0], self.size)
+            aa, bb = max(0, ul[1]), min(br[1], self.size)
+            hms[0,aa:bb, cc:dd] = np.maximum(
+                hms[0,aa:bb, cc:dd], self.gk_group[kernel_size][a:b, c:d])
+        return hms
 
     def generate_centermap_heatmap_adaptive_scale(self, center_locs, bboxes_hw_norm, occluded_by_who=None,**kwargs):
         '''
@@ -92,6 +138,140 @@ class CenterMap(object):
             heatmap[0, y, x]=1
         return heatmap
 
+    def generate_centermap_3dheatmap_adaptive_scale_batch(self, batch_center_locs, radius=3, depth_num=None, device='cuda:0'):
+        if depth_num is None:
+            depth_num = int(self.size // 2)
+        heatmap = torch.zeros((len(batch_center_locs), depth_num, self.size, self.size), device=device)
+        
+        for bid, center_locs in enumerate(batch_center_locs):
+            for cid, center in enumerate(center_locs):
+                diameter = int(2 * radius + 1)
+                gaussian_patch = gaussian3D(w=diameter, h=diameter, d=diameter,\
+                center=(diameter // 2, diameter // 2, diameter // 2), s=float(diameter) / 6, device=device)
+
+                xa, ya, za = int(max(0, center[0] - diameter // 2)), int(max(0, center[1] - diameter // 2)), int(max(0, center[2] - diameter // 2))
+                xb, yb, zb = int(min(center[0]+diameter//2, self.size-1)), int(min(center[1]+diameter//2, self.size-1)), int(min(center[2]+diameter//2, depth_num-1))
+
+                gxa = xa - int(center[0] - diameter // 2)
+                gya = ya - int(center[1] - diameter // 2)
+                gza = za - int(center[2] - diameter // 2)
+
+                gxb = xb + 1 - xa + gxa
+                gyb = yb + 1 - ya + gya
+                gzb = zb + 1 - za + gza
+
+                heatmap[bid, za:zb + 1, ya:yb + 1, xa:xb + 1] = torch.max(
+                    torch.cat(tuple([
+                        heatmap[bid, za:zb + 1, ya:yb + 1, xa:xb + 1].unsqueeze(0),
+                        gaussian_patch[gza:gzb, gya:gyb, gxa:gxb].unsqueeze(0)
+                    ])), 0)[0]
+        return heatmap
+
+    def generate_centermap_3dheatmap_adaptive_scale(self, center_locs, depth_num=None, device='cpu'):
+        '''
+        center_locs: center locations (X,Y,Z) on 3D center map (BxDxHxW)
+        '''
+        if depth_num is None:
+            depth_num = int(self.size // 2)
+        heatmap = torch.zeros((depth_num, self.size, self.size)).to(device)
+        if len(center_locs)==0:
+            return heatmap, False
+        
+        adaptive_depth_uncertainty = np.array(center_locs)[:,2].astype(np.float16) / depth_num
+        depth_uncertainty = ((4 + adaptive_depth_uncertainty * 4).astype(np.int32) // 2) * 2 + 1
+
+        adaptive_image_scale = (1 - adaptive_depth_uncertainty) / 2.
+        uv_radius = (_calc_uv_radius_(adaptive_image_scale, map_size=self.size) * 2 + 1).astype(np.int32)
+        
+        for cid, center in enumerate(center_locs):
+            width, height = uv_radius[cid], uv_radius[cid]
+            depth = depth_uncertainty[cid]
+            diameter = np.linalg.norm([width/2., height/2., depth/2.], ord=2, axis=0) * 2
+            
+            gaussian_patch = gaussian3D(w=width, h=height, d=depth,\
+                center=(width // 2, height // 2, depth // 2), s=float(diameter) / 6, device=device)
+
+            xa, ya, za = int(max(0, center[0] - width // 2)), int(max(0, center[1] - height // 2)), int(max(0, center[2] - depth // 2))
+            xb, yb, zb = int(min(center[0] + width // 2, self.size-1)), int(min(center[1] + height // 2, self.size-1)), int(min(center[2] + depth // 2, depth_num-1))
+
+            gxa = xa - int(center[0] - width // 2)
+            gya = ya - int(center[1] - height // 2)
+            gza = za - int(center[2] - depth // 2)
+
+            gxb = xb + 1 - xa + gxa
+            gyb = yb + 1 - ya + gya
+            gzb = zb + 1 - za + gza
+
+            heatmap[za:zb + 1, ya:yb + 1, xa:xb + 1] = torch.max(
+                torch.cat(tuple([
+                    heatmap[za:zb + 1, ya:yb + 1, xa:xb + 1].unsqueeze(0),
+                    gaussian_patch[gza:gzb, gya:gyb, gxa:gxb].unsqueeze(0)
+                ])), 0)[0]
+        return heatmap, True
+    
+    def generate_centermap_3dheatmap_adaptive_scale_org(self, center_locs, radius=3, depth_num=None, device='cpu'):
+        '''
+        center_locs: center locations (X,Y,Z) on 3D center map (BxDxHxW)
+        '''
+        if depth_num is None:
+            depth_num = int(self.size // 2)
+        heatmap = torch.zeros((depth_num, self.size, self.size)).to(device)
+        if len(center_locs)==0:
+            return heatmap, False
+        
+        for cid, center in enumerate(center_locs):
+            
+            diameter = int(2 * radius + 1)
+            
+            gaussian_patch = gaussian3D(w=diameter, h=diameter, d=diameter,\
+            center=(diameter // 2, diameter // 2, diameter // 2), s=float(diameter) / 6, device=device)
+
+            xa, ya, za = int(max(0, center[0] - diameter // 2)), int(max(0, center[1] - diameter // 2)), int(max(0, center[2] - diameter // 2))
+            xb, yb, zb = int(min(center[0]+diameter//2, self.size-1)), int(min(center[1]+diameter//2, self.size-1)), int(min(center[2]+diameter//2, depth_num-1))
+
+            gxa = xa - int(center[0] - diameter // 2)
+            gya = ya - int(center[1] - diameter // 2)
+            gza = za - int(center[2] - diameter // 2)
+
+            gxb = xb + 1 - xa + gxa
+            gyb = yb + 1 - ya + gya
+            gzb = zb + 1 - za + gza
+
+            heatmap[za:zb + 1, ya:yb + 1, xa:xb + 1] = torch.max(
+                torch.cat(tuple([
+                    heatmap[za:zb + 1, ya:yb + 1, xa:xb + 1].unsqueeze(0),
+                    gaussian_patch[gza:gzb, gya:gyb, gxa:gxb].unsqueeze(0)
+                ])), 0)[0]
+        return heatmap, True
+
+
+    def multi_channel_nms(self,center_maps):
+        center_map_pooled = []
+        for depth_idx, center_map in enumerate(center_maps):
+            center_map_pooled.append(nms(center_map[None], pool_func=self.pool_group[args().kernel_sizes[depth_idx]]))
+        center_maps_max = torch.max(torch.cat(center_map_pooled,0),0).values
+        center_map_nms = nms(center_maps_max[None], pool_func=self.pool_group[args().kernel_sizes[-1]])[0]
+        return center_map_nms
+
+    def parse_centermap_mask(self,center_map):
+        center_map_bool = torch.argmax(center_map,1).bool()
+        center_idx = torch.stack(torch.where(center_map_bool)).transpose(1,0)
+        return center_idx
+
+    def parse_centermap_heatmap(self,center_maps):
+        if center_maps.shape[0]>1:
+            center_map_nms = self.multi_channel_nms(center_maps)
+        else:
+            center_map_nms = nms(center_maps, pool_func=self.pool_group[args().kernel_sizes[-1]])[0]
+        h, w = center_map_nms.shape
+
+        centermap = center_map_nms.view(-1)
+        confidence, index = centermap.topk(self.max_person)
+        x = index%w
+        y = (index/w).long()
+        idx_topk = torch.stack((y,x),dim=1)
+        center_preds, conf_pred = idx_topk[confidence>self.conf_thresh], confidence[confidence>self.conf_thresh]
+        return center_preds, conf_pred
 
     def parse_centermap_heatmap_adaptive_scale(self, center_maps):
         center_map_nms = nms(center_maps, pool_func=self.pool_group[args().kernel_sizes[-1]])[0]
@@ -102,32 +282,76 @@ class CenterMap(object):
         x = index%w
         y = (index/float(w)).long()
         idx_topk = torch.stack((y,x),dim=1)
-        centers_pred, conf_pred = idx_topk[confidence>self.conf_thresh], confidence[confidence>self.conf_thresh]
-        return centers_pred, conf_pred
+        center_preds, conf_pred = idx_topk[confidence>self.conf_thresh], confidence[confidence>self.conf_thresh]
+        return center_preds, conf_pred
 
-    def parse_centermap_heatmap_adaptive_scale_batch(self, center_maps):
+    def parse_centermap_heatmap_adaptive_scale_batch(self, center_maps, top_n_people=None):
         center_map_nms = nms(center_maps, pool_func=self.pool_group[args().kernel_sizes[-1]])
         b, c, h, w = center_map_nms.shape
-        K = self.max_person
+        K = self.max_person if top_n_people is None else top_n_people
 
         topk_scores, topk_inds = torch.topk(center_map_nms.reshape(b, c, -1), K)
         topk_inds = topk_inds % (h * w)
-        topk_ys = torch.div(topk_inds, w, rounding_mode='floor').int().float()
+        topk_ys = torch.div(topk_inds.long(), w).float()
         topk_xs = (topk_inds % w).int().float()
         # get all topk in in a batch
         topk_score, index = torch.topk(topk_scores.reshape(b, -1), K)
         # div by K because index is grouped by K(C x K shape)
-        topk_clses = torch.div(index, K, rounding_mode='floor').int()
+        topk_clses = torch.div(index.long(), K)
         topk_inds = gather_feature(topk_inds.view(b, -1, 1), index).reshape(b, K)
         topk_ys = gather_feature(topk_ys.reshape(b, -1, 1), index).reshape(b, K)
         topk_xs = gather_feature(topk_xs.reshape(b, -1, 1), index).reshape(b, K)
 
-        mask = topk_score>self.conf_thresh
+        if top_n_people is not None:
+            mask = topk_score>0
+            mask[:] = True
+        else:
+            mask = topk_score>self.conf_thresh
         batch_ids = torch.where(mask)[0]
         center_yxs = torch.stack([topk_ys[mask], topk_xs[mask]]).permute((1,0))
         return batch_ids, topk_inds[mask], center_yxs, topk_score[mask]
 
+    def parse_3dcentermap_heatmap_adaptive_scale_batch(self, center_maps, top_n_people=None):
+        center_map_nms = nms(center_maps, pool_func=self.maxpool3d).squeeze(1)
+        b, c, h, w = center_map_nms.shape
 
+        K = self.max_person if top_n_people is None else top_n_people
+
+        # acquire top k value/index at each depth
+        topk_scores, topk_inds = torch.topk(center_map_nms.reshape(b, c, -1), K)
+        topk_inds = topk_inds % (h * w)
+        topk_ys = torch.div(topk_inds.long(), w).float()
+        topk_xs = (topk_inds % w).int().float()
+        # get all topk in in a batch
+        topk_score, index = torch.topk(topk_scores.reshape(b, -1), K)
+        topk_inds = gather_feature(topk_inds.view(b, -1, 1), index).reshape(b, K)
+        # div by K because index is grouped by K(C x K shape)
+        topk_zs = torch.div(index.long(), K)
+        topk_ys = gather_feature(topk_ys.reshape(b, -1, 1), index).reshape(b, K)
+        topk_xs = gather_feature(topk_xs.reshape(b, -1, 1), index).reshape(b, K)
+
+        if top_n_people is not None:
+            mask = topk_score>0
+            mask[:] = True
+        else:
+            mask = topk_score>self.conf_thresh
+        batch_ids = torch.where(mask)[0]
+        center_zyxs = torch.stack([topk_zs[mask], topk_ys[mask], topk_xs[mask]]).permute((1,0)).long()
+
+        return [batch_ids, center_zyxs, topk_score[mask]]
+
+
+def get_3Dcoord_maps(size=128, z_base=None):
+    range_arr = torch.arange(size, dtype=torch.float32)
+    if z_base is None:
+        Z_map = range_arr.reshape(1,size,1,1,1).repeat(1,1,size,size,1) / size * 2 -1
+    else:
+        Z_map = z_base.reshape(1,size,1,1,1).repeat(1,1,size,size,1)
+    Y_map = range_arr.reshape(1,1,size,1,1).repeat(1,size,1,size,1) / size * 2 -1
+    X_map = range_arr.reshape(1,1,1,size,1).repeat(1,size,size,1,1) / size * 2 -1
+
+    out = torch.cat([Z_map,Y_map,X_map], dim=-1)
+    return out
 
 def nms(det, pool_func=None):
     maxm = pool_func(det)
@@ -141,6 +365,12 @@ def _calc_radius_(bboxes_hw_norm, map_size=64):
     minimum_radius = map_size / 32.
     scale_factor = map_size / 16.
     scales = np.linalg.norm(np.array(bboxes_hw_norm)/2, ord=2, axis=1)
+    radius = (scales * scale_factor + minimum_radius).astype(np.uint8)
+    return radius
+
+def _calc_uv_radius_(scales, map_size=64):
+    minimum_radius = map_size / 32.
+    scale_factor = map_size / 16.
     radius = (scales * scale_factor + minimum_radius).astype(np.uint8)
     return radius
 
@@ -167,6 +397,26 @@ def gaussian2D(shape, sigma=1):
     h[h < np.finfo(h.dtype).eps * h.max()] = 0
     return h
 
+def gaussian3D(d, h, w, center, s=2, device='cuda'):
+    """
+    :param d: hmap depth
+    :param h: hmap height
+    :param w: hmap width
+    :param center: center of the Gaussian | ORDER: (x, y, z)
+    :param s: sigma of the Gaussian
+    :return: heatmap (shape torch.Size([d, h, w])) with a gaussian centered in `center`
+    """
+    x = torch.arange(0, w, 1).float().to(device)
+    y = torch.arange(0, h, 1).float().to(device)
+    y = y.unsqueeze(1)
+    z = torch.arange(0, d, 1).float().to(device)
+    z = z.unsqueeze(1).unsqueeze(1)
+
+    x0 = center[0]
+    y0 = center[1]
+    z0 = center[2]
+
+    return torch.exp(-1 * ((x - x0) ** 2 + (y - y0) ** 2 + (z - z0) ** 2) / s ** 2)
 
 def process_center(center_gt, centermap):
     center_list = []
@@ -211,6 +461,42 @@ def test_centermaps():
         center_list = process_center(result[0], centermaps[i])
         print(center_list)
 
+def visualize_3d_hmap(hmap):
+    # type: (Union[np.ndarray, torch.Tensor]) -> None
+    """
+    Interactive visualization of 3D heatmaps.
+    :param hmap: 3D heatmap with values in [0,1] and shape (D, H, W)
+    """
+    import cv2
+
+    if not (type(hmap) is np.ndarray):
+        try:
+            hmap = hmap.cpu().numpy()
+        except:
+            hmap = hmap.detach().cpu().numpy()
+
+    hmap[hmap < 0] = 0
+    hmap[hmap > 1] = 1
+    hmap = (hmap * 255).astype(np.uint8)
+    for d, x in enumerate(hmap):
+        x = cv2.applyColorMap(x, colormap=cv2.COLORMAP_JET)
+        x = cv2.putText(x, f'{d}', (10, 20), cv2.FONT_HERSHEY_PLAIN, 1, (255, 128, 128), 2, cv2.LINE_AA)
+        cv2.imshow(f'press ESC to advance in the depth dimension', x)
+        cv2.waitKey()
+    cv2.destroyAllWindows()
+
+def test_centermaps_3D(visualize=False):
+    args().model_version=4
+    CM = CenterMap()
+    center_locs = np.array([[0.2,0.3,0.4],[-0.3,-0.7,-0.5]])
+    bboxes = [np.array([1.2,1.3]),np.array([0.5,0.4])]
+    center_locs = torch.from_numpy(center_locs)
+    centermap = CM.generate_centermap_3dheatmap_adaptive_scale(center_locs,bboxes_hw_norm=bboxes)
+    print(centermap.shape)
+    results = CM.parse_3dcentermap_heatmap_adaptive_scale_batch(centermap[None])
+    print(results)
+    if visualize:
+        visualize_3d_hmap(centermap)
 
 if __name__ == '__main__':
-    test_centermaps()
+    test_centermaps_3D(visualize=False)

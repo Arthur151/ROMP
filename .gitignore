@@ -14,3 +14,4 @@ dist/
 .eggs/
 __pycache__/
 demo/images/
+log/*

@@ -10,18 +10,20 @@ import platform
 
 currentfile = os.path.abspath(__file__)
 code_dir = currentfile.replace('config.py','')
-project_dir = currentfile.replace(os.sep + 'romp' + os.sep + 'lib' + os.sep + 'config.py','')
-source_dir = currentfile.replace(os.sep + 'lib' + os.sep + 'config.py','')
-root_dir = project_dir.replace(project_dir.split(os.sep)[-1],'')
+project_dir = currentfile.replace(os.path.sep+os.path.join('romp', 'lib', 'config.py'), '')
+source_dir = currentfile.replace(os.path.sep+os.path.join('lib', 'config.py'), '')
+root_dir = project_dir.replace(project_dir.split(os.path.sep)[-1], '')
 
 time_stamp = time.strftime('%Y-%m-%d_%H:%M:%S',time.localtime(int(round(time.time()*1000))/1000))
 yaml_timestamp = os.path.abspath(os.path.join(project_dir, 'active_configs' + os.sep + "active_context_{}.yaml".format(time_stamp).replace(":","_")))
 
 model_dir = os.path.join(project_dir,'model_data')
 trained_model_dir = os.path.join(project_dir,'trained_models')
+smpl_model_dir = os.path.join(os.path.expanduser("~"),'.romp')
+if not os.path.exists(smpl_model_dir):
+    smpl_model_dir = os.path.join(model_dir,'smpl_models')
 
 print("yaml_timestamp ", yaml_timestamp)
-
 
 def parse_args(input_args=None):
 
@@ -44,6 +46,31 @@ def parse_args(input_args=None):
     parser.add_argument('--renderer', type = str, default = 'pytorch3d', help = 'character: pytorch3d / pyrender')
     parser.add_argument('-f', type = str, default = None, help = 'do nothing, just to deal with the invalid input args from jupyter notebook') 
 
+    V6_group = parser.add_argument_group(title='V6 - BEV options')
+    V6_group.add_argument('--bv_with_fv_condition',type = bool,default = True)
+    V6_group.add_argument('--add_offsetmap',type = bool,default = True)
+    V6_group.add_argument('--fv_conditioned_way',type = str,default = 'attention')
+    V6_group.add_argument('--num_depth_level',type = int,default = 8,help = 'number of depth.')
+    V6_group.add_argument('--scale_anchor',type = bool,default = True)
+    V6_group.add_argument('--sampling_aggregation_way',type = str,default = 'floor')
+    V6_group.add_argument('--cam_dist_thresh',type = float,default = 0.1)
+    # focal length: when FOV=50 deg, 548 = H/2 * 1/(tan(FOV/2)) = 512/2. * 1./np.tan(np.radians(25))
+    # focal length: when FOV=60 deg, 443.4 = H/2 * 1/(tan(FOV/2)) = 512/2. * 1./np.tan(np.radians(30))
+    # focal length: when FOV=72 deg, 352 = H/2 * 1/(tan(FOV/2)) = 512/2. * 1./np.tan(np.radians(36))
+    V6_group.add_argument('--focal_length',type=float, default = 443.4, help = 'Default focal length, adopted from JTA dataset')
+    V6_group.add_argument('--FOV',type=int, default = 60, help = 'Field of View')
+    V6_group.add_argument('--matching_pckh_thresh',type=float, default = 0.6, help = 'Threshold to determine the sucess matching based on pckh')
+    V6_group.add_argument('--baby_threshold',type = float,default = 0.8)
+    V6_group.add_argument('--calc_smpl_mesh',type = bool,default = True)
+    V6_group.add_argument('--calc_mesh_loss',type = bool,default = True)
+    
+    relative_group = parser.add_argument_group(title='options for learning relativites')
+    relative_group.add_argument('--learn_relative', type = bool,default = False)
+    relative_group.add_argument('--learn_relative_shape', type = bool,default = False)
+    relative_group.add_argument('--learn_relative_age', type = bool,default = False)
+    relative_group.add_argument('--learn_relative_depth', type = bool,default = False)
+    relative_group.add_argument('--depth_loss_type', type=str, default='Piecewise',help='Log | Piecewise | ')
+    
     mode_group = parser.add_argument_group(title='mode options')
     # mode settings
     mode_group.add_argument('--model_return_loss', type=bool, default=False,help = 'wether return loss value from the model for balanced GPU memory usage')
@@ -51,8 +78,7 @@ def parse_args(input_args=None):
     mode_group.add_argument('--multi_person',type = bool,default = True,help = 'whether to make Multi-person Recovery')
     mode_group.add_argument('--new_training',type = bool,default = False, help='learning centermap only in first few iterations for stable training.')
     mode_group.add_argument('--perspective_proj',type = bool,default = False,help = 'whether to use perspective projection, else use orthentic projection.')
-    mode_group.add_argument('--FOV',type = float,default = 60, help = 'The camera field of view (eular angle) used for visualization')
-    mode_group.add_argument('--focal_length',type=float, default = 443.4, help = 'Default focal length, adopted from JTA dataset')
+    mode_group.add_argument('--image_loading_mode', type=str, default='image', help='The Base Class (image, image_relative) used for loading dataset.')
 
     train_group = parser.add_argument_group(title='training options')
     # basic training settings
@@ -61,13 +87,12 @@ def parse_args(input_args=None):
     train_group.add_argument('--weight_decay', help='weight_decay', default=1e-6,type=float)
     train_group.add_argument('--epoch', type = int, default = 120, help = 'training epochs')
     train_group.add_argument('--fine_tune',type = bool, default = True, help = 'whether to run online')
-    train_group.add_argument('--GPUS',type=str, default='0', help='gpus')
+    train_group.add_argument('--gpu',type=str, default='0', help='gpu')
     train_group.add_argument('--batch_size',default=64,help='batch_size',type=int)
     train_group.add_argument('--input_size',default=512,type=int,help = 'size of input image')
     train_group.add_argument('--master_batch_size',default=-1,help='batch_size',type=int)
     train_group.add_argument('--nw',default=4,help='number of workers',type=int)
     train_group.add_argument('--optimizer_type',type = str,default = 'Adam',help = 'choice of optimizer')
-    train_group.add_argument('--pretrain', type=str, default='simplebaseline',help='imagenet or spin or simplebaseline')
     train_group.add_argument('--fix_backbone_training_scratch',type = bool,default = False,help = 'whether to fix the backbone features if we train the model from scratch.')
 
     model_group = parser.add_argument_group(title='model settings')
@@ -150,21 +175,22 @@ def parse_args(input_args=None):
     dataset_group.add_argument('--use_eft', type=bool, default=True,help = 'wether use eft annotations for training')
     
     smpl_group = parser.add_argument_group(title='SMPL options')
-    #smpl info
-    #smpl_group.add_argument('--smpl-mean-param-path',type = str,default = os.path.join(model_dir,'parameters','neutral_smpl_mean_params.h5'),
-    #    help = 'the path for mean smpl param value')
-    #smpl_group.add_argument('--smpl-model',type = str,default = os.path.join(model_dir,'parameters','neutral_smpl_with_cocoplus_reg.txt'),
-    #    help = 'smpl model path')
     smpl_group.add_argument('--smpl_mesh_root_align',type = bool,default =True)
     smpl_group.add_argument('--Rot_type', type=str, default='6D', help='rotation representation type: angular, 6D')
     smpl_group.add_argument('--rot_dim', type=int, default=6, help='rotation representation type: 3D angular, 6D')
     smpl_group.add_argument('--cam_dim',type = int,default = 3, help = 'the dimention of camera param')
     smpl_group.add_argument('--beta_dim',type = int,default = 10, help = 'the dimention of SMPL shape param, beta')
     smpl_group.add_argument('--smpl_joint_num',type = int,default = 22, help = 'joint number of SMPL model we estimate')
-    smpl_group.add_argument('--smpl_model_path',type = str,default = os.path.join(model_dir,'parameters'),help = 'smpl model path')
-    smpl_group.add_argument('--smpl_J_reg_h37m_path',type = str,default = os.path.join(model_dir, 'parameters', 'J_regressor_h36m.npy'),help = 'SMPL regressor for 17 joints from H36M datasets')
-    smpl_group.add_argument('--smpl_J_reg_extra_path',type = str,default = os.path.join(model_dir, 'parameters', 'J_regressor_extra.npy'),help = 'SMPL regressor for 9 extra joints from different datasets')
     
+    #smpl_group.add_argument('--smpl_model_path',type = str,default = os.path.join(model_dir,'parameters'),help = 'smpl model path')
+    #smpl_group.add_argument('--smpl_J_reg_h37m_path',type = str,default = os.path.join(model_dir, 'parameters', 'J_regressor_h36m.npy'),help = 'SMPL regressor for 17 joints from H36M datasets')
+    #smpl_group.add_argument('--smpl_J_reg_extra_path',type = str,default = os.path.join(model_dir, 'parameters', 'J_regressor_extra.npy'),help = 'SMPL regressor for 9 extra joints from different datasets')
+    
+    smpl_group.add_argument('--smpl_model_path',type = str,default = os.path.join(smpl_model_dir,'smpl_packed_info.pth'),help = 'smpl model path')
+    smpl_group.add_argument('--smpla_model_path',type = str,default = os.path.join(smpl_model_dir,'SMPLA_NEUTRAL.pth'),help = 'smpl model path') #SMPLA_FEMALE gets better MPJPE #smpla_packed_info.pth
+    smpl_group.add_argument('--smil_model_path',type = str,default = os.path.join(smpl_model_dir,'smil_packed_info.pth'),help = 'smpl model path')
+    smpl_group.add_argument('--smpl_prior_path',type = str,default = os.path.join(model_dir,'parameters','gmm_08.pkl'),help = 'smpl model path')
+
     smpl_group.add_argument('--smpl_uvmap',type = str,default = os.path.join(model_dir, 'parameters', 'smpl_vt_ft.npz'),help = 'smpl UV Map coordinates for each vertice')
     smpl_group.add_argument('--wardrobe', type = str, default=os.path.join(model_dir, 'wardrobe'), help = 'path of smpl UV textures')
     smpl_group.add_argument('--mesh_cloth',type = str,default = '031',help = 'pick up cloth from the wardrobe or simplely use a single color')
@@ -175,6 +201,7 @@ def parse_args(input_args=None):
     debug_group.add_argument('--track_memory_usage',type = bool,default = False)
 
     parsed_args = parser.parse_args(args=input_args)
+    parsed_args.gpu = str(parsed_args.gpu)
     parsed_args.adjust_lr_epoch = []
     parsed_args.kernel_sizes = [5]
     config_yml_path = os.path.join(project_dir, parsed_args.configs_yml)
@@ -254,21 +281,3 @@ class ConfigContext(object):
 
 def args():
     return ConfigContext.parsed_args
-
-# This would result in low FPS
-# def args():
-#     parsed_args = parse_args(['--tab', 'ROMP_v1']) 
-#     if os.path.exists(ConfigContext.yaml_filename):
-#         with open(ConfigContext.yaml_filename, 'r') as f:
-#             argsdict = yaml.load(f, Loader=yaml.FullLoader)
-#     else:
-#         # This will write a new Yaml if the yaml doesn't exist.
-#         # configcontext.__forceyaml__(configcontext.yaml_filename)
-#         with open(ConfigContext.yaml_filename, 'w') as f:
-#             d = ConfigContext.parsed_args.__dict__
-#             yaml.dump(d, f)
-#         with open(ConfigContext.yaml_filename, 'r') as f:
-#             argsdict = yaml.load(f, Loader=yaml.FullLoader)
-#     for k, v in argsdict.items():
-#         parsed_args.__dict__[k] = v
-#     return parsed_args

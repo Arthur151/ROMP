@@ -1,6 +1,27 @@
 import torch
 from torch import nn
 
+def get_3Dcoord_maps_halfz(size, z_base):
+    range_arr = torch.arange(size, dtype=torch.float32)
+    z_len = len(z_base)
+    Z_map = z_base.reshape(1,z_len,1,1,1).repeat(1,1,size,size,1)
+    Y_map = range_arr.reshape(1,1,size,1,1).repeat(1,z_len,1,size,1) / size * 2 -1
+    X_map = range_arr.reshape(1,1,1,size,1).repeat(1,z_len,size,1,1) / size * 2 -1
+
+    out = torch.cat([Z_map,Y_map,X_map], dim=-1)
+    return out
+
+def get_3Dcoord_maps(size=128, z_base=None):
+    range_arr = torch.arange(size, dtype=torch.float32)
+    if z_base is None:
+        Z_map = range_arr.reshape(1,size,1,1,1).repeat(1,1,size,size,1) / size * 2 -1
+    else:
+        Z_map = z_base.reshape(1,size,1,1,1).repeat(1,1,size,size,1)
+    Y_map = range_arr.reshape(1,1,size,1,1).repeat(1,size,1,size,1) / size * 2 -1
+    X_map = range_arr.reshape(1,1,1,size,1).repeat(1,size,size,1,1) / size * 2 -1
+
+    out = torch.cat([Z_map,Y_map,X_map], dim=-1)
+    return out
 
 '''
 brought from https://github.com/GlastonburyC/coord-conv-pytorch/blob/master/coordConv.py

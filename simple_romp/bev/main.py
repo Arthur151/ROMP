@@ -30,7 +30,7 @@ def bev_settings(input_args=sys.argv[1:]):
     parser.add_argument('--model_id', type=int, default=2, help = 'Whether to process the input as a long image, sliding window way')
     parser.add_argument('-i', '--input', type=str, default='/home/yusun/CenterMesh/simple_romp/test/ages.png', help = 'Path to the input image / video')
     parser.add_argument('-o', '--save_path', type=str, default=osp.join(osp.expanduser("~"),'BEV_results'), help = 'Path to save the results')
-    parser.add_argument('--crowd', action='store_true', help = 'Whether to process the input as a long image, sliding window way')
+    parser.add_argument('--crowd', action='store_false', help = 'Whether to process the input as a long image, sliding window way')
     parser.add_argument('--GPU', type=int, default=0, help = 'The gpu device number to run the inference on. If GPU=-1, then running in cpu mode')
 
     parser.add_argument('--overlap_ratio', type=float, default=long_conf_dict[model_id][3], help = 'The frame_rate of saved video results')
@@ -134,7 +134,7 @@ class BEV(nn.Module):
     @time_cost('BEV')
     @torch.no_grad()
     def forward(self, image, signal_ID=0, **kwargs):
-        if image.shape[1] / image.shape[0] >= 2:
+        if image.shape[1] / image.shape[0] >= 2 and self.settings.crowd:
             outputs = self.process_long_image(image, show_patch_results=self.settings.show_patch_results)
         else:
             outputs = self.process_normal_image(image, signal_ID)

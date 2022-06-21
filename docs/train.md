@@ -2,7 +2,7 @@
 
 1. Please first prepare your datasets follow [dataset.md](dataset.md) and finish the installation follow [installation.md](installation.md).
 
-2. Run the script:
+2. ROMP:
 You can train ROMP via
 ```
 # go into the path/to/ROMP
@@ -19,8 +19,21 @@ sh scripts/V1_hrnet_3dpwft.sh
 # To fine-tune the ROMP with ResNet-50 as backbone, please run
 sh scripts/V1_resnet_3dpwft.sh
 ```
-You can change the configurations (e.g. used GPUs, batch size) in the corresponding configs (.yml) in ROMP/configs.
+You can change the configurations (e.g. used batch size, datasets) in the corresponding configs (.yml) in ROMP/configs.
 
+3. BEV:  
+You can train BEV via
+```
+# go into the path/to/ROMP
+cd ROMP
+# To train BEV, please run
+sh scripts/V6_train.sh
+# To fine-tuning BEV, please put https://github.com/Arthur151/ROMP/releases/download/V2.1/BEV_HRNet32_V6.pkl to trained_models, and run
+sh scripts/V6_ft.sh
+```
+You can change the configurations (e.g. used batch size, datasets) in the corresponding configs (.yml) in ROMP/configs.
+
+4. Logs & visualization:  
 The training logs wiil be saved in ROMP/log. 
 
 The intermediate training/validation results will be visualized and saved in result_image_train/result_images.
@@ -110,3 +123,13 @@ For instance, if your dataloader is class MyDataset in datasets/mydataset.py, in
 from .mydataset import MyDataset
 dataset_dict = {'mydataset': MyDataset, 'h36m': H36M, 'mpii': MPII ... }
 ``` 
+
+### Test the data loading
+
+We can test the data loading of a datasets, like Human3.6M via 
+```
+cd ROMP
+python -m romp.lib.dataset.h36m --configs_yml='configs/v6.yml'
+
+```
+Annotations would be drawed on the input image. The visualized results would be saved in ROMP/test/.

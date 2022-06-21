@@ -5,7 +5,8 @@ import numpy as np
 def rot6D_to_angular(rot6D):
     batch_size = rot6D.shape[0]
     pred_rotmat = rot6d_to_rotmat(rot6D).view(batch_size, -1, 3, 3)
-    pose = rotation_matrix_to_angle_axis(pred_rotmat.reshape(-1, 3, 3)).reshape(batch_size, -1)
+    pose = rotation_matrix_to_angle_axis(
+        pred_rotmat.reshape(-1, 3, 3)).reshape(batch_size, -1)
     return pose
 
 def rot6d_to_rotmat_batch(x):
@@ -425,15 +426,6 @@ def rotation_matrix_to_angle_axis(rotation_matrix):
         >>> input = torch.rand(2, 3, 4)  # Nx4x4
         >>> output = tgm.rotation_matrix_to_angle_axis(input)  # Nx3
     """
-    if rotation_matrix.shape[1:] == (3,3):
-        hom_mat = torch.tensor([0, 0, 1]).float()
-        rot_mat = rotation_matrix.reshape(-1, 3, 3)
-        batch_size, device = rot_mat.shape[0], rot_mat.device
-        hom_mat = hom_mat.view(1, 3, 1)
-        hom_mat = hom_mat.repeat(batch_size, 1, 1).contiguous()
-        hom_mat = hom_mat.to(device)
-        rotation_matrix = torch.cat([rot_mat, hom_mat], dim=-1)
-
     quaternion = rotation_matrix_to_quaternion(rotation_matrix)
     aa = quaternion_to_angle_axis(quaternion)
     aa[torch.isnan(aa)] = 0.0
@@ -522,10 +514,6 @@ def rotation_matrix_to_quaternion(rotation_matrix, eps=1e-6):
         raise ValueError(
             "Input size must be a three dimensional tensor. Got {}".format(
                 rotation_matrix.shape))
-    if not rotation_matrix.shape[-2:] == (3, 4):
-        raise ValueError(
-            "Input size must be a N x 3 x 4  tensor. Got {}".format(
-                rotation_matrix.shape))
 
     rmat_t = torch.transpose(rotation_matrix, 1, 2)
 
@@ -568,9 +556,8 @@ def rotation_matrix_to_quaternion(rotation_matrix, eps=1e-6):
     mask_c3 = mask_c3.view(-1, 1).type_as(q3)
 
     q = q0 * mask_c0 + q1 * mask_c1 + q2 * mask_c2 + q3 * mask_c3
-    q /= torch.sqrt(t0_rep * mask_c0 + t1_rep * mask_c1 +  # noqa
-                    t2_rep * mask_c2 + t3_rep * mask_c3)  # noqa
-    q *= 0.5
+    q = q / torch.sqrt(t0_rep * mask_c0 + t1_rep * mask_c1 +  # noqa
+                    t2_rep * mask_c2 + t3_rep * mask_c3) * 0.5  # noqa
     return q
 
 

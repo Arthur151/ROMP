@@ -1,0 +1,76 @@
+ARGS:
+ tab: 'V6_hrnet_relative_train'
+ dataset: h36m,muco,coco,lsp,agora,pw3d,relative_human,posetrack
+ eval_datasets: 'relative,agora'
+ gpu: 0
+ distributed_training: False
+ model_version: 6
+ centermap_size: 128
+ model_return_loss: True
+ rotate_prob: 0.2
+ image_loading_mode: 'image_relative'
+ 
+ fine_tune: False
+ new_training: True
+ new_training_iters: 600
+ fast_eval_iter: 2000
+ print_freq: 50
+
+ learn_relative: True
+ learn_relative_age: True
+ learn_relative_depth: True
+ depth_loss_type: 'Piecewise'
+ add_depth_encoding: True
+
+ master_batch_size: -1
+ val_batch_size: 16
+ batch_size: 32 # 64
+ nw: 4
+ nw_eval: 2
+ lr: 0.00005
+ 
+ cam_dim: 3
+ head_block_num: 1
+ perspective_proj: True
+ max_supervise_num: 64
+
+ model_path: None
+
+ match_preds_to_gts_for_supervision: True
+ fix_backbone_training_scratch: False
+ eval: False
+ supervise_global_rot: False # agora
+ supervise_cam_params: True
+
+ collision_aware_centermap: True
+ homogenize_pose_space: True
+ shuffle_crop_ratio_2d: 0.6
+ shuffle_crop_ratio_3d: 0.6
+ Synthetic_occlusion_ratio: 0
+
+ backbone: 'hrnet' # 'resnet' # 
+ centermap_conf_thresh: 0.12 #0.2
+
+loss_weight:
+  MPJPE: 200. 
+  PAMPJPE: 360.
+  P_KP2D: 400.
+  Pose: 80.
+  Shape: 60.
+  Prior: 1.6
+  KP2D: 10.
+  CenterMap: 100.
+  CenterMap_3D: 1000.
+  Cam: 200.
+  R_Age: 4000. 
+  R_Depth: 400.
+
+sample_prob:
+  h36m: 0.14
+  muco: 0.14
+  coco: 0.12
+  lsp: 0.06
+  agora: 0.14
+  pw3d: 0.14
+  relative_human: 0.16
+  posetrack: 0.1

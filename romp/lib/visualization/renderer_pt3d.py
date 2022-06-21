@@ -19,34 +19,40 @@ from pytorch3d.renderer import (
     MeshRasterizer,  
     SoftPhongShader,
     TexturesUV,
-    TexturesVertex,
-    
-)
-import numpy as np
+    TexturesVertex)
 
+import numpy as np
 import config
 import constants
 from config import args
-from models import smpl_model
 
-colors = {
+mesh_color_table = {
     'pink': [.7, .7, .9],
     'neutral': [.9, .9, .8],
     'capsule': [.7, .75, .5],
     'yellow': [.5, .7, .75],
 }
 
+class MeshRendererWithDepth(nn.Module):
+    def __init__(self, rasterizer, shader):
+        super().__init__()
+        self.rasterizer = rasterizer
+        self.shader = shader
+
+    def forward(self, meshes_world, **kwargs) -> torch.Tensor:
+        fragments = self.rasterizer(meshes_world, **kwargs)
+        images = self.shader(fragments, meshes_world, **kwargs)
+        return (images, fragments.zbuf)
 
 class Renderer(nn.Module):
-    def __init__(self, resolution=(512,512), perps=True, R=None, T=None, use_gpu='-1' not in str(args().GPUS)):
+    def __init__(self, resolution=(512,512), perps=True, R=None, T=None, fov=args().FOV, use_gpu=args().gpu!='-1', with_depth=False):
         super(Renderer, self).__init__()
         self.perps = perps
+        self.with_depth = with_depth
         if use_gpu:
-            self.device = torch.device('cuda:{}'.format(str(args().GPUS).split(',')[0]))
-            print('visualize in gpu mode')
+            self.device = torch.device('cuda:{}'.format(str(args().gpu).split(',')[0]))
         else:
             self.device = torch.device('cpu')
-            print('visualize in cpu mode')
 
         if R is None:
             R = torch.Tensor([[[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]]])
@@ -54,11 +60,15 @@ class Renderer(nn.Module):
             T = torch.Tensor([[0., 0., 0.]])
 
         if self.perps:
-            self.cameras = FoVPerspectiveCameras(R=R, T=T, fov=args().FOV, device=self.device)
+            # Initialize a camera.
+            self.cameras = FoVPerspectiveCameras(R=R, T=T, fov=fov, device=self.device)
             self.lights = PointLights(ambient_color=((0.56, 0.56, 0.56),),location=torch.Tensor([[0., 0., 0.]]), device=self.device)
         else:
-            self.cameras = FoVOrthographicCameras(R=R, T=T, znear=0., zfar=100.0, max_y=1.0, min_y=-1.0, max_x=1.0, min_x=-1.0, device=self.device)
-            self.lights = DirectionalLights(direction=torch.Tensor([[0., 1., 0.]]), device=self.device)
+            if args().model_version==1:
+                self.cameras = FoVOrthographicCameras(R=R, T=T, znear=0., zfar=100.0, max_y=1.0, min_y=-1.0, max_x=1.0, min_x=-1.0, device=self.device)
+            else:
+                self.cameras = FoVOrthographicCameras(R=R, T=T, znear=0., zfar=100.0, max_y=2.0, min_y=-2.0, max_x=2.0, min_x=-2.0, device=self.device)
+            self.lights = DirectionalLights(ambient_color=((0.6, 0.6, 0.6),),direction=torch.Tensor([[0., -1., 0.]]), device=self.device)
 
         # Define the settings for rasterization and shading. Here we set the output image to be of size
         # 512x512. As we are rendering images for visualization purposes only we will set faces_per_pixel=1
@@ -66,25 +76,39 @@ class Renderer(nn.Module):
         raster_settings = RasterizationSettings(
             image_size=resolution[0], 
             blur_radius=0.0, 
-            faces_per_pixel=1)
+            faces_per_pixel=1, 
+            bin_size = 0, # to avoid the warning.
+            )
 
         # Create a Phong renderer by composing a rasterizer and a shader. The textured Phong shader will 
         # interpolate the texture uv coordinates for each vertex, sample from a texture image and 
         # apply the Phong lighting model
-        self.renderer = MeshRenderer(
-            rasterizer=MeshRasterizer(
-                cameras=self.cameras, 
-                raster_settings=raster_settings),
-            shader=SoftPhongShader(
-                device=self.device,
-                cameras=self.cameras,
-                lights=self.lights))
+        if not with_depth:
+            self.renderer = MeshRenderer(
+                rasterizer=MeshRasterizer(
+                    cameras=self.cameras, 
+                    raster_settings=raster_settings
+                ),
+                shader=SoftPhongShader(
+                    device=self.device,
+                    cameras=self.cameras,
+                    lights=self.lights))
+        else:
+            self.renderer = MeshRendererWithDepth(
+                rasterizer=MeshRasterizer(
+                    cameras=self.cameras, 
+                    raster_settings=raster_settings
+                ),
+                shader=SoftPhongShader(
+                    device=self.device,
+                    cameras=self.cameras,
+                    lights=self.lights))
 
-    def __call__(self, verts, faces, colors=torch.Tensor(colors['neutral']), merge_meshes=True, cam_params=None,**kwargs):
+    def __call__(self, verts, faces, colors=torch.Tensor(mesh_color_table['neutral']), merge_meshes=True, cam_params=None):
         assert len(verts.shape) == 3, print('The input verts of visualizer is bounded to be 3-dims (Nx6890 x3) tensor')
         verts, faces = verts.to(self.device), faces.to(self.device)
         verts_rgb = torch.ones_like(verts)
-        verts_rgb[:, :] = torch.from_numpy(colors).cuda().unsqueeze(1)
+        verts_rgb = set_mesh_color(verts_rgb, colors)
         textures = TexturesVertex(verts_features=verts_rgb)
         verts[:,:,:2] *= -1
         meshes = Meshes(verts, faces, textures)
@@ -100,10 +124,17 @@ class Renderer(nn.Module):
             images = self.renderer(meshes,cameras=new_cam)
         else:
             images = self.renderer(meshes)
-        images[:,:,:-1] *= 255
 
         return images
 
+def set_mesh_color(verts_rgb, colors):
+    if colors is None:
+        colors = torch.Tensor(mesh_color_table['neutral'])
+    if len(colors.shape) == 1:
+        verts_rgb[:, :] = colors
+    elif len(colors.shape) == 2:
+        verts_rgb[:, :] = colors.unsqueeze(1)
+    return verts_rgb
 
 def get_renderer(test=False,**kwargs):
     renderer = Renderer(**kwargs)

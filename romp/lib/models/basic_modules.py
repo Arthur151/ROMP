@@ -11,11 +11,7 @@ import logging
 
 import torch
 import torch.nn as nn
-
 import sys, os
-root_dir = os.path.join(os.path.dirname(__file__),'..')
-if root_dir not in sys.path:
-    sys.path.insert(0, root_dir)
 from config import args
 
 BN_MOMENTUM = 0.1
@@ -187,7 +183,7 @@ class BasicBlock_3D(nn.Module):
         out = self.conv2(out)
         out = self.bn2(out)
         out += residual
-        out = self.relu(out)
+        #out = self.relu(out)
 
         return out
 

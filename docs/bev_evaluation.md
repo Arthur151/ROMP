@@ -2,8 +2,8 @@
 
 The evaluation code of BEV is integrated into `simple-romp`, `evaluation` folder.
 
-To run the evaluation, please first install simple-romp following [the guidance](simple_romp/README.md).  
-To prepare the evaluation datasets, please refer to [dataset.md](docs/dataset.md).  
+To run the evaluation, please first install simple-romp following [the guidance](../simple_romp/README.md).  
+To prepare the evaluation datasets, please refer to [dataset.md](../docs/dataset.md).  
 In each evaluation code, please set the dataset path and `output_save_dir` for saving the predictions.
 
 ### Relative Human

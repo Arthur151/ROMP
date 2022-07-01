@@ -132,7 +132,10 @@ def image_crop_pad(image, kp2ds=None, crop_trbl=(0,0,0,0), bbox=None, pad_ratio=
         # kp2ds_aug = pad_func(keypoints=crop_func(keypoints=kp2ds_ia)).to_xy_array().reshape(org_shape)
         leftTop = np.array([[crop_trbl[3]-pad_trbl[3], crop_trbl[0]-pad_trbl[0]]])
         leftTop3 = np.array([[crop_trbl[3]-pad_trbl[3], crop_trbl[0]-pad_trbl[0], 0]])
+        invalid_mask = [kp2d<=0 for kp2d in kp2ds]
         kp2ds_aug = [kp2d-leftTop if kp2d.shape[-1]==2 else kp2d-leftTop3 for kp2d in kp2ds]
+        for ind,iv_mask in enumerate(invalid_mask):
+            kp2ds_aug[ind][iv_mask] = -2.
         # if draw_kp_on_image:
         #     for inds, kp2d in enumerate(kp2ds):
         #         kps = convert2keypointsonimage(kp2d[:,:2], image.shape)

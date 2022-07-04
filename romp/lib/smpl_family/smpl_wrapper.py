@@ -45,7 +45,7 @@ class SMPLWrapper(nn.Module):
 
         outputs.update({'params': params_dict, 'verts': vertices, 'j3d':joints54_17[:,:54], 'joints_h36m17':joints54_17[:,54:]})
 
-        outputs.update(vertices_kp3d_projection(outputs['j3d'], outputs['params']['cam'], \
+        outputs.update(vertices_kp3d_projection(outputs['j3d'], outputs['params']['cam'], joints_h36m17_preds=outputs['joints_h36m17'], \
                     vertices=outputs['verts'], input2orgimg_offsets=meta_data['offsets'], presp=args().perspective_proj))        
         
         return outputs

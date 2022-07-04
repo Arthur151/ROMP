@@ -227,9 +227,6 @@ class Visualizer(object):
                     centermaps_list = convert_image_list(centermaps_list)
                 plot_dict['centermap'] = {'figs':centermaps_list, 'type':'image'}
             
-                if save2html:
-                    track_imgs = convert_image_list(track_imgs)
-                plot_dict['track'] = {'figs':track_imgs, 'type':'image'}
         if save2html:
             write_to_html(img_names, plot_dict, vis_cfg)
 

@@ -15,7 +15,7 @@ def calc_outputs_evaluation_matrix(self, outputs, ED):
             if (self.All54_to_LSP14_mapper == -1).sum() > 0:
                 real_3d[:, self.All54_to_LSP14_mapper == -1] = -2.
 
-            predicts = outputs['joints_h36m17'].contiguous()
+            predicts = outputs['joints_h36m17'][:,:14].contiguous()
             align_inds = [constants.LSP_14['R_Hip'],
                               constants.LSP_14['L_Hip']]
             bones, colors, kp_colors = constants.lsp14_connMat, constants.cm_body14, constants.lsp14_kpcm

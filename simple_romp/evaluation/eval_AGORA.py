@@ -36,11 +36,12 @@ os.makedirs(output_save_dir,exist_ok=True)
 prediction_save_dir = os.path.join(output_save_dir, 'predictions')
 os.makedirs(prediction_save_dir,exist_ok=True)
 
+
 default_eval_settings = argparse.Namespace(GPU=0, calc_smpl=True, center_thresh=[0.15,0.25][set_id], nms_thresh=40,\
     render_mesh = visualize_results, renderer = 'pyrender', show = False, show_largest = False, \
-    input=None, frame_rate=24, temporal_optimize=False, smooth_coeff=3.0, \
-    mode='image', model_path = '/home/yusun/CenterMesh/trained_models/BEV_Tabs/BEV_ft_agora.pth', onnx=False, \
-    save_path = osp.join(output_save_dir,'visualization'), save_video=False, \
+    input=None, frame_rate=24, temporal_optimize=False, smooth_coeff=3.0, relative_scale_thresh=2, overlap_ratio=0.46,\
+    mode='image', model_path = '/home/yusun/CenterMesh/trained_models/BEV_Tabs/BEV_ft_agora.pth', onnx=False, crowd=False,\
+    save_path = osp.join(output_save_dir,'visualization'), save_video=False, show_items='mesh', show_patch_results=False, \
     smpl_path='/home/yusun/.romp/smpla_packed_info.pth', smil_path='/home/yusun/.romp/smil_packed_info.pth')
 
 if set_id == 0:

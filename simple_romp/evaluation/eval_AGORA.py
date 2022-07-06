@@ -83,8 +83,8 @@ def save_agora_predictions_v6(image_path, outputs, save_dir):
         else:
             cam_params = np.array([[995.55555556, 0., 640.],[0.,995.55555556,360.],[0.,0.,1.]])
 
-        predicts_j3ds = outputs['joints'].contiguous().cpu().numpy()
-        predicts_pj2ds = outputs['pj2d_org'].cpu().numpy()
+        predicts_j3ds = torch.from_numpy(outputs['joints']).contiguous().cpu().numpy()
+        predicts_pj2ds = torch.from_numpy(outputs['pj2d_org']).cpu().numpy()
         predicts_j3ds = predicts_j3ds[:,:24] - predicts_j3ds[:,[0]]
         predicts_pj2ds = predicts_pj2ds[:,:24]
         outputs['cam_trans'] = estimate_translation(predicts_j3ds, predicts_pj2ds, outputs['cam_trans'],\

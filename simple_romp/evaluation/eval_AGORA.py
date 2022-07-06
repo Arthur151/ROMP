@@ -83,8 +83,8 @@ def save_agora_predictions_v6(image_path, outputs, save_dir):
         else:
             cam_params = np.array([[995.55555556, 0., 640.],[0.,995.55555556,360.],[0.,0.,1.]])
 
-        predicts_j3ds = outputs['joints'].contiguous().cpu().numpy()
-        predicts_pj2ds = outputs['pj2d_org'].cpu().numpy()
+        predicts_j3ds = outputs['joints']
+        predicts_pj2ds = outputs['pj2d_org']
         predicts_j3ds = predicts_j3ds[:,:24] - predicts_j3ds[:,[0]]
         predicts_pj2ds = predicts_pj2ds[:,:24]
         outputs['cam_trans'] = estimate_translation(predicts_j3ds, predicts_pj2ds, outputs['cam_trans'],\
@@ -93,11 +93,11 @@ def save_agora_predictions_v6(image_path, outputs, save_dir):
     img_name = os.path.basename(image_path).strip('.png')
     for ind in range(len(outputs['smpl_thetas'])):
         result_dict = {'params':{}, 'pose2rot': True, 'num_betas': 11, 'gender': 'neutral', 'age': 'kid', 'kid_flag': True}
-        result_dict['params']['global_orient'] = outputs['smpl_thetas'][ind,:3].cpu().numpy().reshape(1,1,3)
-        result_dict['params']['body_pose'] = outputs['smpl_thetas'][ind,3:].cpu().numpy().reshape(1,23,3)
-        result_dict['params']['betas'] = outputs['smpl_betas'][ind].cpu().numpy()[None]
-        result_dict['params']['transl'] = outputs['cam_trans'][ind].cpu().numpy()[None]
-        result_dict['joints'] = (outputs['pj2d_org'][ind][:24].cpu().numpy()+1)*3840/1280.
+        result_dict['params']['global_orient'] = outputs['smpl_thetas'][ind,:3].reshape(1,1,3)
+        result_dict['params']['body_pose'] = outputs['smpl_thetas'][ind,3:].reshape(1,23,3)
+        result_dict['params']['betas'] = outputs['smpl_betas'][ind][None]
+        result_dict['params']['transl'] = outputs['cam_trans'][ind][None]
+        result_dict['joints'] = (outputs['pj2d_org'][ind][:24]+1)*3840/1280.
 
         save_name = os.path.join(save_dir,'{}_personId_{}.pkl'.format(img_name, ind))
         with open(save_name,'wb') as outfile:

@@ -91,10 +91,10 @@ def save_agora_predictions_v6(image_path, outputs, save_dir):
             proj_mats=cam_params)
 
     img_name = os.path.basename(image_path).strip('.png')
-    for ind in range(len(outputs['body_pose'])):
+    for ind in range(len(outputs['smpl_thetas'])):
         result_dict = {'params':{}, 'pose2rot': True, 'num_betas': 11, 'gender': 'neutral', 'age': 'kid', 'kid_flag': True}
-        result_dict['params']['global_orient'] = outputs['global_orient'][ind].cpu().numpy().reshape(1,1,3)
-        result_dict['params']['body_pose'] = outputs['body_pose'][ind].cpu().numpy().reshape(1,23,3)
+        result_dict['params']['global_orient'] = outputs['smpl_thetas'][ind,:3].cpu().numpy().reshape(1,1,3)
+        result_dict['params']['body_pose'] = outputs['smpl_thetas'][ind,3:].cpu().numpy().reshape(1,23,3)
         result_dict['params']['betas'] = outputs['smpl_betas'][ind].cpu().numpy()[None]
         result_dict['params']['transl'] = outputs['cam_trans'][ind].cpu().numpy()[None]
         result_dict['joints'] = (outputs['pj2d_org'][ind][:24].cpu().numpy()+1)*3840/1280.

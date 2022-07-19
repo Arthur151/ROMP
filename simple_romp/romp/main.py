@@ -131,6 +131,7 @@ class ROMP(nn.Module):
             outputs['smpl_thetas'], outputs['smpl_betas'], outputs['cam'] = \
                 smooth_results(self.OE_filters[signal_ID], \
                     outputs['smpl_thetas'][max_id], outputs['smpl_betas'][max_id], outputs['cam'][max_id])
+            outputs['smpl_thetas'], outputs['smpl_betas'], outputs['cam'] = outputs['smpl_thetas'].unsqueeze(0), outputs['smpl_betas'].unsqueeze(0), outputs['cam'].unsqueeze(0)
         else:
             pred_cams = outputs['cam']
             from norfair import Detection

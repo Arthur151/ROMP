@@ -205,5 +205,3 @@
    Permission to use, copy, modify and distribute this software and its 
    documentation for educational, research and non-profit purposes only. 
    Any modification based on this work must be prohibited for commercial use.
-   
-   For commercial uses of this software, please send email to liuwu1@jd.com

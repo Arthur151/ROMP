@@ -186,7 +186,7 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright [2020] Yu Sun
+   Copyright [2022] Yu Sun
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -199,5 +199,9 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
    
+   ___________________________________________________________________________
+   
+   From SMPL-Model:
+
+   Copyright (c) 2015-present,  Max Planck Institute for Intelligent Systems (hereinafter "MPI") and the Max Planck Institute for Biological Cybernetics (hereinafter “KYB”). All right reserved. 

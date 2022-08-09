@@ -186,7 +186,7 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright [2020] [Yu Sun]
+   Copyright [2020] Yu Sun
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -199,9 +199,5 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
    
-   ___________________________________________________________________________
-   
-   Permission to use, copy, modify and distribute this software and its 
-   documentation for educational, research and non-profit purposes only. 
-   Any modification based on this work must be prohibited for commercial use.

@@ -106,14 +106,14 @@ settings = romp.main.default_settings
 # settings is just a argparse Namespace. To change it, for instance, you can change mode via
 # settings.mode='video'
 romp_model = romp.ROMP(settings)
-outputs = romp_model(cv2.imread('path/to/image.jpg'))
+outputs = romp_model(cv2.imread('path/to/image.jpg')) # please note that we take the input image in BGR format (cv2.imread).
 
 import bev
 settings = bev.main.default_settings
 # settings is just a argparse Namespace. To change it, for instance, you can change mode via
 # settings.mode='video'
 bev_model = bev.BEV(settings)
-outputs = bev_model(cv2.imread('path/to/image.jpg'))
+outputs = bev_model(cv2.imread('path/to/image.jpg')) # please note that we take the input image in BGR format (cv2.imread).
 ```
 
 ### Export motion to .fbx / .glb / .bvh

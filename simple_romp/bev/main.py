@@ -53,6 +53,7 @@ def bev_settings(input_args=sys.argv[1:]):
     # not support temporal processing now
     parser.add_argument('-t', '--temporal_optimize', action='store_true', help = 'Whether to use OneEuro filter to smooth the results')
     parser.add_argument('-sc','--smooth_coeff', type=float, default=3., help = 'The smoothness coeff of OneEuro filter, the smaller, the smoother.')
+    parser.add_argument('--webcam_id',type=int, default=0, help = 'The Webcam ID.')
     args = parser.parse_args(input_args)
 
     if args.model_id != 2:
@@ -304,7 +305,7 @@ def main():
             saver.save_video(video_save_path, frame_rate=args.frame_rate)
 
     if args.mode == 'webcam':
-        cap = WebcamVideoStream(0)
+        cap = WebcamVideoStream(args.webcam_id)
         cap.start()
         while True:
             frame = cap.read()

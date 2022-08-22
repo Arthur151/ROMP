@@ -37,6 +37,7 @@ def romp_settings(input_args=sys.argv[1:]):
     parser.add_argument('--model_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','ROMP.pkl'), help = 'The path of ROMP checkpoint')
     parser.add_argument('--model_onnx_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','ROMP.onnx'), help = 'The path of ROMP onnx checkpoint')
     parser.add_argument('--root_align',type=bool, default=False, help = 'Please set this config as True to use the ROMP checkpoints trained by yourself.')
+    parser.add_argument('--webcam_id',type=int, default=0, help = 'The Webcam ID.')
     args = parser.parse_args(input_args)
 
     if not torch.cuda.is_available():
@@ -194,7 +195,7 @@ def main():
             saver.save_video(video_save_path, frame_rate=args.frame_rate)
 
     if args.mode == 'webcam':
-        cap = WebcamVideoStream(0)
+        cap = WebcamVideoStream(args.webcam_id)
         cap.start()
         while True:
             frame = cap.read()

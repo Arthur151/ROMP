@@ -402,7 +402,7 @@ def calc_obb(ptSets):
 #__________________transform tools_______________________
 
 
-def transform_rot_representation(rot, input_type='mat',out_type='vec'):
+def transform_rot_representation(rot, input_type='mat',out_type='quat',input_is_degrees=True):
     '''
     make transformation between different representation of 3D rotation
     input_type / out_type (np.array):
@@ -418,9 +418,7 @@ def transform_rot_representation(rot, input_type='mat',out_type='vec'):
     elif input_type =='vec':
         r = R.from_rotvec(rot)
     elif input_type =='euler':
-        if rot.max()<4:
-            rot = rot*180/np.pi
-        r = R.from_euler('xyz',rot, degrees=True)
+        r = R.from_euler('xyz',rot, degrees=input_is_degrees)
     
     if out_type=='mat':
         out = r.as_matrix()

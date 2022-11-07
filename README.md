@@ -42,10 +42,6 @@ pip install --upgrade simple-romp
 ```
 For more details, please refer to [install.md](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md).
 
-### Try on Google Colab
-
-It allows you to run the project in the cloud, free of charge. [Google Colab demo](https://colab.research.google.com/drive/1oz9E6uIbj4udOPZvA1Zi9pFx0SWH_UXg).  
-
 ## How to use it
 
 #### Please refer to [this guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for inference & export (fbx/glb/bvh).
@@ -58,6 +54,12 @@ Please prepare the training datasets following [dataset.md](docs/dataset.md), an
 
 Please refer to [romp_evaluation.md](docs/romp_evaluation.md) and [bev_evaluation.md](docs/bev_evaluation.md) for evaluation on benchmarks.
 
+### Extensions
+
+[[Blender addon]](https://github.com/yanchxx/CDBA): [Yan Chuanhang](https://github.com/yanchxx) created a Blender-addon to drive a 3D character in Blender using ROMP from image, video or webcam input.
+
+[[VMC protocol]](https://codeberg.org/vivi90/vmcps): [Vivien Richter](https://github.com/vivi90) implemented a VMC (Virtual Motion Capture) protocol support for different Motion Capture solutions with ROMP. 
+
 ### Docker usage
 
 Please refer to [docker.md](docs/docker.md)
@@ -65,6 +67,21 @@ Please refer to [docker.md](docs/docker.md)
 ### Bugs report
 
 Welcome to submit issues for the bugs.
+
+## Contributors
+
+This repository is currently maintained by [Yu Sun](https://github.com/Arthur151).  
+
+We thank [Peng Cheng](https://github.com/CPFLAME) for his constructive comments on Center map training.  
+
+ROMP has also benefited from many developers, including   
+ - [Marco Musy](https://github.com/marcomusy) : help in [the textured SMPL visualization](https://github.com/marcomusy/vedo/issues/371).  
+ - [Gavin Gray](https://github.com/gngdb) : adding support for an elegant context manager to run code in a notebook.  
+ - [VLT Media](https://github.com/vltmedia) and [Vivien Richter](https://github.com/vivi90) : adding support for running on Windows & batch_videos.py.  
+ - [Chuanhang Yan](https://github.com/yanch2116) : developing an [addon for driving character in Blender](https://github.com/yanch2116/Blender-addons-for-SMPL).  
+ - [Tian Jin](https://github.com/jinfagang): help in simplified smpl and fast rendering ([realrender](https://pypi.org/project/realrender/)).
+ - [ZhengdiYu](https://github.com/ZhengdiYu) : helpful discussion on optimizing the implementation details.
+ - [Ali Yaghoubian](https://github.com/AliYqb) : add Docker file for simple-romp.
 
 ## Citation
 ```bibtex

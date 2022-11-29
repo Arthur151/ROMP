@@ -27,7 +27,7 @@ if args().model_precision=='fp16':
     from torch.cuda.amp import autocast, GradScaler
 
 class Base(object):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.project_dir = config.project_dir
         hparams_dict = self.load_config_dict(vars(args()))
         self._init_log(hparams_dict)
@@ -141,7 +141,7 @@ class Base(object):
         logging.info('gathering single image datasets.')
         datasets = SingleDataset(**kwargs)
         return DataLoader(dataset = datasets, shuffle=shuffle,batch_size = self.val_batch_size,\
-                drop_last= drop_last, pin_memory = True, num_workers = self.nw_eval)
+                drop_last= drop_last, pin_memory = True)
 
     def set_up_val_loader(self):
         eval_datasets = self.eval_datasets.split(',')

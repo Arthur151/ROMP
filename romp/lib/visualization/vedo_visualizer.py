@@ -6,12 +6,13 @@ from vtk.util.numpy_support import vtk_to_numpy
 import numpy as np
 import pickle
 import cv2
+import torch
 
 import config
 import constants
 from config import args
 from utils.temporal_optimization import OneEuroFilter
-from utils.cam_utils import convert_cam_to_3d_trans
+from utils.projection import convert_cam_to_3d_trans
 
 def convert_cam_to_stand_on_image_trans(cam, enlarge_scale=3):
     trans_3d = convert_cam_to_3d_trans(cam)
@@ -37,7 +38,7 @@ def parse_nvxia_uvmap(uvs, face):
 class Vedo_visualizer(object):
     def __init__(self):
         if args().character == 'smpl':
-            self.faces = pickle.load(open(os.path.join(args().smpl_model_path,'SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')['f']
+            self.faces = torch.load(args().smpl_model_path)['f'].numpy()
         elif args().character == 'nvxia':
             params_dict = np.load(os.path.join(args().nvxia_model_path, 'nvxia.npz'), allow_pickle=True)
             self.faces = np.array([np.array(face) for face in params_dict['polygons']])

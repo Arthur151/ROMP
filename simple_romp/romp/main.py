@@ -122,7 +122,7 @@ class ROMP(nn.Module):
                 print('To perform temporal optimization, installing norfair for tracking.')
                 os.system('pip install norfair')
                 from norfair import Tracker
-            self.tracker = Tracker(distance_function=euclidean_distance, distance_threshold=120)
+            self.tracker = Tracker(distance_function=euclidean_distance, distance_threshold=200)#120
             self.tracker_initialized = False
     
     def temporal_optimization(self, outputs, signal_ID):

@@ -1,5 +1,5 @@
 from ..base import *
-from utils.cam_utils import convert_cam_to_3d_trans
+from utils.projection import convert_cam_to_3d_trans
 from utils.demo_utils import save_meshes, get_video_bn, Time_counter
 import platform
 from utils.util import save_result_dict_tonpz
@@ -37,7 +37,7 @@ class Predictor(Base):
 
     def __initialize__(self):
         if self.save_mesh:
-            self.smpl_faces = pickle.load(open(os.path.join(args().smpl_model_path, 'SMPL_NEUTRAL.pkl'),'rb'), encoding='latin1')['f']
+            self.smpl_faces = torch.load(args().smpl_model_path)['f'].numpy()
         print('Initialization finished!')
 
     def single_image_forward(self,image):

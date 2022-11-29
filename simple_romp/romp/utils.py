@@ -276,7 +276,7 @@ def euclidean_distance(detection, tracked_object):
 
 def get_tracked_ids(detections, tracked_objects):
     tracked_ids_out = np.array([obj.id for obj in tracked_objects])
-    tracked_points = np.array([obj.last_detection.points for obj in tracked_objects])
+    tracked_points = np.array([obj.last_detection.points[0] for obj in tracked_objects])
     org_points = np.array([obj.points for obj in detections])
     tracked_ids = [tracked_ids_out[np.argmin(np.linalg.norm(tracked_points-point[None], axis=1))] for point in org_points]
     return tracked_ids

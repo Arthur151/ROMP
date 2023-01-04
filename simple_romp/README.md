@@ -9,7 +9,7 @@ BEV explicitly reasons about relative depths of people and support all age group
 ## Installation
 
 ```
-pip install --upgrade setuptools numpy cython
+pip install --upgrade setuptools numpy==1.22 cython
 ```
 
 ```

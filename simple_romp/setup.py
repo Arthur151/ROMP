@@ -10,7 +10,7 @@ requireds = ["opencv-python","torch",
         'setuptools>=18.0.0',
         'cython',
         'numpy>=1.21.0',
-        'typing-extensions>=4.1'
+        'typing-extensions>=4.1',
         'scipy',
         'lap']
 

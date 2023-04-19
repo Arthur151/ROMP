@@ -76,7 +76,7 @@ class BasicBlock_3D(nn.Module):
 
 def get_cam3dmap_anchor(FOV, centermap_size):
     depth_level = np.array([1, 10, 20, 100], dtype=np.float32)
-    map_coord_range_each_level = (np.array([2/64., 25/64., 3/64., 2/64.], dtype=np.float32) * centermap_size).astype(np.int)
+    map_coord_range_each_level = (np.array([2/64., 25/64., 3/64., 2/64.], dtype=np.float32) * centermap_size).astype(np.int64)
     scale_level = 1/np.tan(np.radians(FOV/2.))/depth_level
     cam3dmap_anchor = []
     scale_cache = 8

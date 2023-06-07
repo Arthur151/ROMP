@@ -1,13 +1,12 @@
-<h2 align="center"> Monocular, One-stage, Regression of Multiple 3D People </h2>
-
-| <div align=center><img src="../assets/demo/ROMP_logo.png" width="30%" /></div> | <div align=center><img src="../assets/demo/BEV_logo.png" width="30%" /></div> |
-| :---: | :---: |
-| ROMP is a **one-stage** method for monocular multi-person 3D mesh recovery in **real time**. | BEV further explores multi-person **depth relationships** and supports **all age groups**.  |
-| **[[Paper]](https://arxiv.org/abs/2008.12272) [[Video]](https://www.youtube.com/watch?v=hunBPJxnyBU)** | **[[Project Page]](https://arthur151.github.io/BEV/BEV.html) [[Paper]](https://arxiv.org/abs/2112.08274) [[Video]](https://youtu.be/Q62fj_6AxRI) [[RH Dataset]](https://github.com/Arthur151/Relative_Human)** |
-<img src="../assets/demo/animation/blender_character_driven-min.gif" alt="drawing" width="500"/> | <img src="../assets/demo/images_results/BEV_tennis_results.png" alt="drawing" width="340"/>
+| <h2 align="center"> ROMP </h2> | <h2 align="center"> BEV </h2> | <h2 align="center"> TRACE </h2> |
+| :---: | :---: | :---: |
+| Monocular, One-stage, Regression of Multiple 3D People (ICCV21) | Putting People in their Place: Monocular Regression of 3D People in Depth (CVPR2022) | TRACE: 5D Temporal Regression of Avatars with Dynamic Cameras in 3D Environments (CVPR2023) |
+| ROMP is a **one-stage** method for monocular multi-person 3D mesh recovery in **real time**. | BEV further explores multi-person **depth relationships** and supports **all age groups**. | TRACE further tracks specific subjects and recover their global 3D trajectory with dynamic cameras. |
+| **[[Paper]](https://arxiv.org/abs/2008.12272) [[Video]](https://www.youtube.com/watch?v=hunBPJxnyBU)** | **[[Project Page]](https://arthur151.github.io/BEV/BEV.html) [[Paper]](https://arxiv.org/abs/2112.08274) [[Video]](https://youtu.be/Q62fj_6AxRI)** |  **[[Project Page]](https://arthur151.github.io/TRACE/TRACE.html) [[Paper]](http://arxiv.org/abs/2306.02850) [[Video]](https://youtu.be/PX-7cuZuxJs)** |
+| | **[[RelativeHuman Dataset]](https://github.com/Arthur151/Relative_Human)** | **[[DynaCam Dataset]](https://github.com/Arthur151/DynaCam)** |
+| <img src="../assets/demo/animation/blender_character_driven-min.gif" alt="drawing" height="230"/> | <img src="../assets/demo/images_results/BEV_tennis_results.png" alt="drawing" height="230"/> | <img src="https://www.yusun.work/TRACE/images/demo.gif" alt="drawing" height="230"/> |
 
 We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux / Windows / Mac. 
-
 
 ## Table of contents
 - [Table of contents](#table-of-contents)
@@ -85,16 +84,21 @@ ROMP has also benefited from many developers, including
 
 ## Citation
 ```bibtex
+@InProceedings{TRACE,
+    author = {Sun, Yu and Bao, Qian and Liu, Wu and Mei, Tao and Black, Michael J.},
+    title = {{TRACE: 5D Temporal Regression of Avatars with Dynamic Cameras in 3D Environments}}, 
+    booktitle = {CVPR}, 
+    year = {2023}}
 @InProceedings{BEV,
-author = {Sun, Yu and Liu, Wu and Bao, Qian and Fu, Yili and Mei, Tao and Black, Michael J},
-title = {Putting People in their Place: Monocular Regression of 3D People in Depth},
-booktitle = {CVPR},
-year = {2022}}
+    author = {Sun, Yu and Liu, Wu and Bao, Qian and Fu, Yili and Mei, Tao and Black, Michael J},
+    title = {{Putting People in their Place: Monocular Regression of 3D People in Depth}},
+    booktitle = {CVPR},
+    year = {2022}}
 @InProceedings{ROMP,
-author = {Sun, Yu and Bao, Qian and Liu, Wu and Fu, Yili and Michael J., Black and Mei, Tao},
-title = {Monocular, One-stage, Regression of Multiple 3D People},
-booktitle = {ICCV},
-year = {2021}}
+    author = {Sun, Yu and Bao, Qian and Liu, Wu and Fu, Yili and Michael J., Black and Mei, Tao},
+    title = {{Monocular, One-stage, Regression of Multiple 3D People}},
+    booktitle = {ICCV},
+    year = {2021}}
 ```
 
 ## Acknowledgement

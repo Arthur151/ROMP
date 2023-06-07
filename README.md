@@ -8,6 +8,8 @@
 
 We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux / Windows / Mac. 
 
+**TRACE's code will be released within this week.**
+
 ## Table of contents
 - [Table of contents](#table-of-contents)
 - [News](#news)
@@ -69,11 +71,10 @@ Welcome to submit issues for the bugs.
 
 ## Contributors
 
-This repository is currently maintained by [Yu Sun](https://github.com/Arthur151).  
-
-We thank [Peng Cheng](https://github.com/CPFLAME) for his constructive comments on Center map training.  
+This repository is maintained by [Yu Sun](https://www.yusun.work/).  
 
 ROMP has also benefited from many developers, including   
+ - [Peng Cheng](https://github.com/CPFLAME) : constructive discussion on Center map training.  
  - [Marco Musy](https://github.com/marcomusy) : help in [the textured SMPL visualization](https://github.com/marcomusy/vedo/issues/371).  
  - [Gavin Gray](https://github.com/gngdb) : adding support for an elegant context manager to run code in a notebook.  
  - [VLT Media](https://github.com/vltmedia) and [Vivien Richter](https://github.com/vivi90) : adding support for running on Windows & batch_videos.py.  
@@ -102,7 +103,5 @@ ROMP has also benefited from many developers, including
 ```
 
 ## Acknowledgement
-
-We thank all [contributors](docs/contributor.md) for their help!  
 This work was supported by the National Key R&D Program of China under Grand No. 2020AAA0103800.  
-**Disclosure**: MJB has received research funds from Adobe, Intel, Nvidia, Facebook, and Amazon and has financial interests in Amazon, Datagen Technologies, and Meshcapade GmbH. While he was part-time at Amazon during this project, his research was performed solely at Max Planck. 
+**MJB Disclosure**: [https://files.is.tue.mpg.de/black/CoI_CVPR_2023.txt](https://files.is.tue.mpg.de/black/CoI_CVPR_2023.txt)

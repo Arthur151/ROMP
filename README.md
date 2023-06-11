@@ -8,7 +8,7 @@
 
 We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux / Windows / Mac. 
 
-**TRACE's code will be released within this week.**
+**TRACE's code will be released before 16, June.**
 
 ## Table of contents
 - [Table of contents](#table-of-contents)

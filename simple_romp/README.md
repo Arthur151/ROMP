@@ -1,12 +1,15 @@
 # Simple_ROMP
 
-Simplified implementation of ROMP [ICCV21] and BEV [CVPR22]
+Simplified implementation of ROMP [ICCV21], BEV [CVPR22], and TRACE [CVPR23]
 
-As shown in [the main page](https://github.com/Arthur151/ROMP), the differences between ROMP and BEV are:  
-ROMP has a lighter head to efficiently estimate the SMPL 3D pose/shape parameters and roughly 2D position/scale of people in the image.  
-BEV explicitly reasons about relative depths of people and support all age groups with SMPL+A model. 
+As shown in [the main page](https://github.com/Arthur151/ROMP), the differences between ROMP, BEV, and TRACE are:  
+ROMP has a lighter head to efficiently estimate the SMPL 3D pose/shape parameters and rough 2D position/scale of people in the image.  
+BEV explicitly reasons about relative depths of people and support all age groups with SMPL+A model.  
+TRACE tracks specific subjects shown in the first frame and recover their 3D trajectories in global coordinates.  
 
 ## Installation
+
+1. Installing simple_romp via pip:
 
 ```
 pip install --upgrade setuptools numpy cython lap
@@ -24,6 +27,31 @@ For Mac users, we strongly recommand to upgrade your pytorch to the latest versi
 ```
 pip install --upgrade torch torchvision
 ```
+
+2. Preparing SMPL model files in our format:
+
+Firstly, please register and download:  
+a. Meta data from [this link](https://github.com/Arthur151/ROMP/releases/download/V2.0/smpl_model_data.zip). Please unzip it, then we get a folder named "smpl_model_data"
+b. SMPL model file (SMPL_NEUTRAL.pkl) from "Download version 1.1.0 for Python 2.7 (female/male/neutral, 300 shape PCs)" in [official website](https://smpl.is.tue.mpg.de/), and put it into the "smpl_model_data" folder.      
+c. (Optional) If you use BEV, please also download SMIL model file (smil_web.pkl) from [official website](https://smil.is.tue.mpg.de/), and put it into the "smpl_model_data" folder.   
+Then we can get a folder in structure like this:  
+```
+|-- smpl_model_data
+|   |-- SMPL_NEUTRAL.pkl
+|   |-- J_regressor_extra.npy
+|   |-- J_regressor_h36m.npy
+|   |-- smpl_kid_template.npy
+|   |-- (smil_web.pkl)
+```
+
+Secondly, please convert the SMPL model files to our format via  
+```
+# please provide the absolute path of the "smpl_model_data" folder to the source_dir 
+romp.pack_smpl_info -source_dir=/path/to/smpl_model_data
+# (Optional) If you use BEV, please also run:
+romp.pack_smpl_info -source_dir=/path/to/smpl_model_data
+```
+The converted file would be save to "~/.romp/" in defualt. 
 
 ## Usage
 

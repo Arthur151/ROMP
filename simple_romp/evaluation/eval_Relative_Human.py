@@ -110,7 +110,7 @@ def get_ROMP_results_on_RH(set_name='test'):
     default_eval_settings = argparse.Namespace(GPU=0, calc_smpl=True, center_thresh=0.25, frame_rate=24, \
                 input=None, mode='image', model_onnx_path='/home/yusun/.romp/ROMP.onnx', model_path='/home/yusun/.romp/ROMP.pkl', onnx=False, \
                 render_mesh=False, save_path=osp.join( output_save_dir,'visualization'), save_video=False, show=False, show_largest=False, \
-                smooth_coeff=3.0, smpl_path='/home/yusun/.romp/smpl_packed_info.pth', temporal_optimize=False)
+                smooth_coeff=3.0, smpl_path='/home/yusun/.romp/SMPL_NEUTRAL.pth', temporal_optimize=False)
     
     image_folder = osp.join(Relative_Human_dir, 'images')
     annots_path = osp.join(Relative_Human_dir, '{}_annots.npz'.format(set_name))

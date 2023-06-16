@@ -43,6 +43,16 @@ ROMP
   - active_configs
 ```
 
+#### 3. Preparing SMPL model files
+
+Please refer to [this instrcutions](../simple_romp/README.md#installation) to install simple_romp and preparing SMPL model files in our format.   
+Now, you are supposed to get the `SMPL_NEUTRAL.pth`,  `smil_packed_info.pth`, and `SMPLA_NEUTRAL.pth` in `~/.romp`.   
+To further generate `SMPL_MALE` and `SMPL_FEMALE`, please run 
+```
+romp.pack_smpl_info -source_dir=/path/to/smpl_model_data --gender='female'
+romp.pack_smpl_info -source_dir=/path/to/smpl_model_data --gender='male'
+```
+
 ### Second step: seting up environments
 
 #### 1. Install [Pytorch](https://pytorch.org/).

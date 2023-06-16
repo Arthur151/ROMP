@@ -89,7 +89,6 @@ bev -m video -i /path/to/image/folder/ -o /path/to/output/folder/
   <img src="../../assets/demo/animation/c0_results_compressed.gif" width="32%" />
 </p>
 
-
 Processing a video:
 ```
 romp --mode=video --calc_smpl --render_mesh -i=/path/to/video.mp4 -o=/path/to/output/folder/results.mp4 --save_video

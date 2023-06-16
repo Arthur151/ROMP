@@ -186,7 +186,7 @@ def parse_args(input_args=None):
     #smpl_group.add_argument('--smpl_J_reg_h37m_path',type = str,default = os.path.join(model_dir, 'parameters', 'J_regressor_h36m.npy'),help = 'SMPL regressor for 17 joints from H36M datasets')
     #smpl_group.add_argument('--smpl_J_reg_extra_path',type = str,default = os.path.join(model_dir, 'parameters', 'J_regressor_extra.npy'),help = 'SMPL regressor for 9 extra joints from different datasets')
     
-    smpl_group.add_argument('--smpl_model_path',type = str,default = os.path.join(smpl_model_dir,'smpl_packed_info.pth'),help = 'smpl model path')
+    smpl_group.add_argument('--smpl_model_path',type = str,default = os.path.join(smpl_model_dir,'SMPL_NEUTRAL.pth'),help = 'smpl model path')
     smpl_group.add_argument('--smpla_model_path',type = str,default = os.path.join(smpl_model_dir,'SMPLA_NEUTRAL.pth'),help = 'smpl model path') #SMPLA_FEMALE gets better MPJPE #smpla_packed_info.pth
     smpl_group.add_argument('--smil_model_path',type = str,default = os.path.join(smpl_model_dir,'smil_packed_info.pth'),help = 'smpl model path')
     smpl_group.add_argument('--smpl_prior_path',type = str,default = os.path.join(model_dir,'parameters','gmm_08.pkl'),help = 'smpl model path')

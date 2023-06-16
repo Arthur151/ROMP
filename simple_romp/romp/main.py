@@ -33,7 +33,7 @@ def romp_settings(input_args=sys.argv[1:]):
     parser.add_argument('--show_items', type=str, default='mesh', help = 'The items to visualized, including mesh,pj2d,j3d,mesh_bird_view,mesh_side_view,center_conf. splited with ,')
     parser.add_argument('--save_video', action='store_true', help = 'Whether to save the video results')
     parser.add_argument('--frame_rate', type=int, default=24, help = 'The frame_rate of saved video results')
-    parser.add_argument('--smpl_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','smpl_packed_info.pth'), help = 'The path of smpl model file')
+    parser.add_argument('--smpl_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','SMPL_NEUTRAL.pth'), help = 'The path of smpl model file')
     parser.add_argument('--model_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','ROMP.pkl'), help = 'The path of ROMP checkpoint')
     parser.add_argument('--model_onnx_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','ROMP.onnx'), help = 'The path of ROMP onnx checkpoint')
     parser.add_argument('--root_align',type=bool, default=False, help = 'Please set this config as True to use the ROMP checkpoints trained by yourself.')
@@ -49,7 +49,7 @@ def romp_settings(input_args=sys.argv[1:]):
         args.calc_smpl = True
     if not os.path.exists(args.smpl_path):
         print('please prepare SMPL model files following instructions at https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md#installation')
-        #smpl_url = 'https://github.com/Arthur151/ROMP/releases/download/V2.0/smpl_packed_info.pth'
+        #smpl_url = 'https://github.com/Arthur151/ROMP/releases/download/V2.0/SMPL_NEUTRAL.pth'
         #download_model(smpl_url, args.smpl_path, 'SMPL')
     if not os.path.exists(args.model_path):
         romp_url = 'https://github.com/Arthur151/ROMP/releases/download/V2.0/ROMP.pkl'

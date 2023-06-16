@@ -7,11 +7,12 @@ import argparse
 parser = argparse.ArgumentParser(description='Convert to our format.')
 parser.add_argument('-source_dir', type=str, help = 'Where you put the download SMPL model files and other related meta data')
 parser.add_argument('--save_dir', type=str, default=os.path.join(os.path.expanduser("~"), '.romp'), help = 'Path to save processed SMPL model files')
+parser.add_argument('--gender', type=str, default='neutral')
 args = parser.parse_args()
 
 source_dir = args.source_dir
 save_dir = args.save_dir
-gender = 'neutral'.upper()
+gender = args.gender.upper()
 
 with open(os.path.join(source_dir, "SMPL_{}.pkl".format(gender.upper())), 'rb') as smpl_file:
     model_info = pickle.load(smpl_file, encoding='latin1')

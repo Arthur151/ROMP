@@ -366,7 +366,7 @@ def test_onnx(dtype=np.float32, batch_size=1):
     print(cost_time[:10])
 
 def prepare_smpl_model(dtype):
-    model_path = '/home/yusun/CenterMesh/model_data/parameters/smpl_packed_info.pth'
+    model_path = '/home/yusun/CenterMesh/model_data/parameters/SMPL_NEUTRAL.pth'
     smpl_model = SMPL(model_path, dtype=dtype).eval() #.cuda()
     return smpl_model
 

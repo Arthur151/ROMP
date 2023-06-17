@@ -8,8 +8,6 @@
 
 We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux / Windows / Mac. 
 
-**TRACE's code will be released before 16, June.**
-
 ## Table of contents
 - [Table of contents](#table-of-contents)
 - [News](#news)
@@ -26,6 +24,7 @@ We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux
 - [Acknowledgement](#acknowledgement)
 
 ## News
+*2023/06/17: First release of TRACE's inference code. Please refer to instructions for [inference](simple_romp/TRACE_inference.md) and [evlauation](docs/trace_evaluation.md).*  
 *2022/06/21: Training & evaluation code of BEV is released. Please update the [model_data](https://github.com/Arthur151/ROMP/releases/download/v1.1/model_data.zip).*   
 *2022/05/16: simple-romp v1.0 is released to support tracking, calling in python, exporting bvh, and etc.*   
 *2022/04/14: Inference code of BEV has been released in simple-romp v0.1.0.*   

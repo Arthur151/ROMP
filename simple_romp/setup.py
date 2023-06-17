@@ -16,7 +16,7 @@ requireds = ["opencv-python","torch",
 
 setuptools.setup(
     name='simple_romp',
-    version='1.0.6',
+    version='2.0.0',
     author="Yu Sun",
     author_email="yusun@stu.hit.edu.cn",
     setup_requires=[
@@ -28,7 +28,7 @@ setuptools.setup(
         'scipy',
         'lap'],
     install_requires=requireds,
-    description="ROMP: Monocular, One-stage, Regression of Multiple 3D People, ICCV21",
+    description="ROMP [ICCV21], BEV [CVPR22], TRACE [CVPR23]",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Arthur151/ROMP",
@@ -38,6 +38,22 @@ setuptools.setup(
         'vis_human.sim3drender',
         'vis_human.sim3drender.lib',
         'bev',
+        'trace2',
+        'trace2.tracker',
+        'trace2.models',
+        'trace2.models.raft',
+        'trace2.models.raft.utils',
+        'trace2.models.deform_conv',
+        'trace2.models.deform_conv.functions',
+        'trace2.results_parser',
+        'trace2.evaluation',
+        'trace2.evaluation.dynacam_evaluation',
+        'trace2.evaluation.TrackEval',
+        'trace2.evaluation.TrackEval.trackeval',
+        'trace2.evaluation.TrackEval.trackeval.metrics',
+        'trace2.evaluation.TrackEval.trackeval.datasets',
+        'trace2.evaluation.TrackEval.trackeval.baselines',
+        'trace2.utils',
         'tracker'],
     ext_modules=cythonize([Extension("Sim3DR_Cython",
                            sources=["vis_human/sim3drender/lib/rasterize.pyx",
@@ -58,6 +74,41 @@ setuptools.setup(
         "console_scripts": [
             "romp=romp.main:main",
             "bev=bev.main:main",
+            "trace2=trace2.main:main",
         ],
     },
 )
+
+from torch.utils.cpp_extension import BuildExtension, CUDAExtension
+
+def make_cuda_ext(name, sources):
+    return CUDAExtension(
+        name=name,
+        sources=[p for p in sources],
+        extra_compile_args={
+            'cxx': [],
+            'nvcc': [
+                '-D__CUDA_NO_HALF_OPERATORS__',
+                '-D__CUDA_NO_HALF_CONVERSIONS__',
+                '-D__CUDA_NO_HALF2_OPERATORS__',
+            ]
+        })
+
+setuptools.setup(
+        name='deform_conv',
+        ext_modules=[
+            make_cuda_ext(
+                name='deform_conv_cuda',
+                sources=[
+                    'trace2/models/deform_conv/src/deform_conv_cuda.cpp',
+                    'trace2/models/deform_conv/src/deform_conv_cuda_kernel.cu'
+                ]),
+            make_cuda_ext(
+                name='deform_pool_cuda',
+                sources=[
+                    'trace2/models/deform_conv/src/deform_pool_cuda.cpp',
+                    'trace2/models/deform_conv/src/deform_pool_cuda_kernel.cu'
+                ]),
+        ],
+        cmdclass={'build_ext': BuildExtension},
+        zip_safe=False)

@@ -3,9 +3,9 @@ import numpy as np
 from .utils.open3d_gui import visualize_world_annots
 # pip install MarkupSafe==2.0.1 Werkzeug==2.0.3
 import torch
+import glob
 from smplx import SMPL
 
-dynacam_folder = '/Volumes/NTFS/DynaCam'
 smpl_model_folder = '/Users/mac/Desktop/Githubs/'
 
 def obtain_smpl_verts(smpl_thetas, smpl_betas, smpl_model):
@@ -25,28 +25,29 @@ def visualize_subject_world_results(seq_name, annots, seq_frame_dir, img_ext='jp
     # ['person_id', 'poses', 'betas', 'world_grots', 'world_trans', 'kp3ds', 'kp2ds', 'frame_ids', \
     #  'camera_intrinsics', 'camera_extrinsics', 'camera_extrinsics_aligned', 'world_grots_aligned', 'world_trans_aligned']
     smpl_thetas = annots['smpl_thetas']
-    subject_num, frame_num = smpl_thetas.shape[:2]
-    body_pose = torch.from_numpy(smpl_thetas[:, :, 1:].reshape(subject_num, frame_num, 23*3)).float()
-    smpl_betas = torch.from_numpy(annots['smpl_betas']).float()
+    if len(smpl_thetas.shape) == 2:
+        frame_num = smpl_thetas.shape[0]
+        subject_num = 1
+    elif len(smpl_thetas.shape) == 3:
+        subject_num, frame_num = smpl_thetas.shape[:2]
+    body_pose = torch.from_numpy(smpl_thetas[:, 3:].reshape(subject_num, frame_num, 23*3)).float()
+    smpl_betas = torch.from_numpy(annots['smpl_betas']).float().reshape(subject_num, frame_num, 10)
     if 'world_grots_aligned' in annots:
         world_grots = torch.from_numpy(annots['world_grots_aligned']).float()
         world_trans = annots['world_trans_aligned']
         camera_intrinsics = annots['camera_intrinsics']
         camera_extrinsics = annots['camera_extrinsics_aligned']
     else:
-        world_grots = torch.from_numpy(annots['world_grots']).float()
-        world_trans = annots['world_trans']
-        camera_intrinsics = annots['camera_intrinsics']
-        camera_extrinsics = annots['camera_extrinsics']
-        camera_extrinsics = np.concatenate([camera_extrinsics, np.repeat(np.array([[[0,0,0,1]]]),len(camera_extrinsics), axis=0)], axis=1)
-
+        world_grots = torch.from_numpy(annots['world_global_rots']).float().reshape(subject_num, frame_num, 3)
+        world_trans = np.array(annots['world_trans']).astype(np.float64).reshape(subject_num, frame_num, 3)
+        camera_intrinsics = np.repeat([np.array([[548,0,256], [0,548,256], [0,0,1]])], len(world_grots), axis=0).astype(np.float64) #annots['camera_intrinsics']
+        camera_extrinsics = np.repeat([np.array([[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]])], len(world_grots), axis=0).astype(np.float64) #annots['camera_extrinsics']
     vertices = []
     for subject_id in range(subject_num):
         vertex = smpl_model(global_orient=world_grots[subject_id], body_pose=body_pose[subject_id], betas=smpl_betas[subject_id]).vertices.detach().cpu().numpy()
         vertices.append(vertex)
     
-    frame_paths = [os.path.join(seq_frame_dir, '{:06d}.{}'.format(frame_id, img_ext)) for frame_id in annots['frame_ids']]
-    
+    frame_paths = sorted(glob.glob(os.path.join(seq_frame_dir, f'*.{img_ext}')))
     visualize_world_annots(seq_name, vertices, world_trans, camera_intrinsics, camera_extrinsics, frame_paths, np.asarray(smpl_model.faces))
 
 if __name__ == '__main__':

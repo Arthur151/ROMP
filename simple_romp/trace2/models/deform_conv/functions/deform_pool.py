@@ -1,7 +1,7 @@
 import torch
 from torch.autograd import Function
 
-from .. import deform_pool_cuda
+import deform_pool_cuda
 
 
 class DeformRoIPoolingFunction(Function):

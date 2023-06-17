@@ -1,6 +1,6 @@
 src/
 trained_models/
-models/
+#models/
 demo/videos/
 demo/animation/
 model_data/

@@ -14,3 +14,4 @@ dist/
 __pycache__/
 demo/images/
 log/*
+trace/

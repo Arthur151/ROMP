@@ -13,14 +13,10 @@ x environment with CUDA support. **Please make sure that you have CUDA and corre
 
 ```
 pip install --upgrade setuptools numpy cython lap
-```
-
-```
-pip install --upgrade simple_romp
-```
-or download the package and install it from source:
-```
-python setup.py install
+#download the package and install it from source:
+git clone https://github.com/Arthur151/ROMP
+cd simple_romp
+python setup_trace.py install
 ```
 
 2. Preparing SMPL model files in our format:

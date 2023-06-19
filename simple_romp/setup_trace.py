@@ -45,6 +45,7 @@ setuptools.setup(
         'trace2.models.raft.utils',
         'trace2.models.deform_conv',
         'trace2.models.deform_conv.functions',
+        'trace2.models.deform_conv.modules',
         'trace2.results_parser',
         'trace2.evaluation',
         'trace2.evaluation.dynacam_evaluation',

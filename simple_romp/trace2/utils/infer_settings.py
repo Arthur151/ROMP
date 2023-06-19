@@ -23,7 +23,7 @@ def trace_settings(input_args=sys.argv[1:]):
     parser.add_argument('--show', action='store_true', help = 'Whether to show the rendered results')
     parser.add_argument('--frame_rate', type=int, default=24, help = 'The frame_rate of saved video results')
 
-    parser.add_argument('--smpl_path', type=str, default=os.path.join(os.path.expanduser("~"),'.romp','smpla_packed_info.pth'), help = 'The path of SMPL-A model file')
+    parser.add_argument('--smpl_path', type=str, default=os.path.join(os.path.expanduser("~"),'.romp','SMPLA_NEUTRAL.pth'), help = 'The path of SMPL-A model file')
     parser.add_argument('--trace_head_model_path', type=str, default=os.path.join(trace_model_dir,'trace_head.pkl'), help = 'The path of TRACE head checkpoint')
     parser.add_argument('--image_backbone_model_path', type=str, default=os.path.join(trace_model_dir,'trace_image_backbone.pkl'), help = 'The path of TRACE image backbone (BEV) checkpoint')
     parser.add_argument('--raft_model_path', type=str, default=os.path.join(trace_model_dir,'trace_motion_backbone.pth'), help = 'The path of motion backbone, RAFT')

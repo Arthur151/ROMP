@@ -12,7 +12,7 @@ args = parser.parse_args()
 source_dir = args.source_dir
 save_dir = args.save_dir
 
-with open(os.path.join(source_dir, "smil_web.pkl"), 'rb') as smpl_file:
+with open(os.path.join(source_dir, 'smil', "smil_web.pkl"), 'rb') as smpl_file:
     model_info = pickle.load(smpl_file, encoding='latin1')
 
 np_model_info = {}

@@ -18,7 +18,7 @@ pip install --upgrade setuptools numpy cython lap
 ```
 
 ```
-pip install simple_romp==1.0.9
+pip install simple_romp==1.1.0
 ```
 or download the package and install it from source:
 ```
@@ -30,12 +30,14 @@ For Mac users, we strongly recommand to upgrade your pytorch to the latest versi
 pip install --upgrade torch torchvision
 ```
 
+[中国人专属-百度网盘模型下载](https://pan.baidu.com/s/1OuEpHr8assuX4UHJYeppRw?pwd=jm9i)（如果在国内访问Github不便请从这里下载除SMPL和SMIL外所有模型文件，并放到~/.romp/里）
+
 2. Preparing SMPL model files in our format:
 
 Firstly, please register and download:  
 a. Meta data from [this link](https://github.com/Arthur151/ROMP/releases/download/V2.0/smpl_model_data.zip). Please unzip it, then we get a folder named "smpl_model_data"
-b. SMPL model file (SMPL_NEUTRAL.pkl) from "Download version 1.1.0 for Python 2.7 (female/male/neutral, 300 shape PCs)" in [official website](https://smpl.is.tue.mpg.de/), and put it into the "smpl_model_data" folder.      
-c. (Optional) If you use BEV, please also download SMIL model file (smil_web.pkl) from [official website](https://smil.is.tue.mpg.de/), and put it into the "smpl_model_data" folder.   
+b. SMPL model file (SMPL_NEUTRAL.pkl) from "Download version 1.1.0 for Python 2.7 (female/male/neutral, 300 shape PCs)" in [official website](https://smpl.is.tue.mpg.de/). Please unzip it and move the SMPL_NEUTRAL.pkl from extracted folder into the "smpl_model_data" folder.      
+c. (Optional) If you use BEV, please also download SMIL model file (DOWNLOAD SMIL) from [official website](https://www.iosb.fraunhofer.de/en/competences/image-exploitation/object-recognition/sensor-networks/motion-analysis.html). Please unzip and put it into the "smpl_model_data" folder, so we have "smpl_model_data/smil/smil_web.pkl".   
 Then we can get a folder in structure like this:  
 ```
 |-- smpl_model_data
@@ -43,17 +45,26 @@ Then we can get a folder in structure like this:
 |   |-- J_regressor_extra.npy
 |   |-- J_regressor_h36m.npy
 |   |-- smpl_kid_template.npy
-|   |-- (smil_web.pkl)
+|   |-- smil
+|   |-- |-- smil_web.pkl
 ```
 
 Secondly, please convert the SMPL model files to our format via  
 ```
 # please provide the absolute path of the "smpl_model_data" folder to the source_dir 
-romp.pack_smpl_info -source_dir=/path/to/smpl_model_data
+romp.prepare_smpl -source_dir=/path/to/smpl_model_data
 # (Optional) If you use BEV, please also run:
-romp.pack_smpl_info -source_dir=/path/to/smpl_model_data
+bev.prepare_smil -source_dir=/path/to/smpl_model_data
 ```
 The converted file would be save to "~/.romp/" in defualt. 
+
+Please don't worry if there are bugs reporting during "Preparing SMPL model files". It is fine as long as we get things like this in "~/.romp/".
+```
+|-- .romp
+|   |-- SMPL_NEUTRAL.pth
+|   |-- SMPLA_NEUTRAL.pth
+|   |-- smil_packed_info.pth
+```
 
 ## Usage
 

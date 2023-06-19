@@ -46,7 +46,7 @@ def bev_settings(input_args=sys.argv[1:]):
     parser.add_argument('--show_items', type=str, default='mesh,mesh_bird_view', help = 'The items to visualized, including mesh,pj2d,j3d,mesh_bird_view,mesh_side_view,center_conf,rotate_mesh. splited with ,')
     parser.add_argument('--save_video', action='store_true', help = 'Whether to save the video results')
     parser.add_argument('--frame_rate', type=int, default=24, help = 'The frame_rate of saved video results')
-    parser.add_argument('--smpl_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','smpla_packed_info.pth'), help = 'The path of SMPL-A model file')
+    parser.add_argument('--smpl_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','SMPLA_NEUTRAL.pth'), help = 'The path of SMPL-A model file')
     parser.add_argument('--smil_path', type=str, default=osp.join(osp.expanduser("~"),'.romp','smil_packed_info.pth'), help = 'The path of SMIL model file')
     parser.add_argument('--model_path', type=str, default=osp.join(osp.expanduser("~"),'.romp',model_dict[model_id]), help = 'The path of BEV checkpoint')
 

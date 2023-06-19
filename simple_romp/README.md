@@ -18,7 +18,7 @@ pip install --upgrade setuptools numpy cython lap
 ```
 
 ```
-pip install simple_romp==1.1.0
+pip install simple_romp==1.1.1
 ```
 or download the package and install it from source:
 ```

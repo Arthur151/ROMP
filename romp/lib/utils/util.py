@@ -17,7 +17,7 @@ import glob
 from io import BytesIO
 from scipy.spatial.transform import Rotation as R
 
-TAG_CHAR = np.array([202021.25], np.float32)
+TAG_CHAR = np.array([202021.25], np.float3232)
 
 def get_kp2d_on_org_img(kp2d, offset):
     assert kp2d.shape[1]>=2, print('Espected shape of kp2d is Kx2, while get {}'.formt(kp2d.shape))
@@ -528,7 +528,7 @@ def batch_global_rigid_transformation(Rs, Js, parent, rotate_base = False,root_r
     N = Rs.shape[0]
     #确定根节点的旋转变换。
     if rotate_base:
-        np_rot_x = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]], dtype = np.float)
+        np_rot_x = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]], dtype = np.float32)
         np_rot_x = np.reshape(np.tile(np_rot_x, [N, 1]), [N, 3, 3])
         rot_x = torch.from_numpy(np_rot_x).float().cuda()
         root_rotation = torch.matmul(Rs[:, 0, :, :],  rot_x)
@@ -576,7 +576,7 @@ def batch_global_rigid_transformation_cpu(Rs, Js, parent, rotate_base = False,ro
     N = Rs.shape[0]
     #确定根节点的旋转变换。
     if rotate_base:
-        np_rot_x = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]], dtype = np.float)
+        np_rot_x = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]], dtype = np.float32)
         np_rot_x = np.reshape(np.tile(np_rot_x, [N, 1]), [N, 3, 3])
         rot_x =torch.from_numpy(np_rot_x).float()
         root_rotation = torch.matmul(Rs[:, 0, :, :],  rot_x)

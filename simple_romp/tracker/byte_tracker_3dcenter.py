@@ -205,7 +205,7 @@ class STrack(BaseTrack):
     shared_kalman = KalmanFilter()
     def __init__(self, trans, score):
         # wait activate
-        self._trans = np.asarray(trans, dtype=np.float)
+        self._trans = np.asarray(trans, dtype=np.float32)
         self.kalman_filter = None
         self.mean, self.covariance = None, None
         self.is_activated = False

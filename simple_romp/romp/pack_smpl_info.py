@@ -72,11 +72,11 @@ def main():
     kintree_table[0] = -1
     np_model_info['kintree_table'] = kintree_table
 
-    np_model_info['J_regressor_extra9'] = np.array(np.load(os.path.join(source_dir, 'J_regressor_extra.npy')), dtype=np.float32)
+    np_model_info['J_regressor_extra9'] = np.array(np.load(os.path.join(source_dir, 'J_regressor_extra.npy')), dtype=np.float3232)
     J_regressor_h36m = np.load(os.path.join(source_dir, 'J_regressor_h36m.npy'))
     H36M_TO_J17 = [6, 5, 4, 1, 2, 3, 16, 15, 14, 11, 12, 13, 8, 10, 0, 7, 9]
     J_regressor_h36m17 = J_regressor_h36m[H36M_TO_J17]
-    np_model_info['J_regressor_h36m17'] = np.array(J_regressor_h36m17, dtype=np.float32)
+    np_model_info['J_regressor_h36m17'] = np.array(J_regressor_h36m17, dtype=np.float3232)
 
     # take the top 10 PCA componence of shape prior
     np_model_info['shapedirs'] = np.array(model_info['shapedirs'][:, :, :10])
@@ -95,10 +95,10 @@ def main():
                 ], dtype=np.int64)
 
     np_model_info['f'] = np.array(model_info['f'], dtype=np.int64)
-    np_model_info['v_template'] = np.array(model_info['v_template'], dtype=np.float32)
-    np_model_info['J_regressor'] = np.array(model_info['J_regressor'].todense(), dtype=np.float32)
-    np_model_info['v_template'] = np.array(model_info['v_template'], dtype=np.float32)
-    np_model_info['weights'] = np.array(model_info['weights'], dtype=np.float32)
+    np_model_info['v_template'] = np.array(model_info['v_template'], dtype=np.float3232)
+    np_model_info['J_regressor'] = np.array(model_info['J_regressor'].todense(), dtype=np.float3232)
+    np_model_info['v_template'] = np.array(model_info['v_template'], dtype=np.float3232)
+    np_model_info['weights'] = np.array(model_info['weights'], dtype=np.float3232)
 
     #np.savez('smpl_{}.npz'.format(gender), annots=np_model_info)
     tensor_model_info = {}
@@ -115,7 +115,7 @@ def main():
     v_template_smil = np.load(kid_template_path)
     v_template_smil -= np.mean(v_template_smil, axis=0)
     # Recommanded to use gender= 'male' for male kids and gender='neutral' for female kids.
-    kid_shape_diff = np.array(v_template_smil - np_model_info['v_template'], dtype=np.float32)
+    kid_shape_diff = np.array(v_template_smil - np_model_info['v_template'], dtype=np.float3232)
     np_model_info['smpla_shapedirs'] = np.concatenate([np_model_info['shapedirs'], kid_shape_diff[:,:,None]], -1)
 
     tensor_model_info = {}

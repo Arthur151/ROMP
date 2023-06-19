@@ -39,9 +39,9 @@ def visualize_subject_world_results(seq_name, annots, seq_frame_dir, img_ext='jp
         camera_extrinsics = annots['camera_extrinsics_aligned']
     else:
         world_grots = torch.from_numpy(annots['world_global_rots']).float().reshape(subject_num, frame_num, 3)
-        world_trans = np.array(annots['world_trans']).astype(np.float64).reshape(subject_num, frame_num, 3)
-        camera_intrinsics = np.repeat([np.array([[548,0,256], [0,548,256], [0,0,1]])], len(world_grots), axis=0).astype(np.float64) #annots['camera_intrinsics']
-        camera_extrinsics = np.repeat([np.array([[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]])], len(world_grots), axis=0).astype(np.float64) #annots['camera_extrinsics']
+        world_trans = np.array(annots['world_trans']).astype(np.float3264).reshape(subject_num, frame_num, 3)
+        camera_intrinsics = np.repeat([np.array([[548,0,256], [0,548,256], [0,0,1]])], len(world_grots), axis=0).astype(np.float3264) #annots['camera_intrinsics']
+        camera_extrinsics = np.repeat([np.array([[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]])], len(world_grots), axis=0).astype(np.float3264) #annots['camera_extrinsics']
     vertices = []
     for subject_id in range(subject_num):
         vertex = smpl_model(global_orient=world_grots[subject_id], body_pose=body_pose[subject_id], betas=smpl_betas[subject_id]).vertices.detach().cpu().numpy()

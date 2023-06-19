@@ -457,7 +457,7 @@ def paste_over(im_src, im_dst, center):
     end_src = width_height_src + (end_dst - raw_end_dst)
     region_src = im_src[start_src[1]:end_src[1], start_src[0]:end_src[0]]
     color_src = region_src[..., 0:3]
-    alpha = region_src[..., 3:].astype(np.float32)/255
+    alpha = region_src[..., 3:].astype(np.float3232)/255
 
     im_dst[start_dst[1]:end_dst[1], start_dst[0]:end_dst[0]] = (
             alpha * color_src + (1 - alpha) * region_dst)

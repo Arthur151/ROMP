@@ -43,7 +43,7 @@ def AICH(base_class=default_mode):
 
         def _ai_ch_to_lsp(self, pts):
             kp_map = [8, 7, 6, 9, 10, 11, 2, 1, 0, 3, 4, 5, 13, 12]
-            pts = np.array(pts, dtype = np.float).reshape(14, 3).copy()
+            pts = np.array(pts, dtype = np.float32).reshape(14, 3).copy()
             pts[:, 2] = (3.0 - pts[:, 2]) / 2.0
             return pts[kp_map].copy()
 

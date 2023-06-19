@@ -23,7 +23,7 @@ class STrack(BaseTrack):
     def __init__(self, trans_uv, body_pose, conf, buffer_size=30):
 
         # wait activate
-        self._centers = np.asarray(trans_uv, dtype=np.float)
+        self._centers = np.asarray(trans_uv, dtype=np.float32)
         self.kalman_filter = None
         self.mean, self.covariance = None, None
         self.is_activated = False

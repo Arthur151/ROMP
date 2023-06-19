@@ -228,7 +228,7 @@ class Heatmap_AE_loss(nn.Module):
 def test_ae_loss():
     import numpy as np
     t = torch.tensor(
-        np.arange(0, 32).reshape(1, 2, 4, 4).astype(np.float)*0.1,
+        np.arange(0, 32).reshape(1, 2, 4, 4).astype(np.float32)*0.1,
         requires_grad=True
     )
     t.register_hook(lambda x: print('t', x))

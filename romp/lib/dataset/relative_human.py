@@ -37,7 +37,7 @@ def Relative_human(base_class=default_mode):
             img_name = self.file_paths[index%len(self.file_paths)]
             imgpath = self._get_image_path(img_name)
             image = cv2.imread(imgpath)[:,:,::-1]
-            #mask = self.get_exclude_mask(anno, index)[:,:,np.newaxis].astype(np.float32)
+            #mask = self.get_exclude_mask(anno, index)[:,:,np.newaxis].astype(np.float3232)
             annots = self.annots[img_name]
             kp2ds, valid_mask_2ds, valid_mask_3ds, depth_info = [], [], [], []
             

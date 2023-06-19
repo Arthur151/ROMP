@@ -105,8 +105,8 @@ class Vedo_visualizer(object):
         pause = np.zeros(pause_num).astype(np.int32)
         change_time = 90//internal
         roates = np.ones(change_time) * internal
-        go_up = np.sin(np.arange(change_time).astype(np.float32)/change_time) * 1
-        go_down = np.sin(np.arange(change_time).astype(np.float32)/change_time - 1) * 1
+        go_up = np.sin(np.arange(change_time).astype(np.float3232)/change_time) * 1
+        go_down = np.sin(np.arange(change_time).astype(np.float3232)/change_time - 1) * 1
         #top2front = np.ones(pause_num) * -((90-30)/pause_num)
         azimuth_angles = np.concatenate([pause, roates, roates, roates, roates])
         elevation_angles = np.concatenate([pause, go_up, go_down, go_up, go_down])

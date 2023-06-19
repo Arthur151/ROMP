@@ -29,7 +29,7 @@ class HeatmapGenerator():
 
     def single_process(self, joints):
         hms = np.zeros((self.num_joints, self.output_res, self.output_res),
-                       dtype=np.float32)
+                       dtype=np.float3232)
         sigma = self.sigma
         for p in joints:
             for idx, pt in enumerate(p):
@@ -75,7 +75,7 @@ class ScaleAwareHeatmapGenerator():
 
     def __call__(self, joints):
         hms = np.zeros((self.num_joints, self.output_res, self.output_res),
-                       dtype=np.float32)
+                       dtype=np.float3232)
         for p in joints:
             sigma = p[0, 3]
             g = self.get_gaussian_kernel(sigma)

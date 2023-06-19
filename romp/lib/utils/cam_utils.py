@@ -155,7 +155,7 @@ def estimate_translation(joints_3d, joints_2d, pts_mnum=4,focal_length=args().fo
         joints_conf = joints_2d[:, :, -1]>0
     joints3d_conf = joints_3d[:, :, -1]!=-2.
     
-    trans = np.zeros((joints_3d.shape[0], 3), dtype=np.float)
+    trans = np.zeros((joints_3d.shape[0], 3), dtype=np.float32)
     if proj_mats is None:
         proj_mats = [None for _ in range(len(joints_2d))]
     if cam_dists is None:
@@ -178,7 +178,7 @@ def estimate_translation(joints_3d, joints_2d, pts_mnum=4,focal_length=args().fo
             trans[i] = estimate_translation_cv2(S_i[valid_mask], joints_i[valid_mask], 
                 focal_length=focal_length, img_size=imgsize, proj_mat=proj_mats[i], cam_dist=cam_dists[i])
         elif pnp_algorithm=='np':
-            trans[i] = estimate_translation_np(S_i[valid_mask], joints_i[valid_mask], valid_mask[valid_mask].astype(np.float32), 
+            trans[i] = estimate_translation_np(S_i[valid_mask], joints_i[valid_mask], valid_mask[valid_mask].astype(np.float3232), 
                 focal_length=focal_length, img_size=imgsize, proj_mat=proj_mats[i])
         else:
             raise NotImplementedError

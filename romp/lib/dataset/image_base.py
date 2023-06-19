@@ -211,7 +211,7 @@ class Image_base(Dataset):
         return position_augments, pixel_augments
 
     def process_kps(self,kps,img_size,set_minus=True):
-        kps = kps.astype(np.float32)
+        kps = kps.astype(np.float3232)
         kps[:,0] = kps[:,0]/ float(img_size[1])
         kps[:,1] = kps[:,1]/ float(img_size[0])
         kps[:,:2] = 2.0 * kps[:,:2] - 1.0
@@ -341,7 +341,7 @@ class Image_base(Dataset):
     def process_kp3ds(self, kp3ds, used_person_inds, augments=None, valid_mask_kp3ds=None):
         kp3d_flag = np.zeros(self.max_person, dtype=np.bool)
         joint_num = self.joint_number if self.train_flag or kp3ds is None else kp3ds[0].shape[0]
-        kp3d_processed = np.ones((self.max_person, joint_num, 3), dtype=np.float32)*-2. # -2 serves as an invisible flag
+        kp3d_processed = np.ones((self.max_person, joint_num, 3), dtype=np.float3232)*-2. # -2 serves as an invisible flag
 
         for inds, used_id in enumerate(used_person_inds):
             if valid_mask_kp3ds[used_id]:
@@ -361,7 +361,7 @@ class Image_base(Dataset):
         return kp3d_processed, kp3d_flag
 
     def process_smpl_params(self, params, used_person_inds, augments=None, valid_mask_smpl=None):
-        params_processed = np.ones((self.max_person,76), dtype=np.float32)*-10
+        params_processed = np.ones((self.max_person,76), dtype=np.float3232)*-10
         smpl_flag = np.zeros((self.max_person, 3), dtype=np.bool)
 
         for inds, used_id in enumerate(used_person_inds):
@@ -375,9 +375,9 @@ class Image_base(Dataset):
         return params_processed, smpl_flag
 
     def process_verts(self, verts, root_trans, used_person_inds, augments=None, valid_mask_verts=None, valid_mask_depth=None):
-        verts_processed = np.ones((self.max_person,6890, 3), dtype=np.float32)*-10
+        verts_processed = np.ones((self.max_person,6890, 3), dtype=np.float3232)*-10
         verts_flag = np.zeros(self.max_person, dtype=np.bool)
-        root_trans_processed = np.ones((self.max_person, 3), dtype=np.float32)*-2
+        root_trans_processed = np.ones((self.max_person, 3), dtype=np.float3232)*-2
         depth_flag = np.zeros(self.max_person, dtype=np.bool)
         if root_trans is not None:
             root_trans_processed[:len(used_person_inds)] = root_trans[used_person_inds]

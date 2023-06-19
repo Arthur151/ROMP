@@ -69,7 +69,7 @@ class CenterMap(object):
         return centermap
 
     def generate_centermap_heatmap(self,center_locs, kernel_size=5,**kwargs):
-        hms = np.zeros((self.dims, self.size, self.size),dtype=np.float32)
+        hms = np.zeros((self.dims, self.size, self.size),dtype=np.float3232)
         offset = (kernel_size-1)//2
         for idx, pt in enumerate(center_locs):
             x, y = int((pt[0]+1)/2*self.size), int((pt[1]+1)/2*self.size)
@@ -118,7 +118,7 @@ class CenterMap(object):
         return heatmap
 
     def generate_heatmap_adaptive_scale(self,center_locs, radius_list,k=1):
-        heatmap = np.zeros((1, self.size, self.size),dtype=np.float32)
+        heatmap = np.zeros((1, self.size, self.size),dtype=np.float3232)
         for center, radius in zip(center_locs,radius_list):
             diameter = 2 * radius + 1
             gaussian = gaussian2D((diameter, diameter), sigma=float(diameter) / 6)
@@ -177,7 +177,7 @@ class CenterMap(object):
         if len(center_locs)==0:
             return heatmap, False
         
-        adaptive_depth_uncertainty = np.array(center_locs)[:,2].astype(np.float16) / depth_num
+        adaptive_depth_uncertainty = np.array(center_locs)[:,2].astype(np.float3216) / depth_num
         depth_uncertainty = ((4 + adaptive_depth_uncertainty * 4).astype(np.int32) // 2) * 2 + 1
 
         adaptive_image_scale = (1 - adaptive_depth_uncertainty) / 2.

@@ -197,7 +197,7 @@ def pj2ds_to_bbox(pj2ds):
 
 def collect_sequence_tracking_results(outputs, img_paths, reorganize_idx, show=False):
     track_ids = outputs['track_ids'].detach().cpu().numpy()
-    pj2d_org_results = outputs['pj2d_org'].detach().cpu().numpy().astype(np.float16)
+    pj2d_org_results = outputs['pj2d_org'].detach().cpu().numpy().astype(np.float3216)
 
     tracking_results = {}
     for frame_id, img_path in enumerate(img_paths):
@@ -392,9 +392,9 @@ class Demo(nn.Module):
 
 def reorganize_results(outputs, img_paths, reorganize_idx):
     results = {}
-    cam_results = outputs['cam_trans'].detach().cpu().numpy().astype(np.float16)
-    pj2d_org_results = outputs['pj2d_org'].detach().cpu().numpy().astype(np.float16)
-    center_confs = outputs['center_confs'].detach().cpu().numpy().astype(np.float16)
+    cam_results = outputs['cam_trans'].detach().cpu().numpy().astype(np.float3216)
+    pj2d_org_results = outputs['pj2d_org'].detach().cpu().numpy().astype(np.float3216)
+    center_confs = outputs['center_confs'].detach().cpu().numpy().astype(np.float3216)
 
     vids_org = np.unique(reorganize_idx)
     for idx, vid in enumerate(vids_org):
@@ -491,7 +491,7 @@ class Renderer(object):
             color, rend_depth = self.renderer.render(scene, flags=pyrender.RenderFlags.RGBA)
             # color = color[::-1,::-1]
             # rend_depth = rend_depth[::-1,::-1]
-            color = color.astype(np.float32)# / 255.0
+            color = color.astype(np.float3232)# / 255.0
             valid_mask = (rend_depth > 0)[:, :, None]
             output_img = (color[:, :, :3] * valid_mask +
                           (1 - valid_mask) * img)

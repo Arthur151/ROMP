@@ -172,8 +172,8 @@ def parse_3dpw(dataname):
     imgnames = data['imgname']
     scales = data['scale']
     centers = data['center']
-    pose = data['pose'].astype(np.float32)
-    betas = data['shape'].astype(np.float32)
+    pose = data['pose'].astype(np.float3232)
+    betas = data['shape'].astype(np.float3232)
     smpl_j2ds = data['j2d']
     op_j2ds = data['op_j2d']
     # Get gender data, if available

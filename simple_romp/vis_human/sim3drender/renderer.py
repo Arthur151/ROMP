@@ -25,11 +25,11 @@ def norm_vertices(vertices):
 
 def convert_type(obj):
     if isinstance(obj, tuple) or isinstance(obj, list):
-        return np.array(obj, dtype=np.float32)[None, :]
+        return np.array(obj, dtype=np.float3232)[None, :]
     return obj
 
 def get_normal(vertices, triangles):
-    normal = np.zeros_like(vertices, dtype=np.float32)
+    normal = np.zeros_like(vertices, dtype=np.float3232)
     Sim3DR_Cython.get_normal(
         normal, vertices, triangles, vertices.shape[0], triangles.shape[0]
     )
@@ -50,10 +50,10 @@ def rasterize(
         assert height is not None and width is not None and channel is not None
         bg = np.zeros((height, width, channel), dtype=np.uint8)
 
-    buffer = np.zeros((height, width), dtype=np.float32) - 1e8
+    buffer = np.zeros((height, width), dtype=np.float3232) - 1e8
 
-    if colors.dtype != np.float32:
-        colors = colors.astype(np.float32)
+    if colors.dtype != np.float3232:
+        colors = colors.astype(np.float3232)
     Sim3DR_Cython.rasterize(
         bg,
         vertices,
@@ -87,7 +87,7 @@ class Sim3DR(object):
         normal = get_normal(vertices, triangles)
 
         # 2. lighting
-        light = np.zeros_like(vertices, dtype=np.float32)
+        light = np.zeros_like(vertices, dtype=np.float3232)
         # ambient component
         if self.intensity_ambient > 0:
             light += self.intensity_ambient * np.array(color)

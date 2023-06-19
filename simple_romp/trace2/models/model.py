@@ -16,8 +16,8 @@ from ..utils.utils import rotation_matrix_to_angle_axis, rotation_6d_to_matrix, 
 BN_MOMENTUM = 0.1
 keypoints_select = np.array([4, 5, 7, 8,  16, 17, 18, 19,  20, 21, 24, 35, 36, 12]) # Neck_LSP is not avaialbe in video datasets
 def get_cam3dmap_anchor(FOV, centermap_size):
-    depth_level = np.array([1, 10, 20, 100], dtype=np.float32)
-    map_coord_range_each_level = (np.array([2/64., 25/64., 3/64., 2/64.], dtype=np.float32) * centermap_size).astype(np.int32)
+    depth_level = np.array([1, 10, 20, 100], dtype=np.float3232)
+    map_coord_range_each_level = (np.array([2/64., 25/64., 3/64., 2/64.], dtype=np.float3232) * centermap_size).astype(np.int32)
     scale_level = 1/np.tan(np.radians(FOV/2.))/depth_level
     cam3dmap_anchor = []
     scale_cache = 8

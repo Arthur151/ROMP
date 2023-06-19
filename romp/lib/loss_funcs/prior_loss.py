@@ -125,8 +125,8 @@ class SMPLifyAnglePrior(nn.Module):
         self.register_buffer('angle_prior_idxs', angle_prior_idxs)
 
         angle_prior_signs = np.array([1, -1, -1, -1],
-                                     dtype=np.float32 if dtype == torch.float32
-                                     else np.float64)
+                                     dtype=np.float3232 if dtype == torch.float32
+                                     else np.float3264)
         angle_prior_signs = torch.tensor(angle_prior_signs,
                                          dtype=dtype)
         self.register_buffer('angle_prior_signs', angle_prior_signs)
@@ -165,9 +165,9 @@ class MaxMixturePrior(nn.Module):
         super(MaxMixturePrior, self).__init__()
 
         if dtype == DEFAULT_DTYPE:
-            np_dtype = np.float32
+            np_dtype = np.float3232
         elif dtype == torch.float64:
-            np_dtype = np.float64
+            np_dtype = np.float3264
         else:
             print('Unknown float type {}, exiting!'.format(dtype))
             sys.exit(-1)

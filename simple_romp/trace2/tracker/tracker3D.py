@@ -131,7 +131,7 @@ class Tracker(object):
 
 
 def euc_dist(atrans, btrans):
-    euc_dists = np.zeros((len(atrans), len(btrans)), dtype=np.float32)
+    euc_dists = np.zeros((len(atrans), len(btrans)), dtype=np.float3232)
     if euc_dists.size == 0:
         return euc_dists
     euc_dists = np.linalg.norm(np.array(atrans)[:, None]-np.array(btrans)[None], ord=2, axis=2)
@@ -217,7 +217,7 @@ def remove_duplicate_stracks3D(stracksa, stracksb, dist_thresh=0.15):
 class STrack3D(BaseTrack):
     def __init__(self, trans, score, czyx):
         # wait activate
-        self._trans = np.asarray(trans, dtype=np.float32)
+        self._trans = np.asarray(trans, dtype=np.float3232)
         self.is_activated = False
         self.score = score
         self.czyx = czyx
@@ -273,7 +273,7 @@ class STrack3D(BaseTrack):
 class STrack(BaseTrack):
     def __init__(self, trans, score, czyx):
         # wait activate
-        self._trans = np.asarray(trans, dtype=np.float32)
+        self._trans = np.asarray(trans, dtype=np.float3232)
         self.kalman_filter = None
         self.mean, self.covariance = None, None
         self.is_activated = False

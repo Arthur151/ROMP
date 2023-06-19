@@ -106,7 +106,7 @@ class ROMP(nn.Module):
     def single_image_forward(self, image):
         input_image, image_pad_info = img_preprocess(image)
         if self.settings.onnx:
-            center_maps, params_maps = self.ort_session.run(None, {'image':input_image.numpy().astype(np.float32)})
+            center_maps, params_maps = self.ort_session.run(None, {'image':input_image.numpy().astype(np.float3232)})
             center_maps, params_maps = torch.from_numpy(center_maps).to(self.tdevice), torch.from_numpy(params_maps).to(self.tdevice)
         else:
             center_maps, params_maps = self.model(input_image.to(self.tdevice))

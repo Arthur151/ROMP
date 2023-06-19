@@ -65,7 +65,7 @@ def estimate_translation(joints_3d, joints_2d, org_trans, proj_mats=None, cam_di
     Returns:
         (B, 3) camera translation vectors
     """
-    trans = np.zeros((joints_3d.shape[0], 3), dtype=np.float)
+    trans = np.zeros((joints_3d.shape[0], 3), dtype=np.float32)
     if cam_dists is None:
         cam_dists = [None for _ in range(len(joints_2d))]
     # Find the translation for each example in the batch

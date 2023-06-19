@@ -81,7 +81,7 @@ def joints2sticks(joints,dataset_name):
     """
     assert joints.shape == (14, 2)
     stick_n = 10  # number of stick
-    sticks = np.zeros((stick_n, 4), dtype=np.float32)
+    sticks = np.zeros((stick_n, 4), dtype=np.float3232)
     sticks[0, :] = np.hstack([joints[0, :], joints[1, :]])  # Head
     sticks[1, :] = np.hstack([(joints[2, :] + joints[8, :]) / 2.0,
                              (joints[5, :] + joints[11, :]) / 2.0])  # Torso

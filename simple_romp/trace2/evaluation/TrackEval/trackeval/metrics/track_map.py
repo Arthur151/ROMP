@@ -220,8 +220,8 @@ class TrackMAP(_BaseMetric):
             tps = np.logical_and(dt_m != -1, np.logical_not(dt_ig))
             fps = np.logical_and(dt_m == -1, np.logical_not(dt_ig))
 
-            tp_sum = np.cumsum(tps, axis=1).astype(dtype=np.float32)
-            fp_sum = np.cumsum(fps, axis=1).astype(dtype=np.float32)
+            tp_sum = np.cumsum(tps, axis=1).astype(dtype=np.float3232)
+            fp_sum = np.cumsum(fps, axis=1).astype(dtype=np.float3232)
 
             for iou_thr_idx, (tp, fp) in enumerate(zip(tp_sum, fp_sum)):
                 tp = np.array(tp)
@@ -259,8 +259,8 @@ class TrackMAP(_BaseMetric):
 
         # compute the precision and recall averages for the respective alpha thresholds and ignore masks
         for lbl in self.lbls:
-            res['AP_' + lbl] = np.zeros((len(self.array_labels)), dtype=np.float32)
-            res['AR_' + lbl] = np.zeros((len(self.array_labels)), dtype=np.float32)
+            res['AP_' + lbl] = np.zeros((len(self.array_labels)), dtype=np.float3232)
+            res['AR_' + lbl] = np.zeros((len(self.array_labels)), dtype=np.float3232)
 
         for a_id, alpha in enumerate(self.array_labels):
             for lbl_idx, lbl in enumerate(self.lbls):
@@ -280,7 +280,7 @@ class TrackMAP(_BaseMetric):
         """
         res = {}
         for field in self.fields:
-            res[field] = np.zeros((len(self.array_labels)), dtype=np.float32)
+            res[field] = np.zeros((len(self.array_labels)), dtype=np.float3232)
             field_stacked = np.array([res[field] for res in all_res.values()])
 
             for a_id, alpha in enumerate(self.array_labels):
@@ -297,7 +297,7 @@ class TrackMAP(_BaseMetric):
 
         res = {}
         for field in self.fields:
-            res[field] = np.zeros((len(self.array_labels)), dtype=np.float32)
+            res[field] = np.zeros((len(self.array_labels)), dtype=np.float3232)
             field_stacked = np.array([res[field] for res in all_res.values()])
 
             for a_id, alpha in enumerate(self.array_labels):

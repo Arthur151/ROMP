@@ -92,7 +92,7 @@ def match_by_tag(inp, params):
                         joints[row]
                     tag_dict[key] = [tags[row]]
 
-    ans = np.array([joint_dict[i] for i in joint_dict]).astype(np.float32)
+    ans = np.array([joint_dict[i] for i in joint_dict]).astype(np.float3232)
     return ans
 
 

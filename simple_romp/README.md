@@ -9,6 +9,8 @@ TRACE tracks specific subjects shown in the first frame and recover their 3D tra
 
 ## Installation
 
+Please note that this installation is just for ROMP and BEV. If you want to use TRACE as well, please refer to [this instrcution](trace2/README.md). 
+
 1. Installing simple_romp via pip:
 
 ```
@@ -16,7 +18,7 @@ pip install --upgrade setuptools numpy cython lap
 ```
 
 ```
-pip install --upgrade simple_romp
+pip install simple_romp==1.0.9
 ```
 or download the package and install it from source:
 ```

@@ -4,6 +4,50 @@ To run the inference & evaluation, please first install simple-romp following [t
 
 Please refer to [this instruction](../../trace/README.md) for training.
 
+## Installation
+
+CAUTIONS: simple-romp for ROMP and BEV has been tested on Linux, Mac, and Windows, but its TRACE version only works in Linu
+x environment with CUDA support. **Please make sure that you have CUDA and corresponding pytorch installed before using simple-romp for TRACE.**
+
+1. Installing simple_romp via pip:
+
+```
+pip install --upgrade setuptools numpy cython lap
+```
+
+```
+pip install --upgrade simple_romp
+```
+or download the package and install it from source:
+```
+python setup.py install
+```
+
+2. Preparing SMPL model files in our format:
+
+Firstly, please register and download:  
+a. Meta data from [this link](https://github.com/Arthur151/ROMP/releases/download/V2.0/smpl_model_data.zip). Please unzip it, then we get a folder named "smpl_model_data"
+b. SMPL model file (SMPL_NEUTRAL.pkl) from "Download version 1.1.0 for Python 2.7 (female/male/neutral, 300 shape PCs)" in [official website](https://smpl.is.tue.mpg.de/), and put it into the "smpl_model_data" folder.      
+c. (Optional) If you use BEV, please also download SMIL model file (smil_web.pkl) from [official website](https://smil.is.tue.mpg.de/), and put it into the "smpl_model_data" folder.   
+Then we can get a folder in structure like this:  
+```
+|-- smpl_model_data
+|   |-- SMPL_NEUTRAL.pkl
+|   |-- J_regressor_extra.npy
+|   |-- J_regressor_h36m.npy
+|   |-- smpl_kid_template.npy
+|   |-- (smil_web.pkl)
+```
+
+Secondly, please convert the SMPL model files to our format via  
+```
+# please provide the absolute path of the "smpl_model_data" folder to the source_dir 
+romp.pack_smpl_info -source_dir=/path/to/smpl_model_data
+# (Optional) If you use BEV, please also run:
+romp.pack_smpl_info -source_dir=/path/to/smpl_model_data
+```
+The converted file would be save to "~/.romp/" in defualt. 
+
 ## Inference
 
 After installation, please run 

@@ -491,7 +491,7 @@ class Renderer(object):
             color, rend_depth = self.renderer.render(scene, flags=pyrender.RenderFlags.RGBA)
             # color = color[::-1,::-1]
             # rend_depth = rend_depth[::-1,::-1]
-            color = color.astype(np.float3232)# / 255.0
+            color = color.astype(np.float32)# / 255.0
             valid_mask = (rend_depth > 0)[:, :, None]
             output_img = (color[:, :, :3] * valid_mask +
                           (1 - valid_mask) * img)

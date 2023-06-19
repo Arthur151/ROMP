@@ -430,7 +430,7 @@ def estimate_translation(joints_3d, joints_2d, pts_mnum=4,focal_length=600, proj
             trans[i] = estimate_translation_cv2(S_i[valid_mask], joints_i[valid_mask], 
                 focal_length=focal_length, img_size=imgsize, proj_mat=proj_mats[i], cam_dist=cam_dists[i])
         except:
-            trans[i] = estimate_translation_np(S_i[valid_mask], joints_i[valid_mask], valid_mask[valid_mask].astype(np.float3232), 
+            trans[i] = estimate_translation_np(S_i[valid_mask], joints_i[valid_mask], valid_mask[valid_mask].astype(np.float32), 
                 focal_length=focal_length, img_size=imgsize, proj_mat=proj_mats[i])
 
     return torch.from_numpy(trans).float()

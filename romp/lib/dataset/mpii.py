@@ -84,8 +84,8 @@ def MPII(base_class=default_mode):
                 bbox_scale = eft_data['bbox_scale']
                 bbox_center = eft_data['bbox_center']
                 pred_camera = np.array(eft_data['parm_cam'])
-                pred_betas = np.reshape(np.array( eft_data['parm_shape'], dtype=np.float3232), (10) )     #(10,)
-                pred_pose_rotmat = np.reshape( np.array( eft_data['parm_pose'], dtype=np.float3232), (24,3,3)  )        #(24,3,3)
+                pred_betas = np.reshape(np.array( eft_data['parm_shape'], dtype=np.float32), (10) )     #(10,)
+                pred_pose_rotmat = np.reshape( np.array( eft_data['parm_pose'], dtype=np.float32), (24,3,3)  )        #(24,3,3)
                 pred_pose = quaternion.as_rotation_vector(quaternion.from_rotation_matrix(pred_pose_rotmat)).reshape(-1)
                 if imgName not in self.eft_annots:
                     self.eft_annots[imgName] = []
@@ -102,8 +102,8 @@ def MPII(base_class=default_mode):
             for a in anno:
                 image_name = a['image']
 
-                c = np.array(a['center'], dtype=np.float3232)
-                s = np.array([a['scale'], a['scale']], dtype=np.float3232)
+                c = np.array(a['center'], dtype=np.float32)
+                s = np.array([a['scale'], a['scale']], dtype=np.float32)
 
                 # Adjust center/scale slightly to avoid cropping limbs
                 if c[0] != -1:
@@ -117,7 +117,7 @@ def MPII(base_class=default_mode):
                 joints[:, 0:2] = joints[:, 0:2] - 1
                 assert len(joints) == 16, 'joint num diff: {} vs {}'.format(len(joints),16)
 
-                joints_vis = np.zeros((16,3),dtype=np.float3232)
+                joints_vis = np.zeros((16,3),dtype=np.float32)
                 joints_vis[:, 0:2] = joints[:, 0:2]
                 joints_vis[:, -1] = np.array(a['joints_vis'])
 

@@ -83,7 +83,7 @@ class Py3DR(object):
         # Until this is fixed use hack with depth image to get the opacity
         color, rend_depth = self.renderer.render(scene, flags=pyrender.RenderFlags.RGBA)
 
-        color = color.astype(np.float3232)
+        color = color.astype(np.float32)
         valid_mask = (rend_depth > 0)[:, :, None]
         output_image = (color[:, :, :3] * valid_mask +
                         (1 - valid_mask) * image).astype(np.uint8)

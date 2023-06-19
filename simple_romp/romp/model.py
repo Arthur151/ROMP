@@ -521,7 +521,7 @@ def test_onnx():
     import cv2
     import numpy as np
     cost_time = []
-    image = cv2.imread('/home/yusun/CenterMesh/simple_romp/test/ages_croped.png').astype(np.float3232)[None]
+    image = cv2.imread('/home/yusun/CenterMesh/simple_romp/test/ages_croped.png').astype(np.float32)[None]
     for _ in range(200):
         start_time = time.time()
         ort_outs = ort_session.run(None, {'image':image})

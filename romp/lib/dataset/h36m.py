@@ -38,7 +38,7 @@ def H36M(base_class=default_mode):
             else:
                 self.joint3d_mapper = constants.joint_mapping(constants.H36M_32,constants.SMPL_ALL_54)
 
-            self.kps_vis = (self.joint_mapper!=-1).astype(np.float3232)[:,None]
+            self.kps_vis = (self.joint_mapper!=-1).astype(np.float32)[:,None]
             self.shuffle_mode = args().shuffle_crop_mode
             self.shuffle_ratio = args().shuffle_crop_ratio_3d
             self.test2val_sample_ratio = 10

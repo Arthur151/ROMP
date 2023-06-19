@@ -45,7 +45,7 @@ def COCO14(base_class=default_mode):
             img_name = self.file_paths[index%len(self.file_paths)]
             imgpath = self._get_image_path(img_name)
             image = cv2.imread(imgpath)[:,:,::-1]
-            #mask = self.get_exclude_mask(anno, index)[:,:,np.newaxis].astype(np.float3232)
+            #mask = self.get_exclude_mask(anno, index)[:,:,np.newaxis].astype(np.float32)
 
             kp2ds, valid_mask_2d, valid_mask_3d, params = [], [], [], None
             
@@ -103,8 +103,8 @@ def COCO14(base_class=default_mode):
                 bbox_center = eft_data['bbox_center']
 
                 pred_camera = np.array(eft_data['parm_cam'])
-                pred_betas = np.reshape(np.array( eft_data['parm_shape'], dtype=np.float3232), (10) )     #(10,)
-                pred_pose_rotmat = np.reshape( np.array( eft_data['parm_pose'], dtype=np.float3232), (24,3,3)  )        #(24,3,3)
+                pred_betas = np.reshape(np.array( eft_data['parm_shape'], dtype=np.float32), (10) )     #(10,)
+                pred_pose_rotmat = np.reshape( np.array( eft_data['parm_pose'], dtype=np.float32), (24,3,3)  )        #(24,3,3)
                 pred_pose = quaternion.as_rotation_vector(quaternion.from_rotation_matrix(pred_pose_rotmat)).reshape(-1)
                 if imgName not in self.eft_annots:
                     self.eft_annots[imgName] = []

@@ -53,7 +53,7 @@ def eval_single(preds, gts, pano_frame_dir, seq_names, vis=True, vis_folder='tra
 
         traj_est = np.concatenate([gtran_preds, grot_preds], 1)
         traj_ref = np.concatenate([gtran_gts, grot_gts], 1)
-        timestamps = used_frame_ids.astype(np.float3232) / 30
+        timestamps = used_frame_ids.astype(np.float32) / 30
         ate, ape = evaluate_ate(traj_est, traj_ref, timestamps, seq_name, show_results=vis, vis_folder=vis_folder)
         errors['ate'][seq_name] = ate
         errors['ape'][seq_name] = ape
@@ -137,7 +137,7 @@ def eval_multi(preds, allgts, seq_names, vis=True,vis_folder='traj_vis',  missin
         for sid in range(person_num):
             traj_est = np.concatenate([gtran_preds[:,sid], grot_preds[:,sid]], 1)
             traj_ref = np.concatenate([gtran_gts[:,sid], grot_gts[:,sid]], 1)
-            timestamps = used_frame_ids.astype(np.float3232) / 30
+            timestamps = used_frame_ids.astype(np.float32) / 30
             try:
                 vis_seq_name = seq_name+str(sid)
                 ate, ape = evaluate_ate(traj_est, traj_ref, timestamps, vis_seq_name, align=True, show_results=vis, vis_folder=vis_folder)

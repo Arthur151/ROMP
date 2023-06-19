@@ -75,15 +75,15 @@ def calc_outputs_evaluation_matrix(self, outputs, ED):
                 pck_joints_sampled = constants.SMPL_MAJOR_JOINTS if real_3d.shape[1] == 24 else np.arange(12)
                 mpjpe_pck_batch = calc_pck(
                         real_3d, predicts, lrhip=lrhip, pck_joints=pck_joints_sampled).cpu().numpy()*1000
-                ED['PCK3D'][ds].append((mpjpe_pck_batch.reshape(-1) < self.PCK_thresh).astype(np.float3232)*100)
+                ED['PCK3D'][ds].append((mpjpe_pck_batch.reshape(-1) < self.PCK_thresh).astype(np.float32)*100)
                 if ds in constants.MPJAE_ds:
                     rel_pose_pred = torch.cat([outputs['params']['global_orient'][val_idx], outputs['params']['body_pose'][val_idx]], 1)[:, :22*3].contiguous()
                     rel_pose_real = outputs['meta_data']['params'][val_idx, :22*3].cuda()
                     MPJAE_error = _calc_MPJAE(rel_pose_pred, rel_pose_real)
                     ED['MPJAE'][ds].append(MPJAE_error)
 
-            ED['MPJPE'][ds].append(abs_error.astype(np.float3232))
-            ED['PA_MPJPE'][ds].append(rt_error.astype(np.float3232))
+            ED['MPJPE'][ds].append(abs_error.astype(np.float32))
+            ED['PA_MPJPE'][ds].append(rt_error.astype(np.float32))
             ED['imgpaths'][ds].append(np.array(outputs['meta_data']['imgpath'])[val_idx])
         else:
             kp3d_vis = None

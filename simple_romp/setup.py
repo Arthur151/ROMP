@@ -16,7 +16,7 @@ requireds = ["opencv-python","torch",
 
 setuptools.setup(
     name='simple_romp',
-    version='1.1.1',
+    version='1.1.2',
     author="Yu Sun",
     author_email="yusunhit@gmail.com",
     setup_requires=[
@@ -80,37 +80,3 @@ setuptools.setup(
         ],
     },
 )
-
-# from torch.utils.cpp_extension import BuildExtension, CUDAExtension
-
-# def make_cuda_ext(name, sources):
-#     return CUDAExtension(
-#         name=name,
-#         sources=[p for p in sources],
-#         extra_compile_args={
-#             'cxx': [],
-#             'nvcc': [
-#                 '-D__CUDA_NO_HALF_OPERATORS__',
-#                 '-D__CUDA_NO_HALF_CONVERSIONS__',
-#                 '-D__CUDA_NO_HALF2_OPERATORS__',
-#             ]
-#         })
-
-# setuptools.setup(
-#         name='deform_conv',
-#         ext_modules=[
-#             make_cuda_ext(
-#                 name='deform_conv_cuda',
-#                 sources=[
-#                     'trace2/models/deform_conv/src/deform_conv_cuda.cpp',
-#                     'trace2/models/deform_conv/src/deform_conv_cuda_kernel.cu'
-#                 ]),
-#             make_cuda_ext(
-#                 name='deform_pool_cuda',
-#                 sources=[
-#                     'trace2/models/deform_conv/src/deform_pool_cuda.cpp',
-#                     'trace2/models/deform_conv/src/deform_pool_cuda_kernel.cu'
-#                 ]),
-#         ],
-#         cmdclass={'build_ext': BuildExtension},
-#         zip_safe=False)

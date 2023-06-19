@@ -17,7 +17,7 @@ import glob
 from io import BytesIO
 from scipy.spatial.transform import Rotation as R
 
-TAG_CHAR = np.array([202021.25], np.float3232)
+TAG_CHAR = np.array([202021.25], np.float32)
 
 def get_kp2d_on_org_img(kp2d, offset):
     assert kp2d.shape[1]>=2, print('Espected shape of kp2d is Kx2, while get {}'.formt(kp2d.shape))

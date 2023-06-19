@@ -163,9 +163,9 @@ class SparseFlowAugmentor:
         coords = np.meshgrid(np.arange(wd), np.arange(ht))
         coords = np.stack(coords, axis=-1)
 
-        coords = coords.reshape(-1, 2).astype(np.float3232)
-        flow = flow.reshape(-1, 2).astype(np.float3232)
-        valid = valid.reshape(-1).astype(np.float3232)
+        coords = coords.reshape(-1, 2).astype(np.float32)
+        flow = flow.reshape(-1, 2).astype(np.float32)
+        valid = valid.reshape(-1).astype(np.float32)
 
         coords0 = coords[valid>=1]
         flow0 = flow[valid>=1]
@@ -184,7 +184,7 @@ class SparseFlowAugmentor:
         yy = yy[v]
         flow1 = flow1[v]
 
-        flow_img = np.zeros([ht1, wd1, 2], dtype=np.float3232)
+        flow_img = np.zeros([ht1, wd1, 2], dtype=np.float32)
         valid_img = np.zeros([ht1, wd1], dtype=np.int32)
 
         flow_img[yy, xx] = flow1

@@ -329,7 +329,7 @@ def test_smpl(smpl_model, dtype=torch.float32):
     for _ in range(200):
         start_time = time.time()
         outputs = smpl_model(a,b)
-        verts_np = (outputs[0].cpu().numpy() * image_length/2).astype(np.float3232) + + np.array([[[.5,.5,0]]]).astype(np.float3232) * image_length
+        verts_np = (outputs[0].cpu().numpy() * image_length/2).astype(np.float32) + + np.array([[[.5,.5,0]]]).astype(np.float32) * image_length
         faces_np = outputs[2].cpu().numpy().astype(np.int32)
         rendered_image = render_human_mesh(bg_image, verts_np, faces_np)
         print(rendered_image.shape)
@@ -343,7 +343,7 @@ def test_smpl(smpl_model, dtype=torch.float32):
     #    print(key, item.shape)
     return 
 
-def test_onnx(dtype=np.float3232, batch_size=1):
+def test_onnx(dtype=np.float32, batch_size=1):
     smpl_onnx_path = "smpl.onnx"
     import onnx, onnxruntime
     #onnx_model = onnx.load(smpl_onnx_path)

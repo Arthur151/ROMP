@@ -341,20 +341,20 @@ class Plotter3dPoses:
 
     def __init__(self, canvas_size=(512,512), origin=(0.5, 0.5), scale=200):
         self.canvas_size = canvas_size
-        self.origin = np.array([origin[1] * canvas_size[1], origin[0] * canvas_size[0]], dtype=np.float3232)  # x, y
-        self.scale = np.float3232(scale)
+        self.origin = np.array([origin[1] * canvas_size[1], origin[0] * canvas_size[0]], dtype=np.float32)  # x, y
+        self.scale = np.float32(scale)
         self.theta, self.phi = 0, np.pi/2 #np.pi/4, -np.pi/6
         axis_length = 200
         axes = [
-            np.array([[-axis_length/2, -axis_length/2, 0], [axis_length/2, -axis_length/2, 0]], dtype=np.float3232),
-            np.array([[-axis_length/2, -axis_length/2, 0], [-axis_length/2, axis_length/2, 0]], dtype=np.float3232),
-            np.array([[-axis_length/2, -axis_length/2, 0], [-axis_length/2, -axis_length/2, axis_length]], dtype=np.float3232)]
+            np.array([[-axis_length/2, -axis_length/2, 0], [axis_length/2, -axis_length/2, 0]], dtype=np.float32),
+            np.array([[-axis_length/2, -axis_length/2, 0], [-axis_length/2, axis_length/2, 0]], dtype=np.float32),
+            np.array([[-axis_length/2, -axis_length/2, 0], [-axis_length/2, -axis_length/2, axis_length]], dtype=np.float32)]
         step = 20
         for step_id in range(axis_length // step + 1):  # add grid
             axes.append(np.array([[-axis_length / 2, -axis_length / 2 + step_id * step, 0],
-                                  [axis_length / 2, -axis_length / 2 + step_id * step, 0]], dtype=np.float3232))
+                                  [axis_length / 2, -axis_length / 2 + step_id * step, 0]], dtype=np.float32))
             axes.append(np.array([[-axis_length / 2 + step_id * step, -axis_length / 2, 0],
-                                  [-axis_length / 2 + step_id * step, axis_length / 2, 0]], dtype=np.float3232))
+                                  [-axis_length / 2 + step_id * step, axis_length / 2, 0]], dtype=np.float32))
         self.axes = np.array(axes)
 
     def plot(self, pose_3ds, bones, colors=[(255, 255, 255)], img=None):
@@ -371,7 +371,7 @@ class Plotter3dPoses:
         encircle_theta, encircle_phi = [0,0,0, np.pi/4,np.pi/4,np.pi/4, np.pi/2,np.pi/2,np.pi/2], [np.pi/2, 5*np.pi/7, -2*np.pi/7, np.pi/2, 5*np.pi/7, -2*np.pi/7, np.pi/2, 5*np.pi/7, -2*np.pi/7,]
         encircle_origin = np.array([[0.165, 0.165], [0.165, 0.495], [0.165, 0.825],\
                                     [0.495, 0.165], [0.495, 0.495], [0.495, 0.825],\
-                                    [0.825, 0.165], [0.825, 0.495], [0.825, 0.825]], dtype=np.float3232) * np.array(self.canvas_size)[None]
+                                    [0.825, 0.165], [0.825, 0.495], [0.825, 0.825]], dtype=np.float32) * np.array(self.canvas_size)[None]
         for self.theta, self.phi, self.origin in zip(encircle_theta, encircle_phi, encircle_origin):
             R = self._get_rotation(self.theta, self.phi)
             #self._draw_axes(img, R)
@@ -402,7 +402,7 @@ class Plotter3dPoses:
             [ cos(theta),  sin(theta) * sin(phi)],
             [-sin(theta),  cos(theta) * sin(phi)],
             [ 0,                       -cos(phi)]
-        ], dtype=np.float3232)  # transposed
+        ], dtype=np.float32)  # transposed
 
 def test_visualizer():
     visualizer = Visualizer(resolution=(512,512), input_size=args().input_size, result_img_dir=args().result_img_dir, with_renderer=True)

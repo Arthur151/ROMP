@@ -7,7 +7,7 @@ import cv2
 cv2.setNumThreads(0)
 cv2.ocl.setUseOpenCL(False)
 
-TAG_CHAR = np.array([202021.25], np.float3232)
+TAG_CHAR = np.array([202021.25], np.float32)
 
 def readFlow(fn):
     """ Read .flo file in Middlebury format"""
@@ -17,7 +17,7 @@ def readFlow(fn):
     # WARNING: this will work on little-endian architectures (eg Intel x86) only!
     # print 'fn = %s'%(fn)
     with open(fn, 'rb') as f:
-        magic = np.fromfile(f, np.float3232, count=1)
+        magic = np.fromfile(f, np.float32, count=1)
         if 202021.25 != magic:
             print('Magic number incorrect. Invalid .flo file')
             return None
@@ -25,7 +25,7 @@ def readFlow(fn):
             w = np.fromfile(f, np.int32, count=1)
             h = np.fromfile(f, np.int32, count=1)
             # print 'Reading %d x %d flo file\n' % (w, h)
-            data = np.fromfile(f, np.float3232, count=2*int(w)*int(h))
+            data = np.fromfile(f, np.float32, count=2*int(w)*int(h))
             # Reshape data into 3D array (columns, rows, bands)
             # The reshape here is for visualization, the original code is (w,h,2)
             return np.resize(data, (int(h), int(w), 2))
@@ -95,13 +95,13 @@ def writeFlow(filename,uv,v=None):
     tmp = np.zeros((height, width*nBands))
     tmp[:,np.arange(width)*2] = u
     tmp[:,np.arange(width)*2 + 1] = v
-    tmp.astype(np.float3232).tofile(f)
+    tmp.astype(np.float32).tofile(f)
     f.close()
 
 
 def readFlowKITTI(filename):
     flow = cv2.imread(filename, cv2.IMREAD_ANYDEPTH|cv2.IMREAD_COLOR)
-    flow = flow[:,:,::-1].astype(np.float3232)
+    flow = flow[:,:,::-1].astype(np.float32)
     flow, valid = flow[:, :, :2], flow[:, :, 2]
     flow = (flow - 2**15) / 64.0
     return flow, valid
@@ -127,9 +127,9 @@ def read_gen(file_name, pil=False):
     elif ext == '.bin' or ext == '.raw':
         return np.load(file_name)
     elif ext == '.flo':
-        return readFlow(file_name).astype(np.float3232)
+        return readFlow(file_name).astype(np.float32)
     elif ext == '.pfm':
-        flow = readPFM(file_name).astype(np.float3232)
+        flow = readPFM(file_name).astype(np.float32)
         if len(flow.shape) == 2:
             return flow
         else:

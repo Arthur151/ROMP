@@ -213,7 +213,7 @@ def MPII(base_class=default_mode):
 
             jnt_count = np.ma.array(jnt_count, mask=False)
             jnt_count.mask[6:8] = True
-            jnt_ratio = jnt_count / np.sum(jnt_count).astype(np.float3264)
+            jnt_ratio = jnt_count / np.sum(jnt_count).astype(np.float64)
 
             name_value = [
                 ('Head', PCKh[head]),

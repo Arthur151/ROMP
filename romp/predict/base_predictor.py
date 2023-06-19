@@ -49,18 +49,18 @@ class Predictor(Base):
 
     def reorganize_results(self, outputs, img_paths, reorganize_idx):
         results = {}
-        cam_results = outputs['params']['cam'].detach().cpu().numpy().astype(np.float3216)
-        trans_results = outputs['cam_trans'].detach().cpu().numpy().astype(np.float3216)
-        smpl_pose_results = outputs['params']['poses'].detach().cpu().numpy().astype(np.float3216)
-        smpl_shape_results = outputs['params']['betas'].detach().cpu().numpy().astype(np.float3216)
-        joints_54 = outputs['j3d'].detach().cpu().numpy().astype(np.float3216)
-        kp3d_smpl24_results = outputs['joints_smpl24'].detach().cpu().numpy().astype(np.float3216)
+        cam_results = outputs['params']['cam'].detach().cpu().numpy().astype(np.float16)
+        trans_results = outputs['cam_trans'].detach().cpu().numpy().astype(np.float16)
+        smpl_pose_results = outputs['params']['poses'].detach().cpu().numpy().astype(np.float16)
+        smpl_shape_results = outputs['params']['betas'].detach().cpu().numpy().astype(np.float16)
+        joints_54 = outputs['j3d'].detach().cpu().numpy().astype(np.float16)
+        kp3d_smpl24_results = outputs['joints_smpl24'].detach().cpu().numpy().astype(np.float16)
         kp3d_spin24_results = joints_54[:,constants.joint_mapping(constants.SMPL_ALL_54, constants.SPIN_24)]
         kp3d_op25_results = joints_54[:,constants.joint_mapping(constants.SMPL_ALL_54, constants.OpenPose_25)]
-        verts_results = outputs['verts'].detach().cpu().numpy().astype(np.float3216)
-        pj2d_results = outputs['pj2d'].detach().cpu().numpy().astype(np.float3216)
-        pj2d_org_results = outputs['pj2d_org'].detach().cpu().numpy().astype(np.float3216)
-        center_confs = outputs['centers_conf'].detach().cpu().numpy().astype(np.float3216)
+        verts_results = outputs['verts'].detach().cpu().numpy().astype(np.float16)
+        pj2d_results = outputs['pj2d'].detach().cpu().numpy().astype(np.float16)
+        pj2d_org_results = outputs['pj2d_org'].detach().cpu().numpy().astype(np.float16)
+        center_confs = outputs['centers_conf'].detach().cpu().numpy().astype(np.float16)
 
         vids_org = np.unique(reorganize_idx)
         for idx, vid in enumerate(vids_org):

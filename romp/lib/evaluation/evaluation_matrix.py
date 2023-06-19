@@ -344,7 +344,7 @@ def p_mpjpe(predicted, target, with_sRt=False,full_torch=False,with_aligned=Fals
     Y0 /= (normY+1e-6)
 
 
-    H = np.matmul(X0.transpose(0, 2, 1), Y0).astype(np.float3216).astype(np.float3264)
+    H = np.matmul(X0.transpose(0, 2, 1), Y0).astype(np.float16).astype(np.float64)
     U, s, Vt = np.linalg.svd(H)
     V = Vt.transpose(0, 2, 1)
     R = np.matmul(V, U.transpose(0, 2, 1))

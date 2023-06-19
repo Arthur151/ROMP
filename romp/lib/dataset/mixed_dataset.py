@@ -53,7 +53,7 @@ class MixedDataset(Dataset):
         expect_length = (np.array(self.lengths)/np.array(self.partition)).astype(np.int)
         dataset_info_table.add_row(['Expected length']+expect_length.tolist())
         self.partition = np.array(self.partition).cumsum()
-        dataset_info_table.add_row(['Accum. Prob.']+self.partition.astype(np.float3216).tolist())
+        dataset_info_table.add_row(['Accum. Prob.']+self.partition.astype(np.float16).tolist())
         dataset_info_table.add_row(['Accum. ID.']+self.ID_num_list)
         print(dataset_info_table)
         self.total_length = min(int(expect_length.max()), max_length)

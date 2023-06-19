@@ -197,7 +197,7 @@ def pj2ds_to_bbox(pj2ds):
 
 def collect_sequence_tracking_results(outputs, img_paths, reorganize_idx, show=False):
     track_ids = outputs['track_ids'].detach().cpu().numpy()
-    pj2d_org_results = outputs['pj2d_org'].detach().cpu().numpy().astype(np.float3216)
+    pj2d_org_results = outputs['pj2d_org'].detach().cpu().numpy().astype(np.float16)
 
     tracking_results = {}
     for frame_id, img_path in enumerate(img_paths):
@@ -392,9 +392,9 @@ class Demo(nn.Module):
 
 def reorganize_results(outputs, img_paths, reorganize_idx):
     results = {}
-    cam_results = outputs['cam_trans'].detach().cpu().numpy().astype(np.float3216)
-    pj2d_org_results = outputs['pj2d_org'].detach().cpu().numpy().astype(np.float3216)
-    center_confs = outputs['center_confs'].detach().cpu().numpy().astype(np.float3216)
+    cam_results = outputs['cam_trans'].detach().cpu().numpy().astype(np.float16)
+    pj2d_org_results = outputs['pj2d_org'].detach().cpu().numpy().astype(np.float16)
+    center_confs = outputs['center_confs'].detach().cpu().numpy().astype(np.float16)
 
     vids_org = np.unique(reorganize_idx)
     for idx, vid in enumerate(vids_org):

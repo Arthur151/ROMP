@@ -156,7 +156,7 @@ class CenterMap(object):
         if len(center_locs)==0:
             return heatmap, False
         
-        adaptive_depth_uncertainty = np.array(center_locs)[:,2].astype(np.float3216) / depth_num
+        adaptive_depth_uncertainty = np.array(center_locs)[:,2].astype(np.float16) / depth_num
         depth_uncertainty = ((4 + adaptive_depth_uncertainty * 4).astype(np.int32) // 2) * 2 + 1
 
         adaptive_image_scale = (1 - adaptive_depth_uncertainty) / 2.

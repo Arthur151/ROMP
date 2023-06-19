@@ -30,7 +30,7 @@ def save_meshes(reorganize_idx, outputs, output_dir, smpl_faces):
         img_path = outputs['meta_data']['imgpath'][verts_vids[0]]
         obj_name = os.path.join(output_dir, '{}'.format(os.path.basename(img_path))).replace('.mp4','').replace('.jpg','').replace('.png','')+'.obj'
         for subject_idx, batch_idx in enumerate(verts_vids):
-            save_obj(outputs['verts'][batch_idx].detach().cpu().numpy().astype(np.float3216), \
+            save_obj(outputs['verts'][batch_idx].detach().cpu().numpy().astype(np.float16), \
                 smpl_faces,obj_name.replace('.obj', '_{}.obj'.format(subject_idx)))
 
 

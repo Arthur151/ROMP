@@ -45,7 +45,7 @@ Please prepare the training datasets following [dataset.md](docs/dataset.md), an
 
 ### Evaluation
 
-Please refer to [romp_evaluation.md](docs/romp_evaluation.md) and [bev_evaluation.md](docs/bev_evaluation.md) for evaluation on benchmarks.
+Please refer to [romp_evaluation](docs/romp_evaluation.md), [bev_evaluation](docs/bev_evaluation.md), and [trace_evaluation](simple_romp/trace2/README.md) for evaluation on benchmarks.
 
 ### Extensions
 

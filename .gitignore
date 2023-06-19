@@ -1,4 +1,4 @@
-src/
+#src/
 trained_models/
 #models/
 demo/videos/
@@ -15,3 +15,5 @@ __pycache__/
 demo/images/
 log/*
 trace/
+simple_romp/.DS_Store
+.DS_Store

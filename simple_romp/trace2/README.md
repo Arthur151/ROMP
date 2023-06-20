@@ -49,7 +49,8 @@ The converted file would be save to "~/.romp/" in defualt.
 
 After installation, please run 
 ```
-trace2 -i /path/to/video_sequence
+# current code does not support inference with multiple GPUs.
+CUDA_VISIBLE_DEVICES=0 trace2 -i /path/to/video_sequence
 ```
 
 ## Visualization 

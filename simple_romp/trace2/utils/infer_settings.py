@@ -10,11 +10,9 @@ trace_model_dir = os.path.join(os.path.expanduser("~"),'.romp', 'TRACE_models')
 def trace_settings(input_args=sys.argv[1:]):
     parser = argparse.ArgumentParser(description='TRACE: 5D Temporal Regression of Avatars with Dynamic Cameras in 3D Environments')
     parser.add_argument('-m', '--mode', type=str, default='video', help = 'trace only support video mode for now')
-    parser.add_argument('--model_id', type=int, default=2, help = 'Whether to process the input as a long image, sliding window way')
     parser.add_argument('-i', '--input', type=str, default=os.path.join(os.path.expanduser("~"),'Desktop', 'trace_demo'), help = 'Path to the input image / video')
     parser.add_argument('-o', '--save_path', type=str, default=os.path.join(os.path.expanduser("~"),'TRACE_results'), help = 'Path to save the results')
     parser.add_argument('--GPU', type=int, default=0, help = 'The gpu device number to run the inference on. If GPU=-1, then running in cpu mode')
-
     parser.add_argument('--center_thresh', type=float, default=0.05, help = 'The confidence threshold of positive detection in 2D human body center heatmap.')
     
     parser.add_argument('--save_video', action='store_true', help = 'Whether to save the video results')
@@ -76,6 +74,9 @@ def trace_settings(input_args=sys.argv[1:]):
         download_model(model_url, args.raft_model_path, 'TRACE motion backbone')
     if not os.path.exists(args.input):
         demo_url = 'https://github.com/Arthur151/ROMP/releases/download/V3.0/trace_demo.zip'
+        download_model(demo_url, args.input+'.zip', 'DEMO')
+        print(f'Attension: please unzip the download demo video file at {args.input}.zip and specifiy the path to input')
+        demo_url = 'https://github.com/Arthur151/ROMP/releases/download/V3.0/trace_demo2.zip'
         download_model(demo_url, args.input+'.zip', 'DEMO')
         print(f'Attension: please unzip the download demo video file at {args.input}.zip and specifiy the path to input')
 

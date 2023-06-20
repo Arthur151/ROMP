@@ -50,7 +50,24 @@ The converted file would be save to "~/.romp/" in defualt.
 After installation, please run 
 ```
 # current code does not support inference with multiple GPUs.
-CUDA_VISIBLE_DEVICES=0 trace2 -i /path/to/video_sequence
+CUDA_VISIBLE_DEVICES=0 trace2 -i /path/to/video_sequence --subject_num=N
+```
+For example, you can download our demo [videos1](https://github.com/Arthur151/ROMP/releases/download/V3.0/trace_demo.zip) and [videos2](https://github.com/Arthur151/ROMP/releases/download/V3.0/trace_demo2.zip). Please unzip them and specify the path to these folders to run, like:
+```
+CUDA_VISIBLE_DEVICES=0 trace2 -i /path/to/trace_demo --subject_num=1
+CUDA_VISIBLE_DEVICES=0 trace2 -i /path/to/trace_demo2 --subject_num=2
+```
+
+Optional functions:
+```
+# By default,  subject_num is set to 1, which means we only track and recover the 3D person with the largest scale in the first frame. To change it, please specify:
+--subject_num=N
+
+# By default, dir to save the results would be ~/TRACE_results. To change it, please specify:
+--save_path /path/to/save/folder
+
+# To save the rendering results in camera coordinates, please add:
+--save_video
 ```
 
 ## Visualization 
@@ -58,8 +75,12 @@ CUDA_VISIBLE_DEVICES=0 trace2 -i /path/to/video_sequence
 To visualize the estimated results, please download the codes and run
 ```
 cd simple_romp
-python -m trace2.show
+python -m trace2.show --smpl_model_folder /path/to/smpl_model_data --preds_path /path/to/trace_demo.npz --frame_dir /path/to/trace_demo 
+#    --smpl_model_folder   Folder contains SMPL_NEUTRAL.pkl, like /path/to/smpl_model_data
+#    --preds_path          Path to save the .npz results, like /path/to/trace_demo.npz
+#    --frame_dir           Path to folder of input video frames, like /path/to/trace_demo 
 ```
+
 
 ## TRACE Benchmark Evaluation
 

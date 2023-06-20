@@ -1,15 +1,16 @@
 # Simple_ROMP
 
-Simplified implementation of ROMP [ICCV21], BEV [CVPR22], and TRACE [CVPR23]
+Simplified implementation of ROMP [ICCV21], BEV [CVPR22], and TRACE [CVPR23].
 
 As shown in [the main page](https://github.com/Arthur151/ROMP), the differences between ROMP, BEV, and TRACE are:  
 ROMP has a lighter head to efficiently estimate the SMPL 3D pose/shape parameters and rough 2D position/scale of people in the image.  
 BEV explicitly reasons about relative depths of people and support all age groups with SMPL+A model.  
 TRACE tracks specific subjects shown in the first frame and recover their 3D trajectories in global coordinates.  
 
-## Installation
+Please note that these instructions are just for ROMP and BEV.   
+If you want to use TRACE as well, please refer to [this instrcution](trace2/README.md). 
 
-Please note that this installation is just for ROMP and BEV. If you want to use TRACE as well, please refer to [this instrcution](trace2/README.md). 
+## Installation
 
 1. Installing simple_romp via pip:
 

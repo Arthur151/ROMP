@@ -37,7 +37,8 @@ Please use simple-romp for inference, the rest code is just for training.
 
 ## How to use it
 
-#### Please refer to [this guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for inference & export (fbx/glb/bvh).
+#### For ROMP & BEV, please refer to [this guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for inference & export (fbx/glb/bvh).
+#### For TRACE, please refer to [this instrcution](simple_romp/trace2/README.md).
 
 ### Train
 For training, please refer to [installation.md](docs/installation.md) for full installation.
@@ -45,7 +46,7 @@ Please prepare the training datasets following [dataset.md](docs/dataset.md), an
 
 ### Evaluation
 
-Please refer to [romp_evaluation](docs/romp_evaluation.md), [bev_evaluation](docs/bev_evaluation.md), and [trace_evaluation](simple_romp/trace2/README.md) for evaluation on benchmarks.
+For evaluation on benchmarks, please refer to [romp_evaluation](docs/romp_evaluation.md), [bev_evaluation](docs/bev_evaluation.md), and [trace_evaluation](simple_romp/trace2/README.md).
 
 ### Extensions
 

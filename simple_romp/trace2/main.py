@@ -130,7 +130,7 @@ class TRACE(nn.Module):
             np.savez(save_paths.seq_results_save_path, outputs=remove_large_keys(outputs[seq_name]), imgpaths=imgpaths[seq_name])
             np.savez(save_paths.seq_tracking_results_save_path, tracking=tracking_results[seq_name], kp3ds=kp3d_results[seq_name])
             if self.save_video:
-                visualize_predictions(outputs[seq_name], imgpaths[seq_name], self.FOV, save_paths.seq_save_dir)
+                visualize_predictions(outputs[seq_name], imgpaths[seq_name], self.FOV, save_paths.seq_save_dir, self.smpl_model_path)
 
 def main():
     args = trace_settings()

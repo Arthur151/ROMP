@@ -7,9 +7,6 @@ import copy
 import math
 from vis_human import setup_renderer
 
-data_dir = os.path.join('/home/yusun/Infinity', 'project_data', 'trace_data')
-smpl_model_path = os.path.join(data_dir, 'model_data', 'parameters', 'SMPL_NEUTRAL.pth')
-
 color_table_default = np.array([
     [0.4, 0.6, 1], # blue
     [0.8, 0.7, 1], # pink
@@ -184,7 +181,7 @@ def process_idx(reorganize_idx, vids=None):
 
     return used_org_inds, per_img_inds
 
-def visulize_result(renderer, outputs, imgpath, rendering_cfgs, save_dir, alpha=1):
+def visulize_result(renderer, outputs, imgpath, rendering_cfgs, save_dir, smpl_model_path):
     used_org_inds, per_img_inds = process_idx(outputs['reorganize_idx'])
     render_images_path = []
     for org_ind, img_inds in zip(used_org_inds, per_img_inds):
@@ -192,7 +189,7 @@ def visulize_result(renderer, outputs, imgpath, rendering_cfgs, save_dir, alpha=
         image = cv2.imread(image_path)
         if image.shape[1]>1024:
             cv2.resize(image, (image.shape[1]//2,image.shape[0]//2))
-        render_image = render_image_results(renderer, outputs, img_inds, image, rendering_cfgs)
+        render_image = render_image_results(renderer, outputs, img_inds, image, rendering_cfgs, smpl_model_path)
         save_path = os.path.join(save_dir, os.path.basename(image_path))
         cv2.imwrite(save_path, render_image)
         render_images_path.append(save_path)
@@ -207,7 +204,7 @@ def save_video(frame_save_paths, save_path, frame_rate=24):
         writer.write(cv2.imread(frame_path))
     writer.release()
 
-def render_image_results(renderer, outputs, img_inds, image, rendering_cfgs):
+def render_image_results(renderer, outputs, img_inds, image, rendering_cfgs, smpl_model_path):
     triangles = torch.load(os.path.join(smpl_model_path))['f'].numpy().astype(np.int32)
     h, w = image.shape[:2]
     background = np.ones([h, h, 3], dtype=np.uint8) * 255
@@ -309,12 +306,12 @@ def render_image_results(renderer, outputs, img_inds, image, rendering_cfgs):
     
     return np.concatenate(result_image, 0)
 
-def visualize_predictions(outputs, imgpath, FOV, seq_save_dir):
+def visualize_predictions(outputs, imgpath, FOV, seq_save_dir, smpl_model_path):
     rendering_cfgs = {'mesh_color':'identity', 'items':'mesh,tracking', 'renderer': 'sim3dr'} # 'world_mesh' 
     #rendering_cfgs = {'mesh_color':'identity', 'items':'mesh,tracking', 'renderer': 'pyrender'} # 'world_mesh'
     renderer = setup_renderer(name=rendering_cfgs['renderer'], FOV=FOV)
     os.makedirs(seq_save_dir, exist_ok=True)
-    render_images_path = visulize_result(renderer, outputs, imgpath, rendering_cfgs, seq_save_dir)
+    render_images_path = visulize_result(renderer, outputs, imgpath, rendering_cfgs, seq_save_dir, smpl_model_path)
     save_video(render_images_path, seq_save_dir+'.mp4', frame_rate=25)
 
 

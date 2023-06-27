@@ -100,18 +100,22 @@ python -m eval --eval_dataset=DynaCam
 ```
 
 ### MuPoTS
+Please download the MuPoTS dataset from [official website](https://vcai.mpi-inf.mpg.de/projects/SingleShotMultiPerson/) and the packed annotations from [here](https://pan.baidu.com/s/1QIamBv1arpblTboiSyuJrw?pwd=vswt). Then please set the mupots's dataset_dir in `simple-romp/trace2/eval.py`.
 ```
 cd simple_romp/trace2
 python -m eval --eval_dataset=mupots
 ```
 
 ### Dyna3DPW
+Please download the Dyna3DPW dataset from [here](https://pan.baidu.com/s/1r7b6Oot5iv-aIxdcNZE1_g?pwd=tmct). Then please set the Dyna3DPW's dataset_dir in `simple-romp/trace2/eval.py`.
+
 ```
 cd simple_romp/trace2
 python -m eval --eval_dataset=Dyna3DPW
 ```
 
 ### 3DPW
+Please download the 3DPW dataset from [official website](https://virtualhumans.mpi-inf.mpg.de/3DPW/license.html) and the packed annotations from [here](https://pan.baidu.com/s/1OjwJNxxzvqe_bFXGMKaI2A?pwd=qfz2). Then please set the 3DPW's dataset_dir in `simple-romp/trace2/eval.py`.
 ```
 cd simple_romp/trace2
 python -m eval --eval_dataset=3DPW

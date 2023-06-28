@@ -14,6 +14,5 @@ dist/
 __pycache__/
 demo/images/
 log/*
-trace/
 simple_romp/.DS_Store
 .DS_Store

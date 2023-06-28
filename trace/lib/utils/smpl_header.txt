@@ -1,0 +1,109 @@
+HIERARCHY
+ROOT Hips
+{
+  OFFSET ${offsets[0]} ${offsets[1]} ${offsets[2]}
+  CHANNELS 6 Xposition Yposition Zposition Zrotation Yrotation Xrotation
+  JOINT LeftHip
+  {
+    OFFSET ${offsets[3]} ${offsets[4]} ${offsets[5]}
+    CHANNELS 3 Zrotation Yrotation Xrotation
+    JOINT LeftKnee
+    {
+      OFFSET ${offsets[6]} ${offsets[7]} ${offsets[8]}
+      CHANNELS 3 Zrotation Yrotation Xrotation
+      JOINT LeftFoot
+      {
+        OFFSET ${offsets[9]} ${offsets[10]} ${offsets[11]}
+        CHANNELS 3 Zrotation Yrotation Xrotation
+        End Site LeftToe
+        {
+          OFFSET ${offsets[12]} ${offsets[13]} ${offsets[14]}
+        }
+      }
+    }
+  }
+  JOINT RightHip
+  {
+    OFFSET ${offsets[15]} ${offsets[16]} ${offsets[17]}
+    CHANNELS 3 Zrotation Yrotation Xrotation
+    JOINT RightKnee
+    {
+      OFFSET ${offsets[18]} ${offsets[19]} ${offsets[20]}
+      CHANNELS 3 Zrotation Yrotation Xrotation
+      JOINT RightFoot
+      {
+        OFFSET ${offsets[21]} ${offsets[22]} ${offsets[23]}
+        CHANNELS 3 Zrotation Yrotation Xrotation
+        End Site RightToe
+        {
+          OFFSET ${offsets[24]} ${offsets[25]} ${offsets[26]}
+        }
+      }
+    }
+  }
+  JOINT Waist
+  {
+    OFFSET ${offsets[27]} ${offsets[28]} ${offsets[29]}
+    CHANNELS 3 Zrotation Yrotation Xrotation
+    JOINT Spine
+    {
+      OFFSET ${offsets[30]} ${offsets[31]} ${offsets[32]}
+      CHANNELS 3 Zrotation Yrotation Xrotation
+      JOINT Chest
+      {
+        OFFSET ${offsets[33]} ${offsets[34]} ${offsets[35]}
+        CHANNELS 3 Zrotation Yrotation Xrotation
+        JOINT Neck
+        {
+          OFFSET ${offsets[36]} ${offsets[37]} ${offsets[38]}
+          CHANNELS 3 Zrotation Yrotation Xrotation
+          End Site Head
+          {
+            OFFSET ${offsets[39]} ${offsets[40]} ${offsets[41]}
+          }
+        }
+        JOINT LeftInnerShoulder
+        {
+          OFFSET ${offsets[42]} ${offsets[43]} ${offsets[44]}
+          CHANNELS 3 Zrotation Yrotation Xrotation
+          JOINT LeftShoulder
+          {
+            OFFSET ${offsets[45]} ${offsets[46]} ${offsets[47]}
+            CHANNELS 3 Zrotation Yrotation Xrotation
+            JOINT LeftElbow
+            {
+              OFFSET ${offsets[48]} ${offsets[49]} ${offsets[50]}
+              CHANNELS 3 Zrotation Yrotation Xrotation
+              End Site LeftWrist
+              {
+                OFFSET ${offsets[51]} ${offsets[52]} ${offsets[53]}
+              }
+            }
+          }
+        }
+        JOINT RightInnerShoulder
+        {
+          OFFSET ${offsets[54]} ${offsets[55]} ${offsets[56]}
+          CHANNELS 3 Zrotation Yrotation Xrotation
+          JOINT RightShoulder
+          {
+            OFFSET ${offsets[57]} ${offsets[58]} ${offsets[59]}
+            CHANNELS 3 Zrotation Yrotation Xrotation
+            JOINT RightElbow
+            {
+              OFFSET ${offsets[60]} ${offsets[61]} ${offsets[62]}
+              CHANNELS 3 Zrotation Yrotation Xrotation
+              End Site RightWrist
+              {
+                OFFSET ${offsets[63]} ${offsets[64]} ${offsets[65]}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+MOTION
+Frames: ${num_frames}
+Frame Time: ${frame_rate}

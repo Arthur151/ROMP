@@ -1,0 +1,157 @@
+ARGS:
+ tab: 'TRACE'
+ datasets: 'h36m,mpiinf,pw3d,pennaction,DC,PDC' 
+ eval_datasets: 'pw3d'
+ model_precision: fp16
+ GPUS: 1,0
+ distributed_training: False
+ model_version: 6
+ tmodel_version: 2
+ centermap_size: 128 
+ pretrain: 'imagenet'
+ model_return_loss: True
+ new_training: False
+ new_training_iters: 600 
+ video: True
+ calc_smpl_mesh: True
+ calc_mesh_loss: True
+ eval_video: False
+ print_freq: 50
+ 
+ old_trace_implement_grots: False
+ old_trace_implement_trans: True
+ world_grots_accum_way: 'add' 
+
+ smpl_model_type: 'smpl'
+
+ FOV: 50 
+ focal_length: 548
+
+ large_kernel_size: True
+ inference_video: False
+ 
+ bev_distillation: False
+ loading_bev_head_parameters: False # True for new training.
+ learn2Dprojection: True # False for new training.
+ learn_gmm_prior: False
+
+ more_param_head_layer: True
+ 
+ learn_cam_motion_composition_yz: False
+ learn_cam_motion_composition_xyz: False
+ learn_motion_offset3D: True
+ learn_cam_init: False
+ supervise_cam_params: True
+ learn_temp_cam_consist: True
+ learn_temp_globalrot_consist: True
+ learn_temporal_shape_consistency: True
+ learn_foot_contact: True
+
+ dynamic_augment: True
+ dynamic_augment_ratio: 0.8 # 0.6
+ dynamic_changing_ratio: 0.2 # 0.4
+ dynamic_aug_tracking_ratio: 0.6
+ use_optical_flow: True
+
+ Synthetic_occlusion_ratio: 0.
+ random_temp_sample_internal: 3
+ shuffle_crop_ratio_2d: 0.5
+ shuffle_crop_ratio_3d: 0.5
+ rotate_prob: 0. # rotation hurts world gts (grots, trans)
+
+ train_backbone: False
+ estimate_camera: False
+ regressor_type: gru
+ with_gru: False
+ 
+ no_evaluation: True
+ test_interval: 500
+ fast_eval_iter: 100
+ eval_hard_seq: True
+ 
+ learn_image: False
+ image_repeat_time: 2
+ drop_first_frame_loss: True
+ learn_cam_with_fbboxes: False
+
+ CGRU_temp_prop: True
+ deform_motion: tracking
+ separate_smil_betas: True
+
+ temp_clip_length: 10 #64 #
+ temp_clip_sample_internal: 10 # 6
+ test_seq_max_batch_size: 128
+ temp_clip_length_eval: 8
+
+ learn_relative: True
+ learn_relative_age: False
+ learn_relative_depth: False
+ depth_loss_type: 'Piecewise'
+ center3d_loss: 'static'
+ add_depth_encoding: True
+ old_temp_model: False
+
+ master_batch_size: -1
+ val_batch_size: 1
+ batch_size: 6 
+ nw: 4
+ nw_eval: 1
+ lr: 0.00003 # 0.0001 for initial temp+single_featurefusion
+ 
+ cam_dim: 3
+ head_block_num: 1
+ perspective_proj: True
+ max_supervise_num: 16 # for each GPU, set it lower if there are multiple GPU for training.
+
+ model_path: ../project_data/trace_data/trained_models/trace_image_backbone.pkl
+ temp_model_path: ../project_data/trace_data/trained_models/trace_head.pkl
+
+ use_3d_only: False
+ fv_conditioned_way: 'attention' 
+ match_preds_to_gts_for_supervision: True
+ fine_tune: True
+
+ fix_backbone_training_scratch: False
+ eval: False
+ supervise_global_rot: False # no agora
+
+ collision_aware_centermap: False
+ homogenize_pose_space: True
+
+ backbone: 'hrnet'
+ centermap_conf_thresh: 0.12
+
+loss_weight:
+  MPJPE: 300 
+  PAMPJPE: 260
+  P_KP2D: 600.
+  Pose: 80.
+  Shape: 60.
+
+  Prior: 1.6
+  ortho: 0.1
+
+  CenterMap: 200.
+  CenterMap_3D: 300.
+  Cam: 100.
+
+  R_Age: 2000
+  R_Depth: 100.
+
+  motion_offsets3D: 300.
+  temp_shape_consist: 5.
+  world_foot: 6.
+
+  world_grots: 40.
+  wrotsL2: 80.
+
+  world_trans: 400.
+  world_pj2D: 80.
+
+sample_prob:
+  h36m: 0.22
+  mpiinf: 0.22
+  pw3d: 0.18
+  DC: 0.12
+  PDC: 0.12
+  pennaction: 0.14

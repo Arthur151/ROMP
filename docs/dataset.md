@@ -11,7 +11,7 @@ Please follow the directory structure to organize them.
 |   |   |-- images
 |   |   |-- annots.npz
 |   |   |-- cluster_results...
-|   |-- mpi-inf-3dhp
+|   |-- mpi_inf_3dhp_video
 |   |   |-- images
 |   |   |-- annots.npz
 |   |   |-- cluster_results...

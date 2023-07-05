@@ -24,7 +24,7 @@ We provide **cross-platform API** (installed via pip) to run ROMP & BEV on Linux
 - [Acknowledgement](#acknowledgement)
 
 ## News
-*2023/06/17: First release of TRACE's inference code. Please refer to this [instructions](simple_romp/trace2/README.md).*   
+*2023/06/17: Release of TRACE's code. Please refer to this [instructions](simple_romp/trace2/README.md) for inference.*   
 *2022/06/21: Training & evaluation code of BEV is released. Please update the [model_data](https://github.com/Arthur151/ROMP/releases/download/v1.1/model_data.zip).*   
 *2022/05/16: simple-romp v1.0 is released to support tracking, calling in python, exporting bvh, and etc.*   
 *2022/04/14: Inference code of BEV has been released in simple-romp v0.1.0.*   
@@ -37,16 +37,15 @@ Please use simple-romp for inference, the rest code is just for training.
 
 ## How to use it
 
-#### For ROMP & BEV, please refer to [this guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md) for inference & export (fbx/glb/bvh).
-#### For TRACE, please refer to [this instrcution](simple_romp/trace2/README.md).
+## ROMP & BEV
+#### For inference & export (fbx/glb/bvh), please refer to [this guidance](https://github.com/Arthur151/ROMP/blob/master/simple_romp/README.md).
+#### For training, please refer to [installation.md](docs/installation.md) for full installation, [dataset.md](docs/dataset.md) for data preparation, [train.md](docs/train.md) for training.
+#### For evaluation on benchmarks, please refer to [romp_evaluation](docs/romp_evaluation.md), [bev_evaluation](docs/bev_evaluation.md).
 
-### Train
-For training, please refer to [installation.md](docs/installation.md) for full installation.
-Please prepare the training datasets following [dataset.md](docs/dataset.md), and then refer to [train.md](docs/train.md) for training. 
-
-### Evaluation
-
-For evaluation on benchmarks, please refer to [romp_evaluation](docs/romp_evaluation.md), [bev_evaluation](docs/bev_evaluation.md), and [trace_evaluation](simple_romp/trace2/README.md).
+## TRACE
+#### For inference, please refer to [this instrcution](simple_romp/trace2/README.md).
+#### For evaluation on benchmarks, please refer to [trace_evaluation](simple_romp/trace2/README.md).
+#### For training, please refer to [trace_train](trace/README.md).
 
 ### Extensions
 

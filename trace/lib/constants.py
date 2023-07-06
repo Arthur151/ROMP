@@ -9,8 +9,7 @@ Dyna3DPW_sequences = ['downtown_walkBridge_01', 'downtown_runForBus_01', 'downto
 CMU_Panoptic_video_seqs = [
     '160422_haggling1-00_16-1', '160422_haggling1-00_16-2', '160422_haggling1-00_30-1', '160422_haggling1-00_30-2',
     '160422_mafia2-00_16-1', '160422_mafia2-00_16-2', '160422_mafia2-00_30-1', '160422_mafia2-00_30-2',
-    '160422_ultimatum1-00_16-1', '160422_ultimatum1-00_16-2', '160422_ultimatum1-00_30-1', '160422_ultimatum1-00_30-2',
-    '160906_pizza1-00_16-1', '160906_pizza1-00_16-2', '160906_pizza1-00_30-1', '160906_pizza1-00_30-2'
+    '160906_pizza1-00_30-1', '160906_pizza1-00_30-2'
 ]
 
 def joint_mapping(source_format, target_format):
@@ -30,8 +29,8 @@ joint2D_tree = {
 }
 
 SMPL_24 = {
-    'Pelvis_SMPL':0, 'L_Hip_SMPL':1, 'R_Hip_SMPL':2, 'Spine_SMPL': 3, 'L_Knee':4, 'R_Knee':5, 'Thorax_SMPL': 6, 'L_Ankle':7, 'R_Ankle':8,'Thorax_up_SMPL':9, \
-    'L_Toe_SMPL':10, 'R_Toe_SMPL':11, 'Neck': 12, 'L_Collar':13, 'R_Collar':14, 'SMPL_Head':15, 'L_Shoulder':16, 'R_Shoulder':17,\
+    'Pelvis_SMPL':50, 'L_Hip_SMPL':1, 'R_Hip_SMPL':2, 'Spine_SMPL': 3, 'L_Knee':4, 'R_Knee':5, 'Thorax_SMPL': 6, 'L_Ankle':7, 'R_Ankle':8,'Thorax_up_SMPL':9, \
+    'L_Toe_SMPL':0, 'R_Toe_SMPL':0, 'Neck': 0, 'L_Collar':13, 'R_Collar':14, 'SMPL_Head':15, 'L_Shoulder':16, 'R_Shoulder':17,\
     'L_Elbow':18, 'R_Elbow':19, 'L_Wrist': 20, 'R_Wrist': 21, 'L_Hand':22, 'R_Hand':23}
 
 SMPL_24_names = ['Pelvis_SMPL', 'L_Hip_SMPL', 'R_Hip_SMPL', 'Spine_SMPL', 'L_Knee', 'R_Knee', 'Thorax_SMPL', 'L_Ankle', 'R_Ankle','Thorax_up_SMPL', \

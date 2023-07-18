@@ -43,9 +43,9 @@ sh install.sh
 
 Please prepare datasets for training using following links:  
 DynaCam: [data](https://github.com/Arthur151/DynaCam)   
-MPI-INF-3DHP: [data](https://pan.baidu.com/s/17L0TZB1uC2FOkWfU8BIRmQ?pwd=w3j4)  
-Human3.6M: [annotations](https://pan.baidu.com/s/1xGXeXgBUwvINz4I5c0hweQ?pwd=ek92)
-3DPW: [images](https://virtualhumans.mpi-inf.mpg.de/3DPW/license.html) [annotations](https://pan.baidu.com/s/11Xv-rFKMIFMwMejPaVtu0A?pwd=q6md)  
+MPI-INF-3DHP: [data](https://pan.baidu.com/s/17L0TZB1uC2FOkWfU8BIRmQ?pwd=w3j4) (To merge the splited zip files, zip video_frames_split.zip -s=0 --out video_frames.zip)     
+Human3.6M: [images and annotations](https://pan.baidu.com/s/1xGXeXgBUwvINz4I5c0hweQ?pwd=ek92) (To merge the splited zip files, zip images.zip -s=0 --out h36m_images.zip)    
+3DPW: [images](https://virtualhumans.mpi-inf.mpg.de/3DPW/license.html) [annotations](https://pan.baidu.com/s/11Xv-rFKMIFMwMejPaVtu0A?pwd=q6md)   
 PennAction: [images](https://github.com/dreamdragon/PennAction) [annotations](https://pan.baidu.com/s/1YKmEYhv8XM21jPoKs1Y7RQ?pwd=ac9s)
 
 Please follow the directory structure to organize them.
@@ -54,6 +54,9 @@ Please follow the directory structure to organize them.
 |   |-- h36m
 |   |   |-- images
 |   |   |-- annots_smplkps.npz
+|   |   |-- smpl_neutral_betas.npz
+|   |   |-- h36m_train.txt
+|   |   |-- h36m_test.txt
 |   |-- mpi-inf-3dhp
 |   |   |-- video_frames
 |   |   |-- annots_video.npz

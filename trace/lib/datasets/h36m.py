@@ -45,7 +45,6 @@ def H36M(base_class=default_mode):
             self.compress_length = 5
 
             self.subject = self.train_test_subject[self.phase]
-            self.openpose_results = os.path.join(self.data_folder,"h36m_openpose_{}.npz".format(self.phase))
             self.imgs_list_file = os.path.join(self.data_folder,"h36m_{}.txt".format(self.phase))
 
             if base_class == 'video_relative':

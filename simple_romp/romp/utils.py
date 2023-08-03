@@ -90,6 +90,10 @@ def save_video_results(frame_save_paths):
     video_sequence_results = {}
     for frame_id, save_path in enumerate(frame_save_paths):
         npz_path = osp.splitext(save_path)[0]+'.npz'
+        if not osp.exists(npz_path):
+            print(f'Missing NPZ file: {npz_path}')
+            empty_results = {'track_ids': [], 'bboxes': []}
+            np.savez(npz_path, results=empty_results)
         frame_results = np.load(npz_path, allow_pickle=True)['results'][()]
         base_name = osp.basename(save_path)
         video_results[base_name] = frame_results

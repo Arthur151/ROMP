@@ -1,5 +1,7 @@
 # TRACE's code for inference & evaluation
 
+ **[[Project Page]](https://arthur151.github.io/TRACE/TRACE.html) [[Paper]](http://arxiv.org/abs/2306.02850) [[Video]](https://www.youtube.com/watch?v=l8aLHDXWQRw)**
+
 To run the inference & evaluation, please first install simple-romp following [the guidance](../README.md).  
 
 Please refer to [this instruction](../../trace/README.md) for training.
@@ -119,4 +121,13 @@ Please download the 3DPW dataset from [official website](https://virtualhumans.m
 ```
 cd simple_romp/trace2
 python -m eval --eval_dataset=3DPW
+```
+
+## Citation
+```bibtex
+@InProceedings{TRACE,
+    author = {Sun, Yu and Bao, Qian and Liu, Wu and Mei, Tao and Black, Michael J.},
+    title = {{TRACE: 5D Temporal Regression of Avatars with Dynamic Cameras in 3D Environments}}, 
+    booktitle = {CVPR}, 
+    year = {2023}}
 ```

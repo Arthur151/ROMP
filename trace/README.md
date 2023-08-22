@@ -133,6 +133,14 @@ Please don't worry if there are bugs reporting during "Preparing SMPL model file
 |   |-- SMIL_NEUTRAL.pth
 ```
 
+## Train
+Please edit the settings in `ROMP/trace/configs/trace.yml` and then run
+```
+cd ROMP/trace
+sh train.sh
+```
+
+
 ## Citation
 ```bibtex
 @InProceedings{TRACE,
@@ -140,10 +148,4 @@ Please don't worry if there are bugs reporting during "Preparing SMPL model file
     title = {{TRACE: 5D Temporal Regression of Avatars with Dynamic Cameras in 3D Environments}}, 
     booktitle = {CVPR}, 
     year = {2023}}
-```
-## Train
-Please edit the settings in `ROMP/trace/configs/trace.yml` and then run
-```
-cd ROMP/trace
-sh train.sh
 ```

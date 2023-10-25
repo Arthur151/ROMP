@@ -86,7 +86,7 @@ python -m trace2.show --smpl_model_folder /path/to/smpl_model_data --preds_path 
 
 ## TRACE Benchmark Evaluation
 
-**Due to an error [here](https://github.com/Arthur151/ROMP/commit/684fa254d1752c09c15b53afbde03d3bdbd56ba6#), we are sorry to report that the previous evaluation results on 3DPW were wrong. While we evaluate frame-by-frame PAMPJPE, such an error will result in the wrong input format of 3D joints when there are annotations for two people. After correction, the results on 3DPW are PAMPJPE 50.8, MPJPE 80.3, PVE 98.1.**
+**Due to an error [here](https://github.com/Arthur151/ROMP/commit/684fa254d1752c09c15b53afbde03d3bdbd56ba6#), we are sorry to report that the previous evaluation results on 3DPW were wrong. When there are annotations for two people, such an error will result in the wrong input format of 3D joints for evaluating frame-by-frame PAMPJPE. After correction, the results on 3DPW are PAMPJPE 50.8, MPJPE 80.3, PVE 98.1. We sincerely apologize for this error.**
 
 The evaluation code of TRACE is integrated into `simple-romp`, `trace2/eval.py`, `trace2/evaluation` folder.
 

@@ -488,8 +488,6 @@ def make_axis_angle_between_0_to_2pi(axis_angle, axis=np.array([0])):
     axis_angle[:,axis][axis_angle[:,axis]<0] = axis_angle[:,axis][axis_angle[:,axis]<0] + 2*np.pi
     return axis_angle
 
-invalid_frames = {
-    'downtown_runForBus_01':[528,784], 'downtown_bus_00': [990,1310]}
 
 def evaluate_3dpw_results(results_dir, dataset_dir, seq_wise_results=True, grot_rx_rectify=True, debug=False, **kwargs):
     annots_save_path = os.path.join(dataset_dir, '3dpw_dboa_test_annots.npz')
@@ -523,10 +521,6 @@ def evaluate_3dpw_results(results_dir, dataset_dir, seq_wise_results=True, grot_
     for video_name in tqdm.tqdm(video2frame):
         for frame_name in sorted(video2frame[video_name]):
             img_name = f'{video_name}-{frame_name}'
-            if video_name in invalid_frames:
-                frame_id = int(frame_name.replace('image_','').replace('.jpg',''))
-                if frame_id>=invalid_frames[video_name][0] and frame_id<invalid_frames[video_name][1]:
-                    continue
             if video_name not in sequence_kp3ds:
                 sequence_kp3ds[video_name] = {}
                 sequence_errors[video_name] = {'MPJPE': [], 'PA_MPJPE': [], 'PVE': []}

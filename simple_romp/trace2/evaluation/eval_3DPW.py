@@ -363,7 +363,7 @@ def batch_compute_similarity_transform_torch(S1, S2):
     i.e. solves the orthogonal Procrutes problem.
     '''
     transposed = False
-    if S1.shape[0] != 3 and S1.shape[0] != 2:
+    if S1.shape[1] != 3 and S1.shape[1] != 2:
         S1 = S1.permute(0,2,1)
         S2 = S2.permute(0,2,1)
         transposed = True
@@ -488,8 +488,6 @@ def make_axis_angle_between_0_to_2pi(axis_angle, axis=np.array([0])):
     axis_angle[:,axis][axis_angle[:,axis]<0] = axis_angle[:,axis][axis_angle[:,axis]<0] + 2*np.pi
     return axis_angle
 
-sequence2adjust_grots = {
-    'downtown_warmWelcome_00': 10, 'flat_guitar_01': 10,}
 invalid_frames = {
     'downtown_runForBus_01':[528,784], 'downtown_bus_00': [990,1310]}
 
@@ -548,8 +546,8 @@ def evaluate_3dpw_results(results_dir, dataset_dir, seq_wise_results=True, grot_
                 kp2d_preds = np.stack([result[2] for result in kp3d_results[video_name][frame_name]])
                 theta_preds = np.stack([result[4] for result in kp3d_results[video_name][frame_name]])
                 beta_preds = np.stack([result[5] for result in kp3d_results[video_name][frame_name]])
-                if grot_rx_rectify and video_name in sequence2adjust_grots:
-                    theta_preds[:,:3] = rectify_grot_with_fov_and_pitch(theta_preds[:,:3], rx=sequence2adjust_grots[video_name])
+                #if grot_rx_rectify and video_name in sequence2adjust_grots:
+                #    theta_preds[:,:3] = rectify_grot_with_fov_and_pitch(theta_preds[:,:3], rx=sequence2adjust_grots[video_name])
                 kp2d_preds = kp2d_preds[:,:14]
 
                 verts_preds, kp3d_preds = evaluator.acquire_verts_kp3ds_natural(theta_preds, beta_preds)

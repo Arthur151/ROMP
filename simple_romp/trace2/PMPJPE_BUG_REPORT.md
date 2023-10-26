@@ -1,8 +1,6 @@
 ## Detailed explanation: 
 
-The bug was caused by this part:
-
-https://github.com/Arthur151/ROMP/commit/684fa254d1752c09c15b53afbde03d3bdbd56ba6#
+The bug was caused by [this part](https://github.com/Arthur151/ROMP/blob/e1268164f41a701e81d3d5f14ff660e44f1fe02a/simple_romp/trace2/evaluation/eval_3DPW.py#L366):
 
 `if S1.shape[0] != 3 and S1.shape[0] != 2:  
      S1 = S1.permute(0,2,1)`

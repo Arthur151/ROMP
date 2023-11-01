@@ -25,3 +25,9 @@ sudo dpkg -i ./mesa_18.3.3-0.deb || true
 sudo apt install -f  
 git clone https://github.com/mmatl/pyopengl.git  
 pip install ./pyopengl  
+
+## from OpenGL.osmesa import ( ImportError: cannot import name 'OSMesaCreateContextAttribs'
+
+git clone git@github.com:mmatl/pyopengl.git
+
+pip install ./pyopengl

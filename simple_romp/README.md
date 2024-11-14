@@ -19,7 +19,7 @@ pip install --upgrade setuptools numpy cython lapx
 ```
 
 ```
-pip install -U simple_romp
+pip install simple_romp==1.1.4
 ```
 or download the package and install it from source:
 ```

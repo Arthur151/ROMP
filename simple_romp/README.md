@@ -15,11 +15,11 @@ If you want to use TRACE as well, please refer to [this instrcution](trace2/READ
 1. Installing simple_romp via pip:
 
 ```
-pip install --upgrade setuptools numpy cython lap
+pip install --upgrade setuptools numpy cython lapx
 ```
 
 ```
-pip install simple_romp==1.1.3
+pip install -U simple_romp
 ```
 or download the package and install it from source:
 ```

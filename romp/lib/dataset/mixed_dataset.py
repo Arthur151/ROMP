@@ -50,7 +50,7 @@ class MixedDataset(Dataset):
         dataset_info_table = PrettyTable([' ']+datasets_used)
         dataset_info_table.add_row(['Length']+self.lengths)
         dataset_info_table.add_row(['Sample Prob.']+self.partition)
-        expect_length = (np.array(self.lengths)/np.array(self.partition)).astype(np.int)
+        expect_length = (np.array(self.lengths)/np.array(self.partition)).astype(np.int32)
         dataset_info_table.add_row(['Expected length']+expect_length.tolist())
         self.partition = np.array(self.partition).cumsum()
         dataset_info_table.add_row(['Accum. Prob.']+self.partition.astype(np.float16).tolist())

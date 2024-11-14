@@ -32,13 +32,13 @@ def get_uvs(uvmap_path):
 
 def load_sphere():
     cur_dir = os.path.dirname(__file__)
-    faces = np.loadtxt(join(cur_dir, 'sphere_faces_20.txt'), dtype=np.int)
+    faces = np.loadtxt(join(cur_dir, 'sphere_faces_20.txt'), dtype=np.int32)
     vertices = np.loadtxt(join(cur_dir, 'sphere_vertices_20.txt'))
     return vertices, faces
 
 def load_cylinder():
     cur_dir = os.path.dirname(__file__)
-    faces = np.loadtxt(join(cur_dir, 'cylinder_faces_20.txt'), dtype=np.int)
+    faces = np.loadtxt(join(cur_dir, 'cylinder_faces_20.txt'), dtype=np.int32)
     vertices = np.loadtxt(join(cur_dir, 'cylinder_vertices_20.txt'))
     return vertices, faces
 

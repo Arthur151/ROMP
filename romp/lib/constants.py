@@ -2,7 +2,7 @@ import numpy as np
 from collections import OrderedDict
 
 def joint_mapping(source_format, target_format):
-    mapping = np.ones(len(target_format),dtype=np.int)*-1
+    mapping = np.ones(len(target_format),dtype=np.int32)*-1
     for joint_name in target_format:
         if joint_name in source_format:
             mapping[target_format[joint_name]] = source_format[joint_name]
@@ -277,12 +277,12 @@ cm_All54 = np.concatenate([cm_body25,cm_body25,cm_body25,cm_body25,cm_body25],0)
 body118_flip = np.concatenate([np.array([0,1, 5,6,7, 2,3,4, 8, 12,13,14, 9,10,11, 16,15,18,17, 22,23,24, 19,20,21]), \
     25+21+np.arange(21), 25+np.arange(21), \
     25+21*2+np.array([26,25,24,23,22, 21,20,19,18,17, 27,28,29,30, 35,34,33,32,31, 45,44,43,42,47,46, 39,38,37,36,41,40,\
-    54,53,52,51,50,49,48, 59,58,57,56,55, 64,63,62,61,60,67,66,65, 69,68])-17],0).astype(np.int)
-smpl24_flip = np.array([0,2,1,3,5,4,6,8,7,9,11,10,12,14,13,15,17,16,19,18,21,20,23,22]).astype(np.int)
-smpl_extra30_flip = np.array([24, 26,25, 28,27, 32,33,34, 29,30,31, 40,41,42,43,44, 35,36,37,38,39, 46,45, 47, 48,49,50,51,52,53]).astype(np.int)
+    54,53,52,51,50,49,48, 59,58,57,56,55, 64,63,62,61,60,67,66,65, 69,68])-17],0).astype(np.int32)
+smpl24_flip = np.array([0,2,1,3,5,4,6,8,7,9,11,10,12,14,13,15,17,16,19,18,21,20,23,22]).astype(np.int32)
+smpl_extra30_flip = np.array([24, 26,25, 28,27, 32,33,34, 29,30,31, 40,41,42,43,44, 35,36,37,38,39, 46,45, 47, 48,49,50,51,52,53]).astype(np.int32)
 All54_flip = np.concatenate([smpl24_flip, smpl_extra30_flip],0)
 
-kintree_parents = np.array([-1, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 12, 13, 14, 16,17, 18, 19, 20, 21],dtype=np.int)
+kintree_parents = np.array([-1, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 12, 13, 14, 16,17, 18, 19, 20, 21],dtype=np.int32)
 # Permutation of SMPL pose parameters when flipping the shape
 SMPL_JOINTS_FLIP_PERM = [0, 2, 1, 3, 5, 4, 6, 8, 7, 9, 11, 10, 12, 14, 13, 15, 17, 16, 19, 18, 21, 20]#, 23, 22]
 SMPL_POSE_FLIP_PERM = []
@@ -353,8 +353,8 @@ relative_age_types = ['adult', 'teen', 'kid', 'baby']
 
 def get_cam3dmap_anchor(FOV, centermap_size):
     depth_level = np.array([1, 10, 20, 100], dtype=np.float32)
-    #map_coord_range_each_level = (np.array([4/64., 50/64., 6/64., 4/64.], dtype=np.float32) * args().centermap_size).astype(np.int)
-    map_coord_range_each_level = (np.array([2/64., 25/64., 3/64., 2/64.], dtype=np.float32) * centermap_size).astype(np.int)
+    #map_coord_range_each_level = (np.array([4/64., 50/64., 6/64., 4/64.], dtype=np.float32) * args().centermap_size).astype(np.int32)
+    map_coord_range_each_level = (np.array([2/64., 25/64., 3/64., 2/64.], dtype=np.float32) * centermap_size).astype(np.int32)
     scale_level = 1/np.tan(np.radians(FOV/2.))/depth_level
     cam3dmap_anchor = []
     scale_cache = 8

@@ -63,7 +63,7 @@ class CenterMap(object):
         centermap = np.ones((self.dims,self.size,self.size))
         centermap[-1] = 0
         for center_loc in center_locs:
-            map_coord = ((center_loc+1)/2 * self.size).astype(np.int)-1
+            map_coord = ((center_loc+1)/2 * self.size).astype(np.int32)-1
             centermap[0,map_coord[0],map_coord[1]] = 0
             centermap[1,map_coord[0],map_coord[1]] = 1
         return centermap

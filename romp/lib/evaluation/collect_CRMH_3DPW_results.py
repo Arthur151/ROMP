@@ -157,7 +157,7 @@ class Submit(object):
                     for pred_subject_id,bbox_pred in enumerate(bbox_detected):
                         bbox_center_pred = calc_center(bbox_pred)
                         #cv2.rectangle(img, (bbox_pred[0], bbox_pred[1]), (bbox_pred[2], bbox_pred[3]), (0, 0, 255), 2)
-                        #center_x, center_y = bbox_center_pred.astype(np.int)
+                        #center_x, center_y = bbox_center_pred.astype(np.int32)
                         #img[center_x-10:center_x+10, center_y-10:center_y+10] = [0,0,255]
                         dist = np.linalg.norm(bbox_center_pred-bbox_center_gt)
                         frame_dist_dict[dist] = pred_subject_id
@@ -226,7 +226,7 @@ class Submit(object):
                 print('processing ', action_name, '{}/{}'.format(action_id,60))
                 sequence_info,split, subject_num, frame_num, pose2d = self.layout[action_name]
                 subject_id = int(subject_id)
-                frame_ids = np.array(frame_ids).astype(np.int)
+                frame_ids = np.array(frame_ids).astype(np.int32)
                 #print(action_name,subject_id,np.array(frame_ids))
                 params_results[action_name][0][subject_id][frame_ids] = pose_preds.copy()
                 params_results[action_name][1][subject_id][frame_ids] = shape_results

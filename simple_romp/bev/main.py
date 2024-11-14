@@ -134,7 +134,7 @@ class BEV(nn.Module):
                 del parsed_results[key]
         return parsed_results, image_pad_info
         
-    @time_cost('BEV')
+    #@time_cost('BEV')
     @torch.no_grad()
     def forward(self, image, signal_ID=0, **kwargs):
         if image.shape[1] / image.shape[0] >= 2 and self.settings.crowd:

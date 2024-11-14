@@ -46,7 +46,7 @@ def trans_relative_rot_to_global_rotmat(params, with_global_rot=False):
     batch_size, param_num = params.shape[0], params.shape[1]//3
     pose_rotmat = batch_rodrigues(params.reshape(-1,3)).view(batch_size, param_num, 3, 3).contiguous()
     if with_global_rot:
-        sellect_joints = np.array([0,1,2,4,5,16,17,18,19],dtype=np.int)
+        sellect_joints = np.array([0,1,2,4,5,16,17,18,19],dtype=np.int32)
         results = [pose_rotmat[:, 0]]
         for idx in range(param_num-1):
             i_val = int(idx + 1)
@@ -55,7 +55,7 @@ def trans_relative_rot_to_global_rotmat(params, with_global_rot=False):
             glob_transf_mat = torch.matmul(results[parent], joint_rot)
             results.append(glob_transf_mat)
     else:
-        sellect_joints = np.array([1,2,4,5,16,17,18,19],dtype=np.int)-1
+        sellect_joints = np.array([1,2,4,5,16,17,18,19],dtype=np.int32)-1
         results = [torch.eye(3,3)[None].cuda().repeat(batch_size,1,1)]
         for i_val in range(param_num-1):
             #i_val = int(idx + 1)

@@ -12,7 +12,7 @@ requireds = ["opencv-python","torch",
         'numpy>=1.21.0',
         'typing-extensions>=4.1',
         'scipy',
-        'lap']
+        'lapx']
 
 setuptools.setup(
     name='simple_romp',
@@ -26,7 +26,7 @@ setuptools.setup(
         'numpy>=1.21.0',
         'typing-extensions>=4.1',
         'scipy',
-        'lap'],
+        'lapx'],
     install_requires=requireds,
     description="ROMP [ICCV21], BEV [CVPR22], TRACE [CVPR23]",
     long_description=long_description,

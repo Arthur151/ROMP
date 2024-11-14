@@ -156,7 +156,7 @@ class ROMP(nn.Module):
             outputs['track_ids'] = np.array(tracked_ids).astype(np.int32)
         return outputs
 
-    @time_cost('ROMP')
+    #@time_cost('ROMP')
     def forward(self, image, signal_ID=0, **kwargs):
         outputs, image_pad_info = self.single_image_forward(image)
         if outputs is None:

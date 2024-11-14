@@ -441,7 +441,7 @@ def estimate_translation(joints_3d, joints_2d, pts_mnum=4,focal_length=600, proj
 #-----------------------------------------------------------------------------------------#
 
 def joint_mapping(source_format, target_format):
-    mapping = np.ones(len(target_format),dtype=np.int)*-1
+    mapping = np.ones(len(target_format),dtype=np.int32)*-1
     for joint_name in target_format:
         if joint_name in source_format:
             mapping[target_format[joint_name]] = source_format[joint_name]

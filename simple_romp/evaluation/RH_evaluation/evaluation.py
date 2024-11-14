@@ -28,7 +28,7 @@ Crowdpose_14 = {"L_Shoulder":0, "R_Shoulder":1, "L_Elbow":2, "R_Elbow":3, "L_Wri
      "L_Hip":6, "R_Hip":7, "L_Knee":8, "R_Knee":9, "L_Ankle":10, "R_Ankle":11, "Head_top":12, "Neck_LSP":13}
 
 def joint_mapping(source_format, target_format):
-    mapping = np.ones(len(target_format),dtype=np.int)*-1
+    mapping = np.ones(len(target_format),dtype=np.int32)*-1
     for joint_name in target_format:
         if joint_name in source_format:
             mapping[target_format[joint_name]] = source_format[joint_name]
@@ -157,7 +157,7 @@ class RH_Evaluation(object):
         print(f'We got GTs of {len(self.annots)} images for evaluation.')
     
     def miss_mat(self, miss_gt_ids):
-        return np.stack([np.ones(len(miss_gt_ids))*-1, miss_gt_ids],1).astype(np.int)
+        return np.stack([np.ones(len(miss_gt_ids))*-1, miss_gt_ids],1).astype(np.int32)
 
     def match_kp2ds(self):
         self.match_results = {}

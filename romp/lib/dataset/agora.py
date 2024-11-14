@@ -62,8 +62,8 @@ def AGORA(base_class=default_mode):
 
             if 'relative' in base_class:
                 properties = np.stack([annot['props'] for annot in annots])
-                genders = (properties[:,0]=='female').astype(np.int)
-                ages = (properties[:,1]=='kid').astype(np.int)*2
+                genders = (properties[:,0]=='female').astype(np.int32)
+                ages = (properties[:,1]=='kid').astype(np.int32)*2
                 depth_level = body_type = np.ones_like(ages) * -1
                 img_info['depth'] = np.stack([ages, genders, depth_level, body_type],1)
                 if ages.sum()>0:

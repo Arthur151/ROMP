@@ -554,7 +554,7 @@ def detect_occluded_person(person_centers, full_kp2ds, thresh=2*64/512.):
                         if occluded_by_who[closet_idx]<0:
                             occluded_by_who[inds] = closet_idx
 
-    return occluded_by_who.astype(np.int)
+    return occluded_by_who.astype(np.int32)
 
 def _calc_bbox_normed(full_kps):
     bboxes = []
@@ -662,7 +662,7 @@ def test_image_dataset(dataset,with_3d=False,with_smpl=False):
                 cv2.imwrite('{}/{}_{}_projection.jpg'.format(save_dir,_,img_bsname), image_kp2d_projection)
 
             for person_center, subject_id in zip(person_centers,subject_ids):
-                y,x = person_center.astype(np.int)
+                y,x = person_center.astype(np.int32)
                 if y>0 and x>0:
                     image_kp2d[y-10:y+10, x-10:x+10] = [0,0,255]
                     cv2.putText(image_kp2d,'id:{}'.format(subject_id), (x,y),cv2.FONT_HERSHEY_COMPLEX,0.5,(255,0,255),1)
@@ -674,7 +674,7 @@ def test_image_dataset(dataset,with_3d=False,with_smpl=False):
                 heatmap_color = make_heatmaps(image.copy(), r['heatmap'][inds])
                 cv2.imwrite('{}/{}_{}_heatmap.jpg'.format(save_dir,_,img_bsname), heatmap_color)
 
-            person_centers_onmap = ((r['person_centers'][inds].numpy() + 1)/ 2.0 * (args().centermap_size-1)).astype(np.int)
+            person_centers_onmap = ((r['person_centers'][inds].numpy() + 1)/ 2.0 * (args().centermap_size-1)).astype(np.int32)
             positive_position = torch.stack(torch.where(r['centermap'][inds,0]==1)).permute(1,0)
 
         if with_smpl and r['valid_masks'][0,0,4]:

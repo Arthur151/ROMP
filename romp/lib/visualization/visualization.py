@@ -102,7 +102,7 @@ class Visualizer(object):
         for img_id in range(len(images)):
             for class_pred, class_prob, center_coord in zip(class_preds[img_id], class_probs[img_id], center_coords[img_id]):
                 age_cls, age_prob = class_pred, int(class_prob*100)
-                center_loc = (center_coord * (args().input_size/args().centermap_size)).astype(np.int)
+                center_loc = (center_coord * (args().input_size/args().centermap_size)).astype(np.int32)
                 text = '{} {}%'.format(self.age_name_dict[age_cls], age_prob)
                 cv2.putText(images[img_id], text, (center_loc[0], center_loc[1]), cv2.FONT_HERSHEY_PLAIN, 1, (255,0,0), 1)
                 #text2 = '{} {}%'.format(self.gender_name_dict[gender_cls], gender_prob)#[reorganize_idx[vids]==used_idx_org[idx]]
@@ -136,7 +136,7 @@ class Visualizer(object):
             rendered_imgs = self.visualize_renderer_verts_list(per_img_verts_list, images=org_imgs.copy(), colors=mesh_colors)
         
         if put_org:
-            offsets = meta_data['offsets'].cpu().numpy().astype(np.int)[img_inds_org]
+            offsets = meta_data['offsets'].cpu().numpy().astype(np.int32)[img_inds_org]
             img_pad_size, crop_trbl, pad_trbl = offsets[:,:2], offsets[:,2:6], offsets[:,6:10]
             rendering_onorg_images = []
             for inds, j in enumerate(used_org_inds):
@@ -317,11 +317,11 @@ def draw_skeleton(image, pts, bones=None, cm=None, label_kp_order=False,r=3):
     
     if bones is not None:
         if cm is None:
-            set_colors = np.array([[255,0,0] for i in range(len(bones))]).astype(np.int)
+            set_colors = np.array([[255,0,0] for i in range(len(bones))]).astype(np.int32)
         else:
             if len(bones)>len(cm):
                 cm = np.concatenate([cm for _ in range(len(bones)//len(cm)+1)],0)
-            set_colors = cm[:len(bones)].astype(np.int)
+            set_colors = cm[:len(bones)].astype(np.int32)
         bones = np.concatenate([bones,set_colors],1).tolist()
         for line in bones:
             pa = pts[line[0]]

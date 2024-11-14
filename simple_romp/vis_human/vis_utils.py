@@ -252,7 +252,7 @@ def draw_skeleton(image, pts, bones=smpl24_connMat, cm=None, label_kp_order=Fals
                     img=cv2.putText(image,str(i),(int(pt[0]), int(pt[1])),cv2.FONT_HERSHEY_COMPLEX,1,(255,215,0),1)
     
     if bones is not None:
-        set_colors = np.array([cm for i in range(len(bones))]).astype(np.int)
+        set_colors = np.array([cm for i in range(len(bones))]).astype(np.int32)
     
         bones = np.concatenate([bones,set_colors],1).tolist()
         for line in bones:
